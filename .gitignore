@@ -1,0 +1,34 @@
+### Vuejs ###
+# Recommended template: Node.gitignore
+.idea
+app/npm-debug.log
+app/yarn-error.log
+app/.DS_Store
+app/node_modules
+app/dist
+
+# local env files
+app/.env.local
+app/.env.*.local
+
+# Log files
+app/npm-debug.log*
+app/yarn-debug.log*
+app/yarn-error.log*
+app/pnpm-debug.log*
+
+# Editor directories and files
+app/.idea
+app/.vscode
+app/*.suo
+app/*.ntvs*
+app/*.njsproj
+app/*.sln
+app/*.sw?
+# End of https://www.toptal.com/developers/gitignore/api/vuejs
+
+### API ###
+api/.env
+api/uploads/*
+api/certificate_generated/*
+api/permissiondata.txt
