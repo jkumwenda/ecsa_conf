@@ -9,8 +9,9 @@ from passlib.hash import bcrypt
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt, JWTError
 from models import Users, UserRole
-from schemas.maladis import TokenSchema, UserSchema
+from schemas.ecsa_conf import TokenSchema, UserSchema
 from database import get_db
+import utils
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -29,18 +30,28 @@ def get_object(id, db, model):
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_user(user_schema: UserSchema, db: Session = Depends(get_db)):
+    existing_email = db.query(Users).filter(Users.email == user_schema.email).first()
+    if existing_email:
+        raise HTTPException(status_code=400, detail="Email already exists")
+
+    existing_phone = db.query(Users).filter(Users.phone == user_schema.phone).first()
+    if existing_phone:
+        raise HTTPException(status_code=400, detail="Phone number already exists")
+
+    password = utils.generate_random_password()
+
     create_user_model = Users(
         firstname=user_schema.firstname,
         lastname=user_schema.lastname,
         phone=user_schema.phone,
         email=user_schema.email,
-        hashed_password=bcrypt.hash(user_schema.password),
+        hashed_password=bcrypt.hash(password),
         verified=1,
     )
 
     db.add(create_user_model)
     db.commit()
-
+    utils.new_account_email(user_schema.email, user_schema.firstname, password)
     return user_schema
 
 

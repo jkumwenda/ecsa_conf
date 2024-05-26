@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from starlette import status
 from models import Role, RolePermission
-from schemas.maladis import RoleSchema, RolePermissionSchema
+from schemas.ecsa_conf import RoleSchema, RolePermissionSchema
 from sqlalchemy.orm import Session
 from database import get_db
 from .auth import get_current_user
@@ -33,7 +33,6 @@ async def get_roles(
     search: str = "",
 ):
     security.secureAccess("VIEW_ROLE", user["id"], db)
-
     offset = (skip - 1) * limit
     query = (
         db.query(Role)

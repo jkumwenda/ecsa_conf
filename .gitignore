@@ -6,6 +6,7 @@ app/yarn-error.log
 app/.DS_Store
 app/node_modules
 app/dist
+app/.env.production
 
 # local env files
 app/.env.local
@@ -29,6 +30,6 @@ app/*.sw?
 
 ### API ###
 api/.env
-api/uploads/*
-api/certificate_generated/*
+api/uploads/
+api/certificate_generated/
 api/permissiondata.txt

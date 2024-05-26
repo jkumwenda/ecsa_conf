@@ -5,13 +5,10 @@ from fastapi import (
     Depends,
     Query,
     status,
-    File,
-    UploadFile,
-    Form,
 )
 from starlette import status
-from models import Users, UserRole, UserSignature
-from schemas.maladis import UserSchema, UserRoleSchema, PasswordSchema
+from models import Users, UserRole
+from schemas.ecsa_conf import UserSchema, UserRoleSchema, PasswordSchema
 from sqlalchemy.orm import Session
 from database import get_db
 from .auth import get_current_user
@@ -20,7 +17,6 @@ from sqlalchemy import or_
 import math
 from passlib.hash import bcrypt
 from dependencies import Security
-from fastapi.responses import FileResponse
 import uuid
 import utils
 
@@ -190,7 +186,7 @@ async def update_password(
     user: user_dependency,
     db: Session = Depends(get_db),
 ):
-    # security.secureAccess("UPDATE_USER", user["id"], db)
+    security.secureAccess("UPDATE_USER", user["id"], db)
     user = get_object(user_id, db, Users)
     password = utils.generate_random_password()
 
@@ -210,7 +206,7 @@ async def reset_password(
     password_schema: PasswordSchema,
     db: Session = Depends(get_db),
 ):
-    # security.secureAccess("UPDATE_USER", user["id"], db)
+    security.secureAccess("UPDATE_USER", user["id"], db)
     user = get_object(user_id, db, Users)
     password = password_schema.password
 
@@ -268,108 +264,3 @@ async def delete_user_role(
     db.query(UserRole).filter(UserRole.id == user_role_id).delete()
     db.commit()
     raise HTTPException(status_code=200, detail="Users role successfully deleted")
-
-
-@router.get("/signatures/{user_id}")
-async def get_user_signature(
-    user_id: int,
-    user: user_dependency,
-    db: Session = Depends(get_db),
-):
-    security.secureAccess("VIEW_USER", user["id"], db)
-
-    return db.query(UserSignature).filter(UserSignature.user_id == user_id).first()
-
-
-@router.post("/signatures/")
-async def add_user_signature(
-    user: user_dependency,
-    file: UploadFile = File(...),
-    user_id: int = Form(...),
-    db: Session = Depends(get_db),
-):
-    security.secureAccess("ADD_USER", user["id"], db)
-
-    file_location = uuid.uuid4().hex
-    os.mkdir(f"uploads/signatures/{file_location}")
-
-    user_signatures = (
-        db.query(UserSignature).filter(UserSignature.user_id == user_id).all()
-    )
-
-    if user_signatures:
-        for user_signature in user_signatures:
-            os.remove(user_signature.file_location)
-            db.query(UserSignature).filter(
-                UserSignature.id == user_signature.id
-            ).delete()
-            db.commit()
-
-    try:
-        with open(f"uploads/signatures/{file_location}/{file.filename}", "wb") as f:
-            f.write(file.file.read())
-            user_signature_model = UserSignature(
-                file_name=file.filename,
-                user_id=user_id,
-                file_size=0,
-                file_type=file.content_type,
-                file_location=(f"uploads/signatures/{file_location}/{file.filename}"),
-            )
-
-            db.add(user_signature_model)
-            db.commit()
-            db.refresh(user_signature_model)
-
-            if user_signature_model.id is not None:
-                return {
-                    "user_signature_id": user_signature_model.id,
-                    "file_name": file.filename,
-                    "user_id": user_id,
-                    "file_type": file.content_type,
-                    "file_location": (f"uploads/signatures/{file_location}"),
-                }
-        os.remove(file_location)
-        raise HTTPException(
-            status_code=404, detail="File creation in database failed, file deleted"
-        )
-    except Exception as e:
-        return {"error": str(e)}
-
-
-@router.get("/show_signatures/")
-async def get_user_signature_image(
-    file_location: str,
-    user: user_dependency,
-    db: Session = Depends(get_db),
-):
-    security.secureAccess("VIEW_USER", user["id"], db)
-    try:
-        return FileResponse(file_location)
-    except Exception as e:
-        raise HTTPException(status_code=404, detail="Image not found")
-
-
-@router.delete("/signatures/{signature_id}")
-async def delete_user_signature(
-    signature_id: int,
-    user: user_dependency,
-    db: Session = Depends(get_db),
-):
-    security.secureAccess("DELETE_USER", user["id"], db)
-
-    user_signature = (
-        db.query(UserSignature).filter(UserSignature.id == signature_id).first()
-    )
-    try:
-        os.remove(user_signature.file_location)
-        db.query(UserSignature).filter(UserSignature.id == signature_id).delete()
-        db.commit()
-        raise HTTPException(
-            status_code=200,
-            detail=f"Signatyre {user_signature.file_location} removed successfully.",
-        )
-    except OSError as e:
-        raise HTTPException(
-            status_code=404,
-            detail=f"Error: {e}",
-        )

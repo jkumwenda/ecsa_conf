@@ -5,30 +5,22 @@ from routers import (
     roles,
     permissions,
     countries,
-    applicants,
-    manufacturers,
-    product_categories,
-    therapeutic_categories,
-    administration_routes,
-    generic_names,
-    dosage_forms,
-    products,
-    workflows,
-    product_licence_fees,
+    participants,
+    events,
+    organisers,
+    event_types,
 )
 from fastapi.middleware.cors import CORSMiddleware
 
-# from config import settings
-
 app = FastAPI(
-    title="PMRA MALADIS API",
-    description="MALADIS",
+    title="ECSA CONFERENCE APP API",
+    description="East, Central and Southern Africa Conference App Programmable Application Interface",
     version="0.0.1",
     terms_of_service="http://example.com/terms/",
     contact={
-        "name": "PMRA Dev Team",
-        "url": "http://pmra.mw/ict/",
-        "email": "smatchado@pmra.com",
+        "name": "HashTagIO",
+        "url": "https://github.com/jkumwenda",
+        "email": "jkumwenda@gmail.com",
     },
     license_info={
         "name": "Apache 2.0",
@@ -40,18 +32,9 @@ origins = [
     # settings.CLIENT_ORIGIN,
 ]
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
-
-# Allow all origins for CORS. Customize as needed for production.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -62,44 +45,7 @@ app.include_router(users.router, tags=["User"], prefix="/users")
 app.include_router(roles.router, tags=["Role"], prefix="/roles")
 app.include_router(permissions.router, tags=["Permission"], prefix="/permissions")
 app.include_router(countries.router, tags=["Country"], prefix="/countries")
-app.include_router(applicants.router, tags=["Applicant"], prefix="/applicants")
-app.include_router(manufacturers.router, tags=["Manufacturer"], prefix="/manufacturers")
-app.include_router(
-    product_categories.router, tags=["Product Categories"], prefix="/product_categories"
-)
-app.include_router(
-    therapeutic_categories.router,
-    tags=["Therapeutic Categories"],
-    prefix="/therapeutic_categories",
-)
-app.include_router(
-    administration_routes.router,
-    tags=["Administration Route"],
-    prefix="/administration_routes",
-)
-app.include_router(
-    generic_names.router,
-    tags=["Generic Names"],
-    prefix="/generic_names",
-)
-app.include_router(
-    dosage_forms.router,
-    tags=["Dosage Forms"],
-    prefix="/dosage_forms",
-)
-app.include_router(
-    products.router,
-    tags=["Products"],
-    prefix="/products",
-)
-app.include_router(
-    workflows.router,
-    tags=["Workflows"],
-    prefix="/workflows",
-)
-
-app.include_router(
-    product_licence_fees.router,
-    tags=["Product Licence Fees"],
-    prefix="/product_licence_fees",
-)
+app.include_router(organisers.router, tags=["Organiser"], prefix="/organisers")
+app.include_router(event_types.router, tags=["Event Type"], prefix="/event_types")
+app.include_router(participants.router, tags=["Participants"], prefix="/participants")
+app.include_router(events.router, tags=["Events"], prefix="/events")

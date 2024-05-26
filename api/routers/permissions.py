@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from starlette import status
 from models import Permission
-from schemas.maladis import PermissionSchema
+from schemas.ecsa_conf import PermissionSchema
 from sqlalchemy.orm import Session
 from database import get_db
 from .auth import get_current_user
