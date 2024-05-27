@@ -32,7 +32,7 @@ async def get_organisers(
     limit: int = 10,
     search: str = "",
 ):
-    security.secureAccess("VIEW_ORGANISER", user["id"], db)
+    security.secureAccess("VIEW_ORGANISERTY", user["id"], db)
 
     offset = (skip - 1) * limit
     query = (
