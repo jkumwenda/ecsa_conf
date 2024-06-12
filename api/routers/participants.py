@@ -120,20 +120,52 @@ async def get_participant(
     security.secureAccess("VIEW_PARTICIPANT", user["id"], db)
 
     participant = get_object(participant_id, db, Participant)
+
+    user = db.query(Users).filter(Users.id == participant.user_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User record not found")
+
     if not participant:
-        raise HTTPException(status_code=404, detail="Participant not found")
+        raise HTTPException(status_code=404, detail="Participant record not found")
 
     return {
         "participant": {
-            "id": participant.id,
+            "id": user.id,
+            "participant_id": participant.id if participant.id else 0,
             "title": participant.title,
-            "firstname": participant.users.firstname,
-            "lastname": participant.users.lastname,
-            "lastname": participant.users.email,
-            "phone": participant.users.phone,
+            "firstname": user.firstname,
+            "lastname": user.lastname,
+            "phone": user.phone,
+            "email": user.email,
             "institution": participant.institution,
             "country": participant.country.country,
+            "country_id": participant.country.id,
         },
+        "events": [
+            {
+                "user_event_id": user_event.id,
+                "participant_category": user_event.participant_category,
+                "confirm_attendance": user_event.confirm_attendance,
+                "event_badge": user_event.event_badge,
+                "event_payment": user_event.event_payment,
+                "event_id": user_event.event_id,
+                "event": user_event.event.event,
+                "event_type": user_event.event.event_type.event_type,
+                "country_id": user_event.event.country.id,
+                "country": user_event.event.country.country,
+                "organiser_id": user_event.event.organiser.id,
+                "organiser": user_event.event.organiser.organiser,
+                "location": user_event.event.location,
+                "description": user_event.event.description,
+                "capacity": user_event.event.capacity,
+                "start_date": user_event.event.start_date,
+                "end_date": user_event.event.end_date,
+                "registration_start_date": user_event.event.registration_start_date,
+                "registration_end_date": user_event.event.registration_end_date,
+            }
+            for user_event in user.user_event
+        ],
     }
 
 

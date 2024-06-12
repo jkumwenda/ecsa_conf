@@ -2,13 +2,12 @@
 <template>
     <div class="relative inline-block text-left">
         <div @click="isOpen = !isOpen" class="flex flex-row items-center space-x-2 cursor-pointer">
-            <UserCircleIcon class="w-8 h-8 text-catskill-white-400"></UserCircleIcon>
-            <span class="text-sm text-catskill-white-500"> {{ loginUser.firstname }}
+            <UserCircleIcon class="w-8 h-8 text-bondi-blue-700"></UserCircleIcon>
+            <span class=" text-sm text-catskill-white-500"> {{ loginUser.firstname }}
                 {{ loginUser.lastname }}</span>
         </div>
 
-        <div v-if="isOpen"
-            class="origin-top-right absolute right-0 mt-2 w-32 rounded-md shadow-lg bg-catskill-white-100 ring-1 ring-black ring-opacity-5">
+        <div v-if="isOpen" class="origin-top-right absolute right-0 mt-2 w-32 rounded-xl shadow-lg bg-bondi-blue-50">
             <div class="py-2 space-y-2" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                 <a @click="profile" class="block px-4 cursor-pointer text-sm text-gray-700 hover:bg-gray-100"
                     role="menuitem">
@@ -53,6 +52,8 @@ export default {
             localStorage.removeItem("authToken");
             router.push("/");
         }
+
+
     }
 };
 </script>

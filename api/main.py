@@ -1,6 +1,9 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+
 from routers import (
     auth,
+    dashboard,
     users,
     roles,
     permissions,
@@ -28,8 +31,11 @@ app = FastAPI(
     },
 )
 
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 origins = [
     # settings.CLIENT_ORIGIN,
+    "http://localhost:8080",
 ]
 
 app.add_middleware(
@@ -41,6 +47,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, tags=["Auth"], prefix="/auth")
+app.include_router(dashboard.router, tags=["Dashboard"], prefix="/dashboard")
 app.include_router(users.router, tags=["User"], prefix="/users")
 app.include_router(roles.router, tags=["Role"], prefix="/roles")
 app.include_router(permissions.router, tags=["Permission"], prefix="/permissions")

@@ -6,73 +6,33 @@
             <router-link v-if="permissions.includes('VIEW_USER')" :to="{ name: 'Users' }"
                 class="p-1 w-3/12 justify-center items-center text-center">
                 <div
-                    class="flex flex-row items-center p-4 rounded-2xl shadow-md bg-catskill-white-300 border border-catskill-white-500 cursor-pointer">
-                    <UsersIcon class="h-8 w-8 font-light text-catalina-blue-100" />
-                    <div class="pl-2">Users</div>
+                    class="flex flex-row items-center p-4 rounded-2xl shadow-md bg-catskill-white-300 border-2 border-bondi-blue-500 cursor-pointer">
+                    <UsersIcon class="h-8 w-8 font-light text-bondi-blue-500" />
+                    <div class="pl-2 font-bold text-abbey">Users</div>
                 </div>
             </router-link>
             <router-link v-if="permissions.includes('VIEW_ROLE')" :to="{ name: 'Roles' }"
                 class="p-1 w-3/12 justify-center items-center text-center">
                 <div
-                    class="flex flex-row items-center p-4 rounded-2xl shadow-md bg-catskill-white-300 border border-catskill-white-500 cursor-pointer">
-                    <UserGroupIcon class="h-8 w-8 font-light text-catalina-blue-100" />
-                    <div class="pl-2">Roles</div>
+                    class="flex flex-row items-center p-4 rounded-2xl shadow-md bg-catskill-white-300 border-2 border-bondi-blue-500 cursor-pointer">
+                    <UserGroupIcon class="h-8 w-8 font-light text-bondi-blue-500" />
+                    <div class="pl-2 font-bold text-abbey">Roles</div>
                 </div>
             </router-link>
-            <router-link v-if="permissions.includes('VIEW_PRODUCT_CATEGORY')" :to="{ name: 'ProductCategories' }"
+            <router-link v-if="permissions.includes('VIEW_EVENT_TYPE')" :to="{ name: 'EventTypes' }"
                 class="p-1 w-3/12 justify-center items-center text-center">
                 <div
-                    class="flex flex-row items-center p-4 rounded-2xl shadow-md bg-catskill-white-300 border border-catskill-white-500 cursor-pointer">
-                    <UserGroupIcon class="h-8 w-8 font-light text-catalina-blue-100" />
-                    <div class="pl-2">Product Categories</div>
+                    class="flex flex-row items-center p-4 rounded-2xl shadow-md bg-catskill-white-300 border-2 border-bondi-blue-500 cursor-pointer">
+                    <CalendarDaysIcon class="h-8 w-8 font-light text-bondi-blue-500" />
+                    <div class="pl-2 font-bold text-abbey">Event Types</div>
                 </div>
             </router-link>
-            <router-link v-if="permissions.includes('VIEW_THERAPEUTIC_CATEGORY')"
-                :to="{ name: 'TherapeuticCategories' }" class="p-1 w-3/12 justify-center items-center text-center">
-                <div
-                    class="flex flex-row items-center p-4 rounded-2xl shadow-md bg-catskill-white-300 border border-catskill-white-500 cursor-pointer">
-                    <UserGroupIcon class="h-8 w-8 font-light text-catalina-blue-100" />
-                    <div class="pl-2">Therapeutic Categories</div>
-                </div>
-            </router-link>
-            <router-link v-if="permissions.includes('VIEW_ADMINISTRATION_ROUTE')" :to="{ name: 'AdministrationRoutes' }"
+            <router-link v-if="permissions.includes('VIEW_ORGANISER')" :to="{ name: 'Organisers' }"
                 class="p-1 w-3/12 justify-center items-center text-center">
                 <div
-                    class="flex flex-row items-center p-4 rounded-2xl shadow-md bg-catskill-white-300 border border-catskill-white-500 cursor-pointer">
-                    <UserGroupIcon class="h-8 w-8 font-light text-catalina-blue-100" />
-                    <div class="pl-2">Administration Routes</div>
-                </div>
-            </router-link>
-            <router-link v-if="permissions.includes('VIEW_GENERIC_NAME')" :to="{ name: 'GenericNames' }"
-                class="p-1 w-3/12 justify-center items-center text-center">
-                <div
-                    class="flex flex-row items-center p-4 rounded-2xl shadow-md bg-catskill-white-300 border border-catskill-white-500 cursor-pointer">
-                    <UserGroupIcon class="h-8 w-8 font-light text-catalina-blue-100" />
-                    <div class="pl-2">Generic Names</div>
-                </div>
-            </router-link>
-            <router-link v-if="permissions.includes('VIEW_DOSAGE_FORM')" :to="{ name: 'DosageForms' }"
-                class="p-1 w-3/12 justify-center items-center text-center">
-                <div
-                    class="flex flex-row items-center p-4 rounded-2xl shadow-md bg-catskill-white-300 border border-catskill-white-500 cursor-pointer">
-                    <UserGroupIcon class="h-8 w-8 font-light text-catalina-blue-100" />
-                    <div class="pl-2">Dosage Form</div>
-                </div>
-            </router-link>
-            <router-link v-if="permissions.includes('VIEW_WORKFLOW')" :to="{ name: 'Workflow' }"
-                class="p-1 w-3/12 justify-center items-center text-center">
-                <div
-                    class="flex flex-row items-center p-4 rounded-2xl shadow-md bg-catskill-white-300 border border-catskill-white-500 cursor-pointer">
-                    <UserGroupIcon class="h-8 w-8 font-light text-catalina-blue-100" />
-                    <div class="pl-2">Workflow</div>
-                </div>
-            </router-link>
-            <router-link v-if="permissions.includes('VIEW_PRODUCT_LICENCE_FEE')" :to="{ name: 'ProductLicenceFees' }"
-                class="p-1 w-3/12 justify-center items-center text-center">
-                <div
-                    class="flex flex-row items-center p-4 rounded-2xl shadow-md bg-catskill-white-300 border border-catskill-white-500 cursor-pointer">
-                    <UserGroupIcon class="h-8 w-8 font-light text-catalina-blue-100" />
-                    <div class="pl-2">Product Licence Fees</div>
+                    class="flex flex-row items-center p-4 rounded-2xl shadow-md bg-catskill-white-300 border-2 border-bondi-blue-500 cursor-pointer">
+                    <BriefcaseIcon class="h-8 w-8 font-light text-bondi-blue-500" />
+                    <div class="pl-2 font-bold text-abbey">Organiser</div>
                 </div>
             </router-link>
         </div>
@@ -84,35 +44,19 @@ import HeaderView from '@/includes/Header.vue'
 import SpinnerComponent from "@/components/Spinner.vue";
 import { useAuthStore } from "@/store/authStore";
 import {
-    UsersIcon,
-    UserGroupIcon,
-    // CubeIcon,
-    // OfficeBuildingIcon,
-    // CollectionIcon,
-    // DocumentIcon,
-    // UserIcon,
-    // CashIcon,
-    // CogIcon
+    UsersIcon, UserGroupIcon, CalendarDaysIcon, BriefcaseIcon
 } from '@heroicons/vue/24/solid'
 
 export default {
     name: 'ConfigurationsView',
     components: {
         HeaderView, SpinnerComponent,
-        UsersIcon,
-        UserGroupIcon,
-        // CubeIcon,
-        // OfficeBuildingIcon,
-        // CollectionIcon,
-        // DocumentIcon,
-        // UserIcon,
-        // CashIcon,
-        // CogIcon,
+        UsersIcon, UserGroupIcon, CalendarDaysIcon, BriefcaseIcon
     },
     setup() {
         const authStore = useAuthStore()
         const permissions = authStore.permissions
-        return { permissions }
+        return { headerTitle: "System configurations", permissions }
     },
 }
 </script>

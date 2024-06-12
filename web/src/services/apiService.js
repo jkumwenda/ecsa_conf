@@ -18,7 +18,6 @@ export const setAuthToken = () => {
 };
 
 setAuthToken();
-
 // Axios interceptor to handle token expiration
 instance.interceptors.response.use(
   (response) => response,

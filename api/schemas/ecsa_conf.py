@@ -68,6 +68,11 @@ class EventSchema(BaseModel):
     registration_end_date: datetime
 
 
+class EventRegistrationSchema(BaseModel):
+    event_id: int
+    participant_category: str
+
+
 class ParticipantSchema(BaseModel):
     country_id: int
     title: str

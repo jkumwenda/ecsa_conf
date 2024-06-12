@@ -4,32 +4,33 @@
     <SpinnerComponent v-if="isLoading" />
 
     <div v-else class="flex flex-col space-y-4">
-      <div class="flex flex-col flex-1 space-y-4 bg-catskill-white-100 p-4 px-4 rounded-2xl shadow-sm">
+      <div
+        class="flex flex-col flex-1 space-y-4 border border-white-600 text-abbey-600  p-4 px-4 rounded-2xl shadow-sm">
         <div class="flex">
-          <p class="text-2xl font-semibold">
-            {{ role.role }}
+          <p class="text-2xl">
+            <span class="font-semibold text-bondi-blue-500">Role Name:: </span>{{ role.role }}
           </p>
         </div>
         <div class="flex flex-col">
           <div
-            class="flex flex-row space-x-2 text-sm uppercase text-dodger-blue-800 py-2 border-b border-1 border-dodger-blue-500">
+            class="flex flex-row space-x-2 text-sm uppercase text-bondi-blue-800 py-2 border-b border-1 border-bondi-blue-500">
             <p>Permissions</p>
             <p class="capitalize font-semibold">(click to remove)</p>
           </div>
           <div class="flex flex-row flex-wrap my-4">
-            <button class="bg-dodger-blue-100 text-dodger-blue-800 rounded-xl px-4 py-1 m-1"
+            <button class="bg-bondi-blue-50 text-bondi-blue-700 rounded-xl px-4 py-1 m-1"
               v-for="assigned_permission in assigned_permissions" :key="assigned_permission.id"
               @click="deleteRolePermission(assigned_permission.id)">
               {{ assigned_permission.permission }}
             </button>
           </div>
           <div
-            class="flex flex-row space-x-2 text-sm uppercase text-dodger-blue-800 py-2 border-b border-1 border-dodger-blue-500">
+            class="flex flex-row space-x-2 text-sm uppercase text-bondi-blue-800 py-2 border-b border-1 border-bondi-blue-500">
             <p>Permissions</p>
             <p class="capitalize font-semibold">(click to assign)</p>
           </div>
           <div class="flex flex-row flex-wrap my-4">
-            <button class="bg-dodger-blue-200 text-dodger-blue-800 rounded-xl px-4 py-1 m-1"
+            <button class="bg-bondi-blue-300 text-bondi-blue-600 rounded-xl px-4 py-1 m-1"
               v-for="permission in filteredPermissions" :key="permission.id" @click="addRolePermission(permission.id)">
               {{ permission.permission }}
             </button>

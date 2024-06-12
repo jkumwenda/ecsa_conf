@@ -42,6 +42,7 @@ class Users(Base):
     )
     user_role = relationship("UserRole", back_populates="users")
     participant = relationship("Participant", back_populates="users")
+    user_event = relationship("UserEvent", back_populates="users")
 
     def __repr__(self):
         return f"<Users {self.id}>"
@@ -264,9 +265,37 @@ class Event(Base):
     country = relationship("Country", back_populates="event")
     event_type = relationship("EventType", back_populates="event")
     organiser = relationship("Organiser", back_populates="event")
+    user_event = relationship("UserEvent", back_populates="event")
 
     def __repr__(self):
         return f"<Event {self.id}>"
+
+
+class UserEvent(Base):
+    __tablename__ = "user_event"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    event_id = Column(Integer, ForeignKey("event.id"), nullable=False)
+    participant_category = Column(String(100), unique=False, index=True)
+    confirm_attendance = Column(Boolean, nullable=False, default=False)
+    event_badge = Column(Boolean, nullable=False, default=False)
+    event_payment = Column(Boolean, nullable=False, default=False)
+    created_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("current_timestamp()"),
+    )
+    updated_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("current_timestamp()"),
+        onupdate=datetime.now,
+    )
+    users = relationship("Users", back_populates="user_event")
+    event = relationship("Event", back_populates="user_event")
+
+    def __repr__(self):
+        return f"<UserEvent {self.id}>"
 
 
 class Participant(Base):
@@ -276,6 +305,7 @@ class Participant(Base):
     country_id = Column(Integer, ForeignKey("country.id"), nullable=False)
     title = Column(String(10), index=True)
     institution = Column(String(200), index=True)
+    picture = Column(String(200), index=True)
     created_at = Column(
         TIMESTAMP(timezone=True),
         nullable=False,

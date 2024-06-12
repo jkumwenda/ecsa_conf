@@ -21,12 +21,11 @@
             placeholder="Description" required></textarea>
         </label>
         <div class="flex flex-row space-x-4">
-          <button type="submit"
-            class="mt-2 px-4 py-2 text-catskill-white-100 bg-catalina-blue hover:bg-catalina-blue-400 rounded-xl">
+          <button type="submit" class="mt-2 px-4 py-2 text-white-100 bg-bondi-blue hover:bg-bondi-blue-400 rounded-2xl">
             Edit role
           </button>
           <router-link :to="{ name: 'Roles' }"
-            class="mt-2 px-4 py-2 boder border-2 border-catalina-blue rounded-xl">Cancel</router-link>
+            class="mt-2 px-4 py-2 boder border-2 border-abbey-400 hover:border-abbey-200 rounded-2xl">Cancel</router-link>
         </div>
       </form>
     </div>

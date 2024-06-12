@@ -1,6 +1,6 @@
 <template>
   <div class="spinner">
-    <div class="w-16 h-16 border-t-4 border-blue-500 border-solid rounded-full animate-spin"></div>
+    <div class="w-16 h-16 border-t-4 border-bondi-blue-500 border-solid rounded-full animate-spin"></div>
   </div>
 </template>
 

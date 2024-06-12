@@ -1,109 +1,174 @@
 <template>
     <div class="flex flex-col space-y-4 flex-1">
-        <HeaderView :headerTitle="headerTitle"></HeaderView>
-        <div class="flex flex-col space-y-4">
-            <div class="flex flex-row space-x-4">
-                <div class="flex flex-col space-y-4 bg-catskill-white-50 p-4 sm:w-6/12 rounded-2xl shadow-sm flex-1">
-                    <span class="text-md font-bold">Your quick stats</span>
-                    <div class="flex flex-row flex-wrap">
-                        <div class="w-1/2">
-                            <div
-                                class="flex flex-row bg-athens-gray-400 m-2 p-4 py-6 rounded-xl space-x-4 items-center">
-                                <div class="p-2 rounded-full bg-dodger-blue-50">
-                                    <PresentationChartLineIcon class="w-6 h-6 text-catalina-blue-500">
-                                    </PresentationChartLineIcon>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-md font-bold">154</span>
-                                    <span class="text-sm font-roboto-thin font-bold text-mid-gray-300">New
-                                        registrations</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="w-1/2">
-                            <div
-                                class="flex flex-row bg-athens-gray-400 m-2 p-4 py-6 rounded-xl space-x-4 items-center">
-                                <div class="p-2 rounded-full bg-seance-100">
-                                    <HandThumbUpIcon class="w-6 h-6 text-seance-500">
-                                    </HandThumbUpIcon>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-md font-bold">17</span>
-                                    <span class="text-sm font-roboto-thin font-bold text-mid-gray-300">Pending
-                                        registrations</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="w-1/2">
-                            <div
-                                class="flex flex-row bg-athens-gray-400 m-2 p-4 py-6 rounded-xl space-x-4 items-center">
-                                <div class="p-2 rounded-full bg-buttercup-50">
-                                    <HandThumbUpIcon class="w-6 h-6 text-buttercup-500">
-                                    </HandThumbUpIcon>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-md font-bold">870</span>
-                                    <span class="text-sm font-roboto-thin font-bold text-mid-gray-300">Medicines</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="w-1/2">
-                            <div
-                                class="flex flex-row bg-athens-gray-400 m-2 p-4 py-6 rounded-xl space-x-4 items-center">
-                                <div class="p-2 rounded-full bg-spray-200">
-                                    <BanknotesIcon class="w-6 h-6 text-spray-700">
-                                    </BanknotesIcon>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span class="text-md font-bold"></span>
-                                    <span class="text-sm font-roboto-thin font-bold text-mid-gray-300">Revenue</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <HeaderView :headerTitle="headerTitle" />
+        <div class="flex flex-row space-x-4">
+            <div class="sm:w-4/12 w-12/12 space-y-1 rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
+                <div class="px-3 p-2 rounded-xl text-white-50 text font-roboto-thin bg-st-tropaz-700">My Profile</div>
+                <div class="flex items-center justify-center py-4">
+                    <img v-if="user_profile.picture === ''" src="@/assets/images/profile.png"
+                        class="rounded-xl border-4 border-st-tropaz-300 h-48" />
+                    <img v-else :src="getFullImageUrl(user_profile.picture)" alt="Profile Picture"
+                        class="rounded-xl border-4 border-st-tropaz-300 h-48" />
                 </div>
-
-                <div class="fflex flex-col space-y-4 bg-catskill-white-50 p-4 sm:w-6/12 rounded-2xl shadow-sm flex-1">
-                    <span class="text-md font-bold">Licesese registration status</span>
-
-                </div>
+                <input type="file" name="profilePicture" @change="uploadProfilePicture">
+                <ProfileDetail label="Name"
+                    :value="`${user_profile.title} ${user_profile.firstname} ${user_profile.lastname}`" />
+                <ProfileDetail label="Phone" :value="user_profile.phone" />
+                <ProfileDetail label="Email" :value="user_profile.email" />
+                <ProfileDetail label="Institution" :value="user_profile.institution" />
+                <ProfileDetail label="Country" :value="user_profile.country" />
             </div>
-            <div class="flex flex-row space-x-4">
+            <div class="flex-1 space-y-2 rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
+                <div class="px-3 p-2 rounded-xl text-white-50 text font-roboto-thin bg-st-tropaz-700">Upcoming Events
+                </div>
                 <div
-                    class="flex flex-col flex-1 p-4 bg-catalina-blue rounded-2xl text-catskill-white-500 text-center items-center justify-center">
-                    <h1 class="text-lg font-bold">Manage your Registration</h1>
-                    <p class="font-roboto-thin">- Check your license status -</p>
-                    <p class="font-roboto-thin">- Renewal your license -</p>
-                    <p class="font-roboto-thin">- Request for help -</p>
+                    class="flex space-x-3 px-3 py-3 text-md text-sm border border-solid border-great-blue-400 bg-great-blue-50 text-great-blue rounded-xl font-roboto">
+                    Click on
+                    <CheckBadgeIcon class="text-mountain-meadow-900 mx-1 w-5 h-5" /> to register for open events and
+                    <XCircleIcon class="text-flamingo mx-1 w-5 h-5" /> to cancel registration
                 </div>
-                <div class="flex-1 space-y-4 bg-catskill-white-50 p-4 sm:w-6/12 rounded-2xl shadow-sm flex-1">
-                    <span class="text-md font-bold">License renewal status</span>
-                    <div class="flex flex-1 items-center justify-center">
-                    </div>
+                <div v-if="message" class="my-4 rounded-xl text-mountain-meadow-800 py-2 bg-spray-600">
+                    {{ message }}
                 </div>
-                <div class="flex-1 space-y-4 bg-catskill-white-50 p-4 sm:w-6/12 rounded-2xl shadow-sm flex-1">
-                    <span class="text-md font-bold">Fee collection evolution</span>
-                    <div class="flex flex-1 items-center justify-center">
-                    </div>
+                <SpinnerComponent v-if="isLoading" />
+                <div v-else class="flex flex-col space-y-2">
+                    <EventItem v-for="(current_event, index) in current_events" :key="current_event.id"
+                        :event="current_event" :index="index" :getRowClass="getRowClass"
+                        :getRegistrationStatus="getRegistrationStatus" :getRegisteredStatus="getRegisteredStatus"
+                        @register="registerForEvent" @deregister="showDeleteConfirmation" />
                 </div>
             </div>
         </div>
+        <DeleteConfirmationModal :show="showDeleteModal" @confirmed="deregisterForEvent(deleteEventId)"
+            @canceled="cancelDelete" />
+        <RegisterEventModal :show="showRegisterForEventModal" @confirmed="confirmPassword" @closed="cancelRegisterEvent"
+            :event_id="event_id" @registered="confirmRegisterEvent" />
     </div>
 </template>
 
 <script>
-import HeaderView from '@/includes/Header.vue'
-import { PresentationChartLineIcon, HandThumbUpIcon, BanknotesIcon } from '@heroicons/vue/24/solid'
+import HeaderView from '@/includes/Header.vue';
+import { fetchData, deleteItem, createItem } from '@/services/apiService';
+import { CheckBadgeIcon, XCircleIcon } from '@heroicons/vue/24/solid';
+import SpinnerComponent from '@/components/Spinner.vue';
+import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
+import RegisterEventModal from '@/components/RegisterEventModal.vue';
+import EventItem from '@/components/EventItem.vue';
+import ProfileDetail from '@/components/ProfileDetail.vue';
 
 export default {
     name: 'DashboardView',
     components: {
-        PresentationChartLineIcon, HandThumbUpIcon, BanknotesIcon, HeaderView
+        HeaderView,
+        XCircleIcon,
+        CheckBadgeIcon,
+        SpinnerComponent,
+        DeleteConfirmationModal,
+        RegisterEventModal,
+        EventItem,
+        ProfileDetail,
     },
     data() {
         return {
-            headerTitle: "Dashboard",
+            headerTitle: 'Dashboard',
+            current_events: [],
+            user_events: [],
+            user_profile: {},
+            isLoading: true,
+            showDeleteModal: false,
+            deleteEventId: null,
+            currentPage: 1,
+            totalPages: '',
+            pageSize: process.env.VUE_APP_PAGE_SIZE,
+            apiUrl: process.env.VUE_APP_API_URL,
+            searchPhrase: '',
+            event_id: null,
+            showRegisterForEventModal: false,
+            message: null,
+            file: null,
+        };
+    },
+    mounted() {
+        this.getDashboardData();
+    },
+    methods: {
+        async getDashboardData() {
+            try {
+                const response = await fetchData('dashboard', this.currentPage, this.pageSize, this.searchPhrase);
+                this.current_events = response.current_events;
+                this.user_profile = response.user_details.user;
+                this.user_events = response.user_details.user_events;
+                this.isLoading = false;
+            } catch (error) {
+                console.error('Error fetching active events:', error);
+                this.isLoading = false;
+            }
+        },
+        getRowClass(index) {
+            return index % 2 === 0 ? 'bg-st-tropaz-100' : 'bg-shuttle-gray-50';
+        },
+        getRegistrationStatus(registration_end_date) {
+            const regDate = new Date(registration_end_date);
+            const today = new Date();
+            return regDate > today ? 'open' : 'closed';
+        },
+        getRegisteredStatus(event_id) {
+            return this.user_events.some(event => event.event_id === event_id);
+        },
+        async deregisterForEvent(event_id) {
+            this.isLoading = true;
+            try {
+                await deleteItem('events/deregister', event_id);
+                this.showDeleteModal = false;
+                this.isLoading = false;
+                this.getDashboardData();
+            } catch (error) {
+                console.error('Error fetching events:', error);
+                this.isLoading = false;
+                this.showDeleteModal = false;
+            }
+        },
+        showDeleteConfirmation(id) {
+            this.deleteEventId = id;
+            this.showDeleteModal = true;
+        },
+        cancelDelete() {
+            this.showDeleteModal = false;
+        },
+        registerForEvent(event_id) {
+            this.event_id = event_id;
+            this.showRegisterForEventModal = true;
+        },
+        confirmRegisterEvent() {
+            this.getDashboardData();
+            this.message = 'Successfully registered for an event';
+            this.showRegisterForEventModal = false;
+        },
+        cancelRegisterEvent() {
+            this.showRegisterForEventModal = false;
+        },
+        async uploadProfilePicture(e) {
+            this.file = e.target.files[0];
+            if (!this.file) {
+                alert("Please select a file!");
+                return;
+            }
+            const formData = new FormData();
+            formData.append("profilePicture", this.file); // Ensure this matches FastAPI endpoint
+
+            try {
+                const response = await createItem("dashboard/upload_profile/", formData);
+                this.profile = response;
+                this.isLoading = false;
+                this.getDashboardData();
+            } catch (error) {
+                console.error("Error uploading profile picture:", error);
+                this.isLoading = false;
+            }
+        },
+        getFullImageUrl(picturePath) {
+            return `${this.apiUrl}/${picturePath}`;
         }
-    }
-}
+    },
+};
 </script>

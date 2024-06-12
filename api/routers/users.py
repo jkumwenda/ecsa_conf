@@ -121,10 +121,11 @@ async def get_user(
     return {
         "user": {
             "id": user.id,
-            "email": user.email,
             "firstname": user.firstname,
             "lastname": user.lastname,
             "phone": user.phone,
+            "email": user.email,
+            "participant": user.participant,
         },
         "roles": [
             {
@@ -134,13 +135,13 @@ async def get_user(
             }
             for role in user.user_role
         ],
-        "signatures": [
+        "events": [
             {
-                "id": signature.id,
-                "file_name": signature.file_name,
-                "file_location": signature.file_location,
+                "id": event.id,
+                # "file_name": signature.file_name,
+                # "file_location": signature.file_location,
             }
-            for signature in user.user_signature
+            for event in user.user_event
         ],
     }
 

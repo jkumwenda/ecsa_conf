@@ -1,10 +1,10 @@
 <template>
-    <div class="flex flex-row space-x-4 bg-athens-gray-100 p-2 text-sm items-center">
+    <div class="flex flex-row space-x-4 bg-athens-gray-100 py-4 text-sm items-center">
         <button @click="prevPage" :disabled="currentPage === 1"
-            class="px-3 rounded-xl bg-catalina-blue-500 text-athens-gray-100 p-2">Previous</button>
+            class="px-3 rounded-xl text-white-200 bg-bondi-blue-500 hover:bg-bondi-blue-400  p-1">Previous</button>
         <div class="font-bold">Page {{ currentPage }} of {{ totalPages }}</div>
         <button @click="nextPage" :disabled="currentPage === totalPages"
-            class="px-3 rounded-xl bg-catalina-blue-500 text-athens-gray-100 p-2">Next</button>
+            class="px-3 rounded-xl text-white-200 bg-bondi-blue-500 hover:bg-bondi-blue-400  p-1">Next</button>
     </div>
 </template>
 

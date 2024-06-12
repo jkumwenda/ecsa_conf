@@ -5,32 +5,35 @@
             <div class="flex justify-between items-center">
                 <search-component @search="handleSearch"></search-component>
                 <router-link :to="{ name: 'AddRole' }" v-if="permissions.includes('ADD_ROLE')"
-                    class="mt-2 px-4 py-2 text-catskill-white-100 bg-gradient-to-r from-catalina-blue-300 to-catalina-blue-500 hover:from-catalina-blue-400 hover:to-catalina-blue-600 rounded-xl">
+                    class="mt-2 px-4 py-2 text-white-200 bg-bondi-blue-500 hover:bg-bondi-blue-400 rounded-2xl">
                     Add Role</router-link>
             </div>
             <SpinnerComponent v-if="isLoading" />
-            <div v-else class="rounded-2xl bg-catskill-white-100 shadow-sm p-4">
-                <div class="flex flex-row bg-athens-gray-500 p-2 text-sm font-bold">
+            <div v-else class="rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
+                <div class="flex flex-row bg-shuttle-gray-300 p-2 text-sm font-bold">
                     <div class="sm:w-4/12">Role</div>
                     <div class="sm:w-7/12">Description</div>
-                    <div class="sm:w-1/12">Action</div>
+                    <div class="sm:w-2/12">Action</div>
                 </div>
                 <div class="flex flex-row p-2 text-sm items-center" v-for="(role, index) in roles" :key="role.id"
                     :class="getRowClass(index)">
                     <div class="sm:w-4/12">{{ role.role }}</div>
-                    <div class="sm:w-7/12">{{ role.description }}</div>
-                    <div class="flex space-x-2 sm:w-1/12">
-                        <router-link v-if="permissions.includes('VIEW_ROLE')" class="p-1 bg-dodger-blue-50 rounded-full"
+                    <div class="sm:w-6/12">{{ role.description }}</div>
+                    <div class="flex space-x-2 sm:w-2/12">
+                        <router-link v-if="permissions.includes('VIEW_ROLE')"
+                            class="p-1 border border-st-tropaz-600 bg-st-tropaz-200 rounded-full"
                             :to="{ name: 'Role', params: { id: role.id } }">
-                            <EyeIcon class="w-5 h-5 text-catalina-blue-300"></EyeIcon>
+                            <EyeIcon class="w-5 h-5 text-st-tropaz-600"></EyeIcon>
                         </router-link>
-                        <router-link v-if="permissions.includes('UPDATE_ROLE')" class="p-1 bg-spray-200 rounded-full"
+                        <router-link v-if="permissions.includes('UPDATE_ROLE')"
+                            class="p-1 bg-mountain-meadow-300 border border-mountain-meadow-700 rounded-full"
                             :to="{ name: 'EditRole', params: { id: role.id } }">
-                            <PencilSquareIcon class=" w-5 h-5 text-spray-700">
+                            <PencilSquareIcon class=" w-5 h-5 text-mountain-meadow-900">
                             </PencilSquareIcon>
                         </router-link>
-                        <div v-if="permissions.includes('DELETE_ROLE')" class="p-1 bg-flamingo-100 rounded-full">
-                            <TrashIcon class="w-5 h-5 text-flamingo-500" @click="showDeleteConfirmation(role.id)">
+                        <div v-if="permissions.includes('DELETE_ROLE')"
+                            class="p-1 border border-flamingo-600 bg-flamingo-400  rounded-full">
+                            <TrashIcon class="w-5 h-5 text-flamingo-800" @click="showDeleteConfirmation(role.id)">
                             </TrashIcon>
                         </div>
                     </div>
@@ -126,7 +129,7 @@ export default {
             this.showDeleteModal = false;
         },
         getRowClass(index) {
-            return index % 2 === 0 ? 'bg-athens-gray-400' : 'bg-athens-gray-100';
+            return index % 2 === 0 ? 'bg-st-tropaz-100' : 'bg-shuttle-gray-50';
         },
     }
 }
