@@ -1,7 +1,8 @@
 <template>
     <div class="flex flex-row px-3 py-1 items-center space-x-4 border-2 border-shuttle-gray-200 rounded-xl text-sm"
         :class="getRowClass(index)">
-        <div class="flex-1">{{ event.event }}</div>
+        <router-link :to="{ name: 'AccessEvent', params: { id: event.id } }" class="flex-1">{{ event.event
+            }}</router-link>
         <span :class="registrationStatusClass">
             <div :class="registeredStatusClass">{{ registeredStatus }}</div>
         </span>

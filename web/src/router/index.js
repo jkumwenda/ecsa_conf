@@ -17,6 +17,7 @@ const routeComponents = {
   AddEventView: () => import("@/views/main/events/Add.vue"),
   EventView: () => import("@/views/main/events/Event.vue"),
   EditEventView: () => import("@/views/main/events/Edit.vue"),
+  AccessEventView: () => import("@/views/main/events/AccessEvent.vue"),
 
   ParticipantsView: () => import("@/views/main/participants/Participants.vue"),
   AddParticipantView: () => import("@/views/main/participants/Add.vue"),
@@ -121,6 +122,12 @@ const routes = [
         path: "/edit-event/:id",
         name: "EditEvent",
         component: routeComponents.EditEventView,
+      },
+
+      {
+        path: "/access-event/:id",
+        name: "AccessEvent",
+        component: routeComponents.AccessEventView,
       },
 
       {

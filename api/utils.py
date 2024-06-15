@@ -33,15 +33,25 @@ def send_email(recipient_email, subject, email_body):
     smtp_username = os.getenv("SMTP_USERNAME")
     smtp_password = os.getenv("SMTP_PASSWORD")
 
-    with smtplib.SMTP(smtp_host, smtp_port) as server:
-        server.login(smtp_username, smtp_password)
+    try:
+        # Establish a secure SMTP connection
+        with smtplib.SMTP(smtp_host, smtp_port) as server:
+            server.starttls()  # Enable encryption (TLS)
+            server.login(smtp_username, smtp_password)
 
-        message = MIMEMultipart()
-        message["From"] = smtp_username
-        message["To"] = recipient_email
-        message["Subject"] = subject
-        message.attach(MIMEText(email_body, "html"))
-        server.sendmail(smtp_username, recipient_email, message.as_string())
+            # Construct the message
+            message = MIMEMultipart()
+            message["From"] = smtp_username
+            message["To"] = recipient_email
+            message["Subject"] = subject
+            message.attach(MIMEText(email_body, "html"))
+
+            # Send the email
+            server.sendmail(smtp_username, recipient_email, message.as_string())
+
+        print("Email sent successfully")
+    except Exception as e:
+        print(f"Failed to send email. Error: {str(e)}")
 
 
 def new_account_email(recipient_email, firstname, password):

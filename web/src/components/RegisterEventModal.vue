@@ -19,7 +19,9 @@
             <option value="" disabled selected>--Select your role--</option>
             <option value="Participant">Participant</option>
             <option value="Presenter">Presenter</option>
-            <option value="Organiser">Organiser</option>
+            <option value="ECSA Secretariat">ECSA Secretariat</option>
+            <option value="Exhibitor">Exhibitor</option>
+            <option value="Country Delegate">Country Delegate</option>
           </select>
         </label>
         <div class="flex flex-row space-x-4">
