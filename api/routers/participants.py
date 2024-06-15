@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from starlette import status
-from models import Country, Participant, Users
+from models import Country, Participant, Users, UserRole
 from schemas.ecsa_conf import ParticipantSchema
 from sqlalchemy.orm import Session, joinedload
 from database import get_db
@@ -62,10 +62,8 @@ async def get_participants(
 @router.post("/")
 async def register_participant(
     participant_schema: ParticipantSchema,
-    user: user_dependency,
     db: Session = Depends(get_db),
 ):
-    security.secureAccess("ADD_PARTICIPANT", user["id"], db)
 
     existing_email = (
         db.query(Users).filter(Users.email == participant_schema.email).first()
@@ -105,6 +103,15 @@ async def register_participant(
 
     db.add(create_participant_model)
     db.commit()
+
+    create_user_role_model = UserRole(
+        user_id=create_user_model.id,
+        role_id=2,
+    )
+
+    db.add(create_user_role_model)
+    db.commit()
+
     utils.new_account_email(
         participant_schema.email, participant_schema.firstname, password
     )
@@ -209,6 +216,13 @@ async def delete_participant(
 
     db.query(Participant).filter(Participant.id == participant_id).delete()
     db.commit()
+
+    # user_role = (
+    #     db.query(UserRole).filter(UserRole.user_id == participant.user_id).first()
+    # )
+
+    # db.query(UserRole).filter(UserRole.id == user_role.id).delete()
+    # db.commit()
 
     db.query(Users).filter(Users.id == participant.user_id).delete()
     db.commit()
