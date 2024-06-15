@@ -36,85 +36,63 @@
           class="mt-2 flex space-x-2 px-4 py-2 text-white bg-bondi-blue hover:bg-bondi-blue-400 rounded-2xl cursor-pointer">
           Download CSV
         </div>
-        <div @click="downloadPDF"
+        <div @click="printA4Section"
           class="mt-2 flex space-x-2 px-4 py-2 text-white bg-bondi-blue hover:bg-bondi-blue-400 rounded-2xl cursor-pointer">
           <PrinterIcon class="w-5 h-5" /><span>Download PDF</span>
         </div>
       </span>
     </div>
 
-    <div class="flex flex-col space-y-4">
-      <SpinnerComponent v-if="isLoading" />
-
-      <div v-else class="rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
-        <div class="flex flex-row bg-shuttle-gray-300 p-2 text-sm font-bold">
-          <div class="sm:w-4/12">Name</div>
-          <div class="sm:w-2/12">Institution</div>
-          <div class="sm:w-2/12">Role</div>
-          <div class="sm:w-2/12">Country</div>
-          <div class="sm:w-1/12">Reg Date</div>
-          <div class="sm:w-1/12 text-end">Action</div>
-        </div>
-
-        <div v-for="(participant, index) in participants" :key="participant.id" :class="getRowClass(index)"
-          class="flex flex-row p-2 text-sm items-center">
-          <div class="sm:w-4/12">{{ participant.title }} {{ participant.firstname }} {{ participant.lastname }}</div>
-          <div class="sm:w-2/12">{{ participant.institution }}</div>
-          <div class="sm:w-2/12">{{ participant.participant_category }}</div>
-          <div class="sm:w-2/12">{{ participant.country }}</div>
-          <div class="sm:w-1/12">{{ formatDate(participant.created_date) }}</div>
-          <div class="flex space-x-1 sm:w-1/12 justify-end">
-            <div v-if="permissions.includes('VIEW_EVENT')" class="p-1 bg-bondi-blue-50 rounded-full cursor-pointer">
-              <EyeIcon class="w-5 h-5 text-bondi-blue-600" @click="showParticipant(participant)" />
+    <div class="rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
+      <div v-if="!isLoading" class="flex flex-wrap print-a4 bg-bondi-blue-600" id="pdf-content">
+        <div v-for="(participant) in paginatedParticipants" :key="participant.id" class="w-1/2 p-2 h-1/2 page-break">
+          <div
+            class="flex flex-col space-y-6 py-4 items-center justify-center border-8 bg-white-50 border-bondi-blue-600">
+            <div><img src="@/assets/images/50years.png" class="w-48 pb-2" /></div>
+            <div
+              class="flex-1 w-full p-3 font-bold text-2xl text-center justify-center text-white-50 flex flex-col items-center"
+              :class="getParticipantClass(participant.participant_category)">{{ participant.participant_category }}
             </div>
+            <div class="text-md px-2 font-semibold text-abbey-800 text-center pb-2">{{ event.event }}</div>
+            <div class="px-2 text-4xl font-extrabold justify-center text-center ">{{ participant.title }} {{
+              participant.firstname
+            }}
+              {{
+                participant.lastname }}</div>
+            <div class="px-2 text-md text-center">{{ participant.institution }}</div>
+            <div class="px-3 rounded-md p-1 font-semibold m-b-2 text-white-100 bg-bondi-blue-700"
+              :class="getParticipantClass(participant.participant_category)">{{ participant.country
+              }}
+            </div>
+            <qrcode-vue :value="participantUrl(participant.user_id)" :size="120" />
           </div>
         </div>
-
-        <pagination-component :currentPage="currentPage" :totalPages="totalPages" @page-change="handlePageChange" />
-        <participant-modal :show="showParticipantModal" @confirmed="confirmParticipant" @closed="cancelParticipant"
-          :event="event" :participant="participant" @file-uploaded="refreshItems" />
       </div>
     </div>
 
-    <div v-if="!isLoading" id="pdf-content">
-      <div v-for="participant in participants" :key="participant.id"
-        class="flex flex-col items-center justify-center w-6/12 p-1">
-        <div class="flex flex-col space-y-1 py-4 items-center justify-center border-4 border-bondi-blue-600">
-          <div><img src="@/assets/images/logo.png" class="w-20 pb-2" /></div>
-          <div v-if="!participant.picture"><img src="@/assets/images/profile.png"
-              class="w-32 h-32 border border-bondi-blue-500" /></div>
-          <div v-else><img :src="getFullImageUrl(participant.picture)" class="w-32 h-32 border border-bondi-blue-500" />
-          </div>
-          <div class="text-md px-2 font-semibold text-neon-carrot-600 text-center pb-2">{{ event.event }}</div>
-          <div class="w-full flex-1 bg-bondi-blue-300 p-2 font-bold text-white text-center">{{
-            participant.participant_category }}</div>
-          <div class="px-2">{{ participant.title }} {{ participant.firstname }} {{ participant.lastname }}</div>
-          <div class="px-2">{{ participant.institution }}</div>
-          <div class="px-2 pb-2">{{ participant.country }}</div>
-          <qrcode-vue :value="qrCodeValue" :size="80" />
-        </div>
-      </div>
-    </div>
+    <pagination-component :currentPage="currentPage" :totalPages="totalPages" @page-change="handlePageChange" />
+    <participant-modal :show="showParticipantModal" @confirmed="confirmParticipant" @closed="cancelParticipant"
+      :event="event" :participant="participant" @file-uploaded="refreshItems" />
   </div>
 </template>
 
 <script>
 import { fetchItem } from "@/services/apiService";
-import { PrinterIcon, MapPinIcon, CalendarDaysIcon, UserGroupIcon, EyeIcon } from '@heroicons/vue/24/solid';
+import { PrinterIcon, MapPinIcon, CalendarDaysIcon } from '@heroicons/vue/24/solid';
 import HeaderView from '@/includes/Header.vue';
 import SpinnerComponent from "@/components/Spinner.vue";
 import { useAuthStore } from "@/store/authStore";
 import PaginationComponent from '@/components/PaginationComponent.vue';
 import ParticipantModal from '@/components/ParticipantModal.vue';
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import QrcodeVue from 'qrcode.vue';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default {
   name: "EventView",
   components: {
-    PrinterIcon, MapPinIcon, CalendarDaysIcon, UserGroupIcon, EyeIcon,
-    HeaderView, SpinnerComponent, PaginationComponent, ParticipantModal, QrcodeVue
+    PrinterIcon, MapPinIcon, CalendarDaysIcon,
+    HeaderView, SpinnerComponent, ParticipantModal, QrcodeVue, PaginationComponent
   },
   data() {
     return {
@@ -124,13 +102,23 @@ export default {
       event: {},
       participants: [],
       currentPage: 1,
-      totalPages: 0,
       pageSize: process.env.VUE_APP_PAGE_SIZE,
       apiUrl: process.env.VUE_APP_API_URL,
+      appUrl: process.env.VUE_APP_BASE_URL,
       searchPhrase: "",
       showParticipantModal: false,
-      qrCodeValue: "http://example.com/userprofile/johndoe", // This should be dynamically generated based on user details
+      itemsPerPage: 4
     };
+  },
+  computed: {
+    paginatedParticipants() {
+      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+      const endIndex = startIndex + this.itemsPerPage;
+      return this.participants.slice(startIndex, endIndex);
+    },
+    totalPages() {
+      return Math.ceil(this.participants.length / this.itemsPerPage);
+    },
   },
   mounted() {
     this.getEvent();
@@ -141,6 +129,28 @@ export default {
     return { permissions };
   },
   methods: {
+    printA4Section() {
+      const doc = new jsPDF({ orientation: 'portrait', format: 'a4' }); // Create A4 PDF document
+      const printElement = document.getElementById('pdf-content');
+
+      const width = printElement.offsetWidth;
+      const height = printElement.offsetHeight;
+      const scaleFactor = 210 / width;
+      const dpi = 300;
+      const scale = dpi / 96;
+
+      html2canvas(printElement, {
+        scale: scale,
+        logging: false,
+        useCORS: true,
+        allowTaint: true
+      })
+        .then(canvas => {
+          const imgData = canvas.toDataURL('image/jpeg', 1.0);
+          doc.addImage(imgData, 'JPEG', 0, 0, 210, height * scaleFactor);
+          doc.save('Participant.pdf');
+        });
+    },
     async getEvent() {
       try {
         const response = await fetchItem("events", this.id);
@@ -153,19 +163,14 @@ export default {
         this.isLoading = false;
       }
     },
-    async getParticipants(page = 1) {
-      // Fetch participants logic for the specified page
-      console.log(page)
+    handlePageChange(newPage) {
+      this.currentPage = newPage;
     },
     getRowClass(index) {
       return index % 2 === 0 ? 'bg-athens-gray-400' : 'bg-athens-gray-100';
     },
     handleSearch(searchQuery) {
       this.searchPhrase = searchQuery;
-      this.getParticipants();
-    },
-    handlePageChange(newPage) {
-      this.currentPage = newPage;
       this.getParticipants();
     },
     formatDate(dateString) {
@@ -187,51 +192,30 @@ export default {
     cancelParticipant() {
       this.showParticipantModal = false;
     },
-    async downloadPDF() {
-      const element = document.getElementById("pdf-content");
-
-      // Ensure all images are loaded
-      const images = element.querySelectorAll('img');
-      const imageLoadPromises = Array.from(images).map(img => {
-        if (img.complete) return Promise.resolve();
-        return new Promise(resolve => {
-          img.onload = img.onerror = resolve;
-        });
-      });
-
-      await Promise.all(imageLoadPromises);
-
-      // Give a small delay to ensure images are rendered
-      setTimeout(async () => {
-        const canvas = await html2canvas(element);
-        const imgData = canvas.toDataURL("image/png");
-
-        const pdf = new jsPDF();
-        const imgProps = pdf.getImageProperties(imgData);
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
-        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-        pdf.save("download.pdf");
-      }, 500); // 500ms delay to ensure images are fully loaded and rendered
-    },
-    downloadCSV() {
-      // CSV download logic
-    },
     getFullImageUrl(picturePath) {
       return `${this.apiUrl}/${picturePath}`;
+    },
+    getParticipantClass(category) {
+      switch (category) {
+        case 'Presenter':
+          return 'bg-bondi-blue-200';
+        case 'Participant':
+          return 'bg-mountain-meadow-600';
+        case 'Delegate':
+          return 'bg-flamingo-800';
+        case 'Exhibitor':
+          return 'bg-flamingo-600';
+        case 'Secretariat':
+          return 'bg-neon-carrot-600';
+        case 'Student':
+          return 'bg-neon-carrot-900';
+        default:
+          return 'bg-abbey-600';
+      }
+    },
+    participantUrl(id) {
+      return this.appUrl + "/WebParticipant/" + id;
     }
   },
 };
 </script>
-
-<style>
-#pdf-content {
-  width: 210mm;
-  /* A4 paper width */
-  min-height: 297mm;
-  /* A4 paper height */
-  padding: 2mm;
-  background-color: #fff;
-}
-</style>

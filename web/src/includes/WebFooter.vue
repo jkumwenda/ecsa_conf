@@ -3,20 +3,19 @@
         <div class="flex flex-row space-x-4 sm:px-16 px-4 sm:py-8 py-2">
             <div class="sm:w-4/12 w-12/12">
                 <h1 class="text-lg font-bold font-roboto mb-2">About ECSA-HC</h1>
-                <div class="p-2 font-roboto-thin space-y-1">
-                    <p>Who we are</p>
-                    <p>Governance</p>
-                    <p>Management</p>
-                    <p>Partner</p>
+                <div class="flex flex-col p-2 font-roboto-thin space-y-1">
+                    <a href="https://ecsahc.org/ecsa-hc-at-a-glance/" target="_blank">Who we are</a>
+                    <a href="https://ecsahc.org/governance-structure/" target="_blank">Governance</a>
+                    <a href="https://ecsahc.org/management-team/" target="_blank">Management</a>
+                    <a href="https://ecsahc.org/partners/" target="_blank">Partners</a>
                 </div>
             </div>
             <div class="sm:w-4/12 w-12/12">
                 <h1 class="text-lg font-bold font-roboto mb-2">ECSA Functions</h1>
-                <div class="p-2 font-roboto-thin space-y-1">
-                    <p>Member states</p>
-                    <p>College </p>
-                    <p>Programmes</p>
-                    <p>Projects</p>
+                <div class="flex flex-col p-2 font-roboto-thin space-y-1">
+                    <a href="https://ecsahc.org/partners/" target="_blank">Member states</a>
+                    <a href="https://chs.ecsahc.org/" target="_blank">Colleges</a>
+                    <a href="https://ecsahc.org/ecsa-projects/#" target="_blank">Projects</a>
                 </div>
             </div>
             <div class="sm:w-4/12 w-12/12">
@@ -34,7 +33,7 @@
                 <p>Privacy Policy</p>
                 <p>Cookie Preferences</p>
             </div>
-            <div>Social Icons</div>
+            <!-- <div>Social Icons</div> -->
         </div>
     </div>
 </template>

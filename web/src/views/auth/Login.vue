@@ -3,23 +3,23 @@
         <div class="w-5/12 flex flex-col sm:space-y-4 space-y-2 rounded-2xl p-8 bg-ghost-300 drop-shadow-md">
             <div class="font-bold font-archivo text-ghost-900 text-3xl">Sign in</div>
             <div
-                class="p-4 text-md border border-solid border-great-blue-400 bg-great-blue-50 text-great-blue rounded-xl font-roboto">
+                class="p-4 text-md border border-solid border-great-blue-400 bg-great-blue-50 text-great-blue rounded-2xl font-roboto">
                 Sign in to Confirm Attendance or Register for Event Participation</div>
             <div v-if="message" class="text-flamingo-500">{{ message }}</div> <!-- Display error message -->
             <form class="flex flex-col space-y-4" @submit.prevent="submitLoginForm" method="POST">
                 <label class="block">
                     <input type="email" name="email" v-model="userData.username"
-                        class="mt-2 p-4 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-xl sm:text-sm focus:ring-1"
+                        class="mt-2 p-4 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-2xl sm:text-sm focus:ring-1"
                         placeholder="Email" required />
                 </label>
                 <label class="block">
                     <input type="password" name="password" v-model="userData.password"
-                        class="mt-2 p-4 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-xl sm:text-sm focus:ring-1"
+                        class="mt-2 p-4 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-2xl sm:text-sm focus:ring-1"
                         placeholder="Password" required />
                 </label>
                 <div class="flex flex-row space-x-4">
                     <button type="submit"
-                        class="flex-1 px-8 py-4 text-white-50 font-bold rounded-xl bg-bondi-blue text-stone-100 hover:bg-bondi-blue-600">
+                        class="flex-1 px-8 py-4 text-white-50 font-bold rounded-2xl bg-bondi-blue text-stone-100 hover:bg-bondi-blue-600">
                         Sign in
                     </button>
                 </div>
@@ -33,7 +33,8 @@
                 </div>
                 <div class="flex flex-row space-x-4 justify-center">
                     <p class="">
-                        New to this website <router-link :to="{ name: 'Register' }">Register</router-link>
+                        New to this website <router-link :to="{ name: 'Register' }"
+                            class="font-bold">Register</router-link>
                     </p>
                 </div>
             </form>

@@ -1,5 +1,9 @@
 <template>
     <div class="flex flex-col space-y-6 flex-1 items-center">
+        <div>
+            <router-link :to="{ name: 'Login' }" class="font-bold">Login</router-link> or create and account to
+            <router-link :to="{ name: 'Register' }" class="font-bold">Register</router-link> for this event
+        </div>
         <div
             class="flex flex-col flex-1 space-y-2 text-white-400 justify-between w-11/12 p-4 rounded-3xl bg-great-blue-400 drop-shadow">
             <div class="flex flex-col space-y-0">
