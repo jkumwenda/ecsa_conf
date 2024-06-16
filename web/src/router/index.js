@@ -9,6 +9,7 @@ const routeComponents = {
   HomeView: () => import("@/views/web/Home.vue"),
   LoginView: () => import("@/views/auth/Login.vue"),
   RegisterView: () => import("@/views/auth/Register.vue"),
+  ResetPasswordView: () => import("@/views/auth/ResetPassword.vue"),
   DashboardView: () => import("@/views/main/dashboard/Dashboard.vue"),
   WebEventsView: () => import("@/views/web/WebEvents.vue"),
   WebEventView: () => import("@/views/web/WebEvent.vue"),
@@ -76,6 +77,11 @@ const routes = [
         path: "/register",
         name: "Register",
         component: routeComponents.RegisterView,
+      },
+      {
+        path: "/reset-password",
+        name: "ResetPassword",
+        component: routeComponents.ResetPasswordView,
       },
       {
         path: "/events",

@@ -71,8 +71,16 @@ export const fetchData = async (url, nextPage = 0, limit = "", search = "") => {
   return response.data;
 };
 
-export const fetchItem = async (url, itemId) => {
-  const response = await instance.get(`/${url}/${itemId}`);
+export const fetchItem = async (
+  url,
+  itemId,
+  nextPage = 0,
+  limit = "",
+  search = ""
+) => {
+  const response = await instance.get(
+    `/${url}/${itemId}/?skip=${nextPage}&limit=${limit}&search=${search}`
+  );
   return response.data;
 };
 

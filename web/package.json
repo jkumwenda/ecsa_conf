@@ -13,6 +13,7 @@
     "autoprefixer": "^10.4.19",
     "axios": "^1.7.2",
     "core-js": "^3.8.3",
+    "file-saver": "^2.0.5",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "pinia": "^2.1.7",
@@ -24,7 +25,8 @@
     "vue-flatpickr-component": "^11",
     "vue-qrcode-component": "^2.1.1",
     "vue-router": "^4.3.2",
-    "vue-tailwind-datepicker": "^1.7.3"
+    "vue-tailwind-datepicker": "^1.7.3",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

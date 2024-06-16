@@ -9,7 +9,7 @@ from passlib.hash import bcrypt
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt, JWTError
 from models import Users, UserRole
-from schemas.ecsa_conf import TokenSchema, UserSchema
+from schemas.ecsa_conf import TokenSchema, UserSchema, ResertPasswordSchema
 from database import get_db
 import utils
 from dotenv import load_dotenv
@@ -136,3 +136,24 @@ def get_user_permissions(db: Session, user_id: int) -> List[str]:
         for rp in user_role.role.role_permission
     ]
     return permissions
+
+
+@router.post("/reset_password/", status_code=status.HTTP_201_CREATED)
+async def reset_password(
+    reset_password_schema: ResertPasswordSchema, db: Session = Depends(get_db)
+):
+    user_email_model = (
+        db.query(Users).filter(Users.email == reset_password_schema.username).first()
+    )
+
+    password = utils.generate_random_password()
+
+    user_email_model.hashed_password = bcrypt.hash(password)
+
+    db.commit()
+    db.refresh(user_email_model)
+
+    utils.password_change_email(
+        user_email_model.email, user_email_model.firstname, password
+    )
+    raise HTTPException(status_code=200, detail="Password updated successfully")

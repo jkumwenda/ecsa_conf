@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from starlette import status
-from models import Country, Participant, Users, UserRole
+from models import Country, Participant, Users, UserRole, UserEvent
 from schemas.ecsa_conf import ParticipantSchema
 from sqlalchemy.orm import Session, joinedload
 from database import get_db
@@ -230,3 +230,26 @@ async def delete_participant(
     raise HTTPException(
         status_code=status.HTTP_200_OK, detail="Participant successfully deleted"
     )
+
+
+@router.put("/paid/{participant_id}")
+async def update_participant(
+    participant_id: int,
+    user: user_dependency,
+    db: Session = Depends(get_db),
+):
+    security.secureAccess("UPDATE_PARTICIPANT", user["id"], db)
+
+    participant_model = get_object(participant_id, db, Participant)
+
+    user_event_model = (
+        db.query(UserEvent)
+        .filter(UserEvent.user_id == participant_model.user_id)
+        .first()
+    )
+
+    user_event_model.event_payment = 1
+
+    db.commit()
+    db.refresh(participant_model)
+    return {"Paid": "Paid succesfully"}

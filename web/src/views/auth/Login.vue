@@ -7,7 +7,8 @@
                 class="p-4 text-md border border-solid border-great-blue-400 bg-great-blue-50 text-great-blue rounded-2xl font-roboto">
                 Sign in to Confirm Attendance or Register for Event Participation</div>
             <div v-if="message" class="text-flamingo-500">{{ message }}</div> <!-- Display error message -->
-            <form class="flex flex-col space-y-4" @submit.prevent="submitLoginForm" method="POST">
+            <SpinnerComponent v-if="isLoading" />
+            <form v-else class="flex flex-col space-y-4" @submit.prevent="submitLoginForm" method="POST">
                 <label class="block">
                     <input type="email" name="email" v-model="userData.username"
                         class="mt-2 p-4 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-2xl sm:text-sm focus:ring-1"
@@ -24,18 +25,19 @@
                         Sign in
                     </button>
                 </div>
-                <div class="flex sm:flex-row flex-col sm:space-x-4 space-y-2 justify-center">
-                    <p class="">
+                <div class="flex flex-row sm:space-x-4 justify-center">
+                    <router-link :to="{ name: 'ResetPassword' }"
+                        class="cursor-poiter text-bondi-blue-500 font-bold cursor-pointer">
                         Forgot your password?
-                    </p>
-                    <p>|</p>
-                    <p class="">Need help?
-                    </p>
+                    </router-link>
+                    <span>|</span>
+                    <span class="">Need help?
+                    </span>
                 </div>
                 <div class="flex sm:flex-row flex-col sm:space-x-4 space-y-2 justify-center">
                     <p class="">
                         New to this website <router-link :to="{ name: 'Register' }"
-                            class="font-bold">Register</router-link>
+                            class="cursor-poiter text-bondi-blue-500 font-bold cursor-pointer">Register</router-link>
                     </p>
                 </div>
             </form>
@@ -53,6 +55,9 @@ import { setAuthToken } from "@/services/apiService"; // Adjust the path as need
 
 export default {
     name: "LoginView",
+    components: {
+        SpinnerComponent
+    },
     data() {
         return {
             userData: {

@@ -26,12 +26,12 @@
                                     <div class="flex flex-row items-center space-x-3" title="Location">
                                         <MapPinIcon class="w-5 h-5 text-bondi-blue-50"></MapPinIcon><span>{{
                                             event.location
-                                            }}</span>
+                                        }}</span>
                                     </div>
                                     <div class="flex flex-row items-center space-x-3" title="Organiser">
                                         <UserIcon class="w-5 h-5 text-bondi-blue-50"></UserIcon><span>{{
                                             event.organiser.organiser
-                                            }}</span>
+                                        }}</span>
                                     </div>
                                 </div>
 

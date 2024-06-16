@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from starlette import status
-from models import Event, Country, EventType, Organiser, UserEvent
+from models import Event, Country, EventType, Organiser, UserEvent, Participant, Users
 from schemas.ecsa_conf import EventSchema, EventRegistrationSchema
 from sqlalchemy.orm import Session, joinedload
 from database import get_db
@@ -112,49 +112,110 @@ async def get_event(
     limit: int = 10,
     search: str = "",
 ):
-    event = get_object(event_id, db, Event)
+    event_data = (
+        db.query(
+            Event.id,
+            EventType.event_type,
+            Country.country,
+            Organiser.organiser,
+            Event.event,
+            Event.location,
+            Event.description,
+            Event.capacity,
+            Event.start_date,
+            Event.end_date,
+            Event.registration_start_date,
+            Event.registration_end_date,
+        )
+        .filter(Event.id == event_id)
+        .first()
+    )
+    event = {
+        "id": event_data.id,
+        "event_type": event_data.event_type,
+        "country": event_data.country,
+        "organiser": event_data.organiser,
+        "event": event_data.event,
+        "location": event_data.location,
+        "description": event_data.description,
+        "capacity": event_data.capacity,
+        "start_date": event_data.start_date,
+        "end_date": event_data.end_date,
+        "registration_start_date": event_data.registration_start_date,
+        "registration_end_date": event_data.registration_end_date,
+    }
 
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
-    return {
-        "event": {
-            "id": event.id,
-            "event": event.event,
-            "event_type": event.event_type.event_type,
-            "event_type_id": event.event_type.id,
-            "organiser": event.organiser.organiser,
-            "organiser_id": event.organiser.id,
-            "location": event.location,
-            "capacity": event.capacity,
-            "description": event.description,
-            "country": event.country.country,
-            "country_id": event.country.id,
-            "start_date": event.start_date,
-            "end_date": event.end_date,
-            "registration_start_date": event.end_date,
-            "registration_end_date": event.end_date,
-        },
-        "participants": [
-            {
-                "user_event_id": user.id,
-                "user_id": user.user_id,
-                "title": user.users.participant[0].title,
-                "firstname": user.users.firstname,
-                "lastname": user.users.lastname,
-                "institution": user.users.participant[0].institution,
-                "country": user.users.participant[0].country.country,
-                "picture": user.users.participant[0].picture,
-                "event_id": user.event_id,
-                "participant_category": user.participant_category,
-                "confirm_attendance": user.confirm_attendance,
-                "event_badge": user.event_badge,
-                "event_payment": user.event_payment,
-                "created_date": user.created_at,
-            }
-            for user in event.user_event
-        ],
-    }
+    offset = (skip - 1) * limit
+
+    # Specify the columns to retrieve
+    query = (
+        db.query(
+            Users.id,
+            Participant.title,
+            Users.firstname,
+            Users.lastname,
+            Users.email,
+            Users.phone,
+            Participant.institution,
+            Country.country,
+            Participant.picture,
+            UserEvent.participant_category,
+            UserEvent.confirm_attendance,
+            UserEvent.event_badge,
+            UserEvent.event_payment,
+        )
+        .join(Participant, Participant.user_id == Users.id)
+        .join(UserEvent, UserEvent.user_id == Users.id)
+        .join(Country, Country.id == Participant.country_id)
+        .filter(
+            UserEvent.event_id == event_id,
+            or_(
+                Users.firstname.ilike(f"%{search}%"),
+                Users.lastname.ilike(f"%{search}%"),
+                Users.email.ilike(f"%{search}%"),
+            ),
+        )
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+
+    # Total count for pagination
+    total_count = (
+        db.query(Users)
+        .filter(
+            UserEvent.event_id == event_id,
+            or_(
+                Users.firstname.ilike(f"%{search}%"),
+                Users.lastname.ilike(f"%{search}%"),
+                Users.email.ilike(f"%{search}%"),
+            ),
+        )
+        .count()
+    )
+    pages = math.ceil(total_count / limit)
+    formatted_data = [
+        {
+            "id": user.id,
+            "title": user.title,
+            "firstname": user.firstname,
+            "lastname": user.lastname,
+            "email": user.email,
+            "phone": user.phone,
+            "institution": user.institution,
+            "country": user.country,
+            "picture": user.picture,
+            "participant_category": user.participant_category,
+            "confirm_attendance": user.confirm_attendance,
+            "event_badge": user.event_badge,
+            "event_payment": user.event_payment,
+        }
+        for user in query
+    ]
+    return {"pages": pages, "data": formatted_data, "event": event}
 
 
 @router.put("/{event_id}")

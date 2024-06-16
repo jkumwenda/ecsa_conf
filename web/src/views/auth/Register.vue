@@ -58,9 +58,10 @@
                         Register
                     </button>
                 </div>
-                <div class="flex sm:flex-row flex-col sm:space-x-4 space-y-2 justify-center">
+                <div class="flex sm:flex-row flex-col sm:space-x-4 justify-center">
                     <p class="">
-                        Already have an account? <router-link :to="{ name: 'Login' }" class="font-bold">Sign
+                        Already have an account? <router-link :to="{ name: 'Login' }"
+                            class="cursor-poiter text-bondi-blue-500 font-bold cursor-pointer">Sign
                             in</router-link>
                     </p>
                     <p>|</p>

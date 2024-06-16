@@ -18,7 +18,7 @@
                         <span>
                             <CalendarDaysIcon class="w-5 h-5 text-neon-carrot-700"></CalendarDaysIcon>
                         </span>
-                        <span>: {{ event.start_date }} - {{ event.start_date }}</span>
+                        <span>: {{ formatDate(event.start_date) }} - {{ formatDate(event.start_date) }}</span>
                     </div>
                     <div class="flex">
                         <span>

@@ -13,7 +13,7 @@
                 <div class="flex flex-row bg-shuttle-gray-300 p-2 text-sm font-bold">
                     <div class="sm:w-4/12">Participant</div>
                     <div class="sm:w-2/12">Country</div>
-                    <div class="sm:w-2/12">Phone</div>
+                    <div class="sm:w-2/12">Paid Status</div>
                     <div class="sm:w-3/12">Email</div>
                     <div class="sm:w-2/12">Action</div>
                 </div>
@@ -25,6 +25,12 @@
                     <div class="sm:w-2/12">{{ participant.users.phone }}</div>
                     <div class="sm:w-3/12">{{ participant.users.email }}</div>
                     <div class="flex space-x-2 sm:w-2/12">
+                        <div v-if="permissions.includes('DELETE_PARTICIPANT')"
+                            class="p-1 border border-mountain-meadow-600 bg-flamingo-400  rounded-full">
+                            <CurrencyDollarIcon class="w-5 h-5 text-mountain-meadow-800 cursor-pointer"
+                                @click="confirmPaid(participant.id)">
+                            </CurrencyDollarIcon>
+                        </div>
                         <router-link v-if="permissions.includes('VIEW_PARTICIPANT')"
                             class="p-1 border border-st-tropaz-600 bg-st-tropaz-200 rounded-full"
                             :to="{ name: 'Participant', params: { id: participant.id } }">
@@ -56,19 +62,19 @@
 
 <script>
 import HeaderView from '@/includes/Header.vue'
-import { EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/solid'
+import { EyeIcon, PencilSquareIcon, TrashIcon, CurrencyDollarIcon } from '@heroicons/vue/24/solid'
 import PaginationComponent from '@/components/PaginationComponent.vue'
 import SearchComponent from '@/components/SearchComponent.vue'
-
-import { fetchData, deleteItem } from "@/services/apiService";
+import { fetchData, deleteItem, updateItem } from "@/services/apiService";
 import SpinnerComponent from "@/components/Spinner.vue";
 import DeleteConfirmationModal from "@/components/DeleteConfirmationModal.vue";
 import { useAuthStore } from "@/store/authStore";
+import router from "@/router";
 
 export default {
     name: 'ParticipantsView',
     components: {
-        EyeIcon, PencilSquareIcon, TrashIcon, PaginationComponent, SearchComponent, HeaderView, SpinnerComponent, DeleteConfirmationModal
+        EyeIcon, PencilSquareIcon, TrashIcon, PaginationComponent, SearchComponent, HeaderView, SpinnerComponent, DeleteConfirmationModal, CurrencyDollarIcon
     },
     data() {
         return {
@@ -137,6 +143,22 @@ export default {
         getRowClass(index) {
             return index % 2 === 0 ? 'bg-st-tropaz-100' : 'bg-shuttle-gray-50';
         },
+        async confirmPaid(id) {
+            this.isLoading = true;
+            try {
+                const response = await updateItem(
+                    "participants/paid",
+                    id,
+                );
+                this.participant = response.data;
+                this.isLoading = false;
+                router.push("/participants");
+            } catch (error) {
+                console.error("Error fetching participants:", error);
+                this.isLoading = false;
+            }
+
+        }
     }
 }
 </script>

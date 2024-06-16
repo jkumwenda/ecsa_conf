@@ -46,16 +46,15 @@
 
 <script>
 import { fetchItem } from "@/services/apiService";
-import { MapPinIcon, CalendarDaysIcon } from '@heroicons/vue/24/solid';
+import { MapPinIcon, CalendarDaysIcon, UserGroupIcon } from '@heroicons/vue/24/solid';
 import HeaderView from '@/includes/Header.vue';
 import SpinnerComponent from "@/components/Spinner.vue";
 import { useAuthStore } from "@/store/authStore";
 
 export default {
-  name: "AccessEvent",
+  name: "EventView",
   components: {
-    MapPinIcon, CalendarDaysIcon,
-    HeaderView, SpinnerComponent
+    HeaderView, SpinnerComponent, MapPinIcon, CalendarDaysIcon, UserGroupIcon
   },
   data() {
     return {
@@ -64,24 +63,13 @@ export default {
       isLoading: true,
       event: {},
       participants: [],
-      currentPage: 1,
-      pageSize: process.env.VUE_APP_PAGE_SIZE,
-      apiUrl: process.env.VUE_APP_API_URL,
       appUrl: process.env.VUE_APP_BASE_URL,
-      searchPhrase: "",
       showParticipantModal: false,
-      itemsPerPage: 4
+      currentPage: 1,
+      totalPages: "",
+      pageSize: process.env.VUE_APP_PAGE_SIZE,
+      searchPhrase: ""
     };
-  },
-  computed: {
-    paginatedParticipants() {
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-      const endIndex = startIndex + this.itemsPerPage;
-      return this.participants.slice(startIndex, endIndex);
-    },
-    totalPages() {
-      return Math.ceil(this.participants.length / this.itemsPerPage);
-    },
   },
   mounted() {
     this.getEvent();
@@ -94,25 +82,26 @@ export default {
   methods: {
     async getEvent() {
       try {
-        const response = await fetchItem("events", this.id);
+        const response = await fetchItem("events", this.id, this.currentPage, this.pageSize, this.searchPhrase);
         this.event = response.event;
-        this.participants = response.participants;
-        this.totalPages = Math.ceil(response.participants.length / this.pageSize);
+        this.participants = response.data;
+        this.totalPages = response.pages;
         this.isLoading = false;
       } catch (error) {
         console.error("Error fetching event:", error);
         this.isLoading = false;
       }
     },
-    handlePageChange(newPage) {
+    async handleSearch(searchQuery) {
+      this.searchPhrase = searchQuery
+      this.getEvent();
+    },
+    async handlePageChange(newPage) {
       this.currentPage = newPage;
+      this.getEvent();
     },
     getRowClass(index) {
       return index % 2 === 0 ? 'bg-athens-gray-400' : 'bg-athens-gray-100';
-    },
-    handleSearch(searchQuery) {
-      this.searchPhrase = searchQuery;
-      this.getParticipants();
     },
     formatDate(dateString) {
       const date = new Date(dateString);
@@ -122,41 +111,6 @@ export default {
         year: "numeric",
       });
     },
-    showParticipant(participant) {
-      this.participant = participant;
-      this.showParticipantModal = true;
-    },
-    confirmParticipant() {
-      this.getEvent();
-      this.showParticipantModal = false;
-    },
-    cancelParticipant() {
-      this.showParticipantModal = false;
-    },
-    getFullImageUrl(picturePath) {
-      return `${this.apiUrl}/${picturePath}`;
-    },
-    getParticipantClass(category) {
-      switch (category) {
-        case 'Presenter':
-          return 'bg-bondi-blue-200';
-        case 'Participant':
-          return 'bg-mountain-meadow-600';
-        case 'Delegate':
-          return 'bg-flamingo-800';
-        case 'Exhibitor':
-          return 'bg-flamingo-600';
-        case 'Secretariat':
-          return 'bg-neon-carrot-600';
-        case 'Student':
-          return 'bg-neon-carrot-900';
-        default:
-          return 'bg-abbey-600';
-      }
-    },
-    participantUrl(id) {
-      return this.appUrl + "/WebParticipant/" + id;
-    }
   },
 };
 </script>

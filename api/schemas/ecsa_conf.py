@@ -9,6 +9,10 @@ class UserSchema(BaseModel):
     email: str
 
 
+class ResertPasswordSchema(BaseModel):
+    username: str
+
+
 class PasswordSchema(BaseModel):
     password: str
 

@@ -12,7 +12,8 @@
         </div>
         <div class="flex text-sm space-x-1">
           <div class="rounded-sm flex flex-1 py-1 space-x-1">
-            <UserGroupIcon class="w-5 h-5" /><span class="font-bold">:</span><span>{{ event.organiser }}</span>
+            <UserGroupIcon class="w-5 h-5" /><span class="font-bold">:</span><span>{{ event.organiser
+              }}</span>
           </div>
         </div>
         <div class="flex text-sm space-x-1">
@@ -32,20 +33,21 @@
     <div class="flex flex-row items-baseline text-sm font-semibold text-abbey-500">
       <div>Participants</div>
       <span class="flex justify-end flex-1 py-1 space-x-2 font-light">
-        <div @click="downloadCSV"
-          class="mt-2 flex space-x-2 px-4 py-2 text-white bg-bondi-blue hover:bg-bondi-blue-400 rounded-2xl cursor-pointer">
-          Download CSV
-        </div>
+        <search-component @search="handleSearch"></search-component>
         <div @click="printA4Section"
           class="mt-2 flex space-x-2 px-4 py-2 text-white bg-bondi-blue hover:bg-bondi-blue-400 rounded-2xl cursor-pointer">
           <PrinterIcon class="w-5 h-5" /><span>Download PDF</span>
+        </div>
+        <div @click="exportToExcel"
+          class="mt-2 flex space-x-2 px-4 py-2 text-white bg-bondi-blue hover:bg-bondi-blue-400 rounded-2xl cursor-pointer">
+          <PrinterIcon class="w-5 h-5" /><span>Download CSV</span>
         </div>
       </span>
     </div>
 
     <div class="rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
       <div v-if="!isLoading" class="flex flex-wrap print-a4 bg-bondi-blue-600" id="pdf-content">
-        <div v-for="(participant) in paginatedParticipants" :key="participant.id" class="w-1/2 p-2 h-1/2 page-break">
+        <div v-for="(participant) in participants" :key="participant.id" class="w-1/2 p-2 h-1/2 page-break">
           <div
             class="flex flex-col space-y-6 py-4 items-center justify-center border-8 bg-white-50 border-bondi-blue-600">
             <div><img src="@/assets/images/50years.png" class="w-48 pb-2" /></div>
@@ -68,9 +70,9 @@
           </div>
         </div>
       </div>
+      <pagination-component :currentPage="currentPage" :totalPages="totalPages" @page-change="handlePageChange">
+      </pagination-component>
     </div>
-
-    <pagination-component :currentPage="currentPage" :totalPages="totalPages" @page-change="handlePageChange" />
     <participant-modal :show="showParticipantModal" @confirmed="confirmParticipant" @closed="cancelParticipant"
       :event="event" :participant="participant" @file-uploaded="refreshItems" />
   </div>
@@ -78,21 +80,24 @@
 
 <script>
 import { fetchItem } from "@/services/apiService";
-import { PrinterIcon, MapPinIcon, CalendarDaysIcon } from '@heroicons/vue/24/solid';
+import { PrinterIcon, MapPinIcon, CalendarDaysIcon, UserGroupIcon } from '@heroicons/vue/24/solid';
 import HeaderView from '@/includes/Header.vue';
 import SpinnerComponent from "@/components/Spinner.vue";
 import { useAuthStore } from "@/store/authStore";
 import PaginationComponent from '@/components/PaginationComponent.vue';
+import SearchComponent from '@/components/SearchComponent';
 import ParticipantModal from '@/components/ParticipantModal.vue';
 import QrcodeVue from 'qrcode.vue';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 export default {
   name: "EventView",
   components: {
-    PrinterIcon, MapPinIcon, CalendarDaysIcon,
-    HeaderView, SpinnerComponent, ParticipantModal, QrcodeVue, PaginationComponent
+    PrinterIcon, MapPinIcon, CalendarDaysIcon, UserGroupIcon,
+    HeaderView, SpinnerComponent, ParticipantModal, QrcodeVue, PaginationComponent, SearchComponent
   },
   data() {
     return {
@@ -101,24 +106,13 @@ export default {
       isLoading: true,
       event: {},
       participants: [],
-      currentPage: 1,
-      pageSize: process.env.VUE_APP_PAGE_SIZE,
-      apiUrl: process.env.VUE_APP_API_URL,
       appUrl: process.env.VUE_APP_BASE_URL,
-      searchPhrase: "",
       showParticipantModal: false,
-      itemsPerPage: 4
+      currentPage: 1,
+      totalPages: "",
+      pageSize: 500,
+      searchPhrase: ""
     };
-  },
-  computed: {
-    paginatedParticipants() {
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-      const endIndex = startIndex + this.itemsPerPage;
-      return this.participants.slice(startIndex, endIndex);
-    },
-    totalPages() {
-      return Math.ceil(this.participants.length / this.itemsPerPage);
-    },
   },
   mounted() {
     this.getEvent();
@@ -130,9 +124,8 @@ export default {
   },
   methods: {
     printA4Section() {
-      const doc = new jsPDF({ orientation: 'portrait', format: 'a4' }); // Create A4 PDF document
+      const doc = new jsPDF({ orientation: 'portrait', format: 'a4' });
       const printElement = document.getElementById('pdf-content');
-
       const width = printElement.offsetWidth;
       const height = printElement.offsetHeight;
       const scaleFactor = 210 / width;
@@ -153,25 +146,26 @@ export default {
     },
     async getEvent() {
       try {
-        const response = await fetchItem("events", this.id);
+        const response = await fetchItem("events", this.id, this.currentPage, this.pageSize, this.searchPhrase);
         this.event = response.event;
-        this.participants = response.participants;
-        this.totalPages = Math.ceil(response.participants.length / this.pageSize);
+        this.participants = response.data;
+        this.totalPages = response.pages;
         this.isLoading = false;
       } catch (error) {
         console.error("Error fetching event:", error);
         this.isLoading = false;
       }
     },
-    handlePageChange(newPage) {
+    async handleSearch(searchQuery) {
+      this.searchPhrase = searchQuery
+      this.getEvent();
+    },
+    async handlePageChange(newPage) {
       this.currentPage = newPage;
+      this.getEvent();
     },
     getRowClass(index) {
       return index % 2 === 0 ? 'bg-athens-gray-400' : 'bg-athens-gray-100';
-    },
-    handleSearch(searchQuery) {
-      this.searchPhrase = searchQuery;
-      this.getParticipants();
     },
     formatDate(dateString) {
       const date = new Date(dateString);
@@ -215,6 +209,45 @@ export default {
     },
     participantUrl(id) {
       return this.appUrl + "/WebParticipant/" + id;
+    },
+    exportToExcel() {
+      // Extract headers from JSON keys
+      const headers = [
+        "ID", "Title", "First Name", "Last Name", "Email", "Phone",
+        "Institution", "Country", "Picture URL", "Category",
+        "Attendance Confirmed", "Badge Issued", "Payment Confirmed"
+      ];
+
+      // Map JSON data to an array of arrays for worksheet
+      const worksheetData = [headers, ...this.participants.map(participant => [
+        participant.id,
+        participant.title,
+        participant.firstname,
+        participant.lastname,
+        participant.email,
+        participant.phone,
+        participant.institution,
+        participant.country,
+        participant.picture,
+        participant.participant_category,
+        participant.confirm_attendance ? 'Yes' : 'No',
+        participant.event_badge ? 'Yes' : 'No',
+        participant.event_payment ? 'Yes' : 'No'
+      ])];
+
+      // Convert data to worksheet
+      const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+      // Create a new workbook and append the worksheet
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Participants');
+
+      // Generate Excel file and trigger download
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+
+      // Use FileSaver to save the file
+      saveAs(blob, 'participants.xlsx');
     }
   },
 };
