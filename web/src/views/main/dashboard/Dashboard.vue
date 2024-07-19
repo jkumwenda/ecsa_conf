@@ -1,14 +1,14 @@
 <template>
     <div class="flex flex-col space-y-4 flex-1">
         <HeaderView :headerTitle="headerTitle" />
-        <div class="flex flex-row space-x-4">
-            <div class="sm:w-4/12 w-12/12 space-y-1 rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
-                <div class="px-3 p-2 rounded-xl text-white-50 text font-roboto-thin bg-st-tropaz-700">My Profile</div>
+        <div class="flex sm:flex-row flex-col sm:space-x-4 sm:space-y-0 space-y-4 ">
+            <div class="sm:w-4/12 w-12/12 space-y-1 rounded-md border border-white-600 shadow-sm p-4 text-abbey-500">
+                <div class="py-3 px-3 rounded-md text-white-50 text font-roboto-thin bg-daintree-700">My Profile</div>
                 <div class="flex items-center justify-center py-4">
                     <img v-if="user_profile.picture === ''" src="@/assets/images/profile.png"
-                        class="rounded-xl border-4 border-st-tropaz-300 h-48" />
+                        class="rounded-md border-4 border-st-tropaz-300 h-48" />
                     <img v-else :src="getFullImageUrl(user_profile.picture)" alt="Profile Picture"
-                        class="rounded-xl border-4 border-st-tropaz-300 h-48" />
+                        class="rounded-md border-4 border-st-tropaz-300 h-48" />
                 </div>
                 <input type="file" name="profilePicture" @change="uploadProfilePicture">
                 <ProfileDetail label="Name"
@@ -18,16 +18,16 @@
                 <ProfileDetail label="Institution" :value="user_profile.institution" />
                 <ProfileDetail label="Country" :value="user_profile.country" />
             </div>
-            <div class="flex-1 space-y-2 rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
-                <div class="px-3 p-2 rounded-xl text-white-50 text font-roboto-thin bg-st-tropaz-700">Upcoming Events
+            <div class="flex-1 space-y-2 rounded-md border border-white-600 shadow-sm p-4 text-abbey-500">
+                <div class="py-3 px-3 rounded-md text-white-50 text font-roboto-thin bg-daintree-700">Upcoming Events
                 </div>
                 <div
-                    class="flex space-x-3 px-3 py-3 text-md text-sm border border-solid border-great-blue-400 bg-great-blue-50 text-great-blue rounded-xl font-roboto">
+                    class="flex space-x-3 px-3 py-3 text-md text-sm border border-solid border-great-blue-400 bg-great-blue-50 text-great-blue rounded-md font-roboto">
                     Click on
                     <CheckBadgeIcon class="text-mountain-meadow-900 mx-1 w-5 h-5" /> to register for open events and
                     <XCircleIcon class="text-flamingo mx-1 w-5 h-5" /> to cancel registration
                 </div>
-                <div v-if="message" class="my-4 rounded-xl text-mountain-meadow-800 py-2 bg-spray-600">
+                <div v-if="message" class="my-4 rounded-md text-mountain-meadow-800 py-2 bg-spray-600">
                     {{ message }}
                 </div>
                 <SpinnerComponent v-if="isLoading" />

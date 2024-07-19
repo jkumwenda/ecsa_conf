@@ -1,10 +1,10 @@
 <template>
     <div class="flex sm:flex-col flex-col flex-1">
-        <div class="sm:w-12/12 w-12/12 space-y-6 drop-shadow-xl">
+        <div class="sm:w-12/12 w-12/12 space-y-6 drop-shadow-xl z-20">
             <WebHeader></WebHeader>
         </div>
-        <div class="sm:py-8 p-4 flex-1"><router-view></router-view></div>
-        <div class="flex flex-col sm:visible invisible items-center bg-ghost-300 sm:px-16 py-8 flex-1 space-y-6">
+        <div class="sm:py-8 p-4 flex-1 z-50"><router-view></router-view></div>
+        <!-- <div class="flex flex-col sm:visible invisible items-center bg-ghost-300 sm:px-16 py-8 flex-1 space-y-6">
             <h1 class="sm:font-archivo font-roboto text-bondi-blue-700 text-2xl">ECSA-HC Member States</h1>
             <div class="flex sm:flex-row flex-col space-x-6">
                 <img src="@/assets/images/flags/Flag-Eswatini.webp"
@@ -27,7 +27,7 @@
                 <img src="@/assets/images/flags/Flag-Uganda.webp"
                     class="rounded-sm border-1 border-solid border-white h-12" alt="Uganda" title="Uganda">
             </div>
-        </div>
+        </div> -->
         <div class="flex flex-col sm:w-12/12 w-12/12 sm:p-0 space-y-6">
             <FooterView></FooterView>
         </div>

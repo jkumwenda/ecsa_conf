@@ -1,9 +1,10 @@
 <template>
-    <div class="sm:flex sm:flex-row flex flex-col flex-1 justify-center items-center">
-        <div class="sm:w-7/12 w-11/12 flex flex-col sm:space-y-4 space-y-2 rounded-2xl p-8 bg-ghost-300 drop-shadow-md">
-            <div class="font-bold font-archivo text-ghost-900 text-3xl">Sign up</div>
+    <div class="sm:flex sm:flex-row flex flex-col flex-1 justify-center items-center z-50">
+        <div
+            class="sm:w-7/12 w-11/12 flex flex-col sm:space-y-4 space-y-2 rounded-md p-8 bg-ghost-300 drop-shadow-md z-50">
+            <div class="sm:font-roboto-thin font-roboto text-ghost-900 text-3xl">Sign up</div>
             <div
-                class="p-4 text-md border border-solid border-great-blue-400 bg-great-blue-50 text-great-blue rounded-2xl font-roboto">
+                class="py-3 px-3 text-md border border-solid border-great-blue-400 bg-great-blue-50 text-great-blue rounded-md font-roboto">
                 You don't have account? Sign up to register for an event</div>
             <div v-if="message" class="text-great-blue-400">{{ message }}</div> <!-- Display error message -->
             <div v-if="error" class="text-flamingo-800">{{ error }}</div> <!-- Display error message -->
@@ -11,7 +12,7 @@
             <form v-else class="flex flex-col space-y-4" @submit.prevent="addParticipant" method="POST">
                 <label class="block">
                     <select name="title"
-                        class="mt-2 p-4 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-2xl sm:text-sm focus:ring-1"
+                        class="mt-2 py-3 px-3 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-md sm:text-sm focus:ring-1"
                         v-model="participantData.title">
                         <option value="" disabled selected>--Select title--</option>
                         <option value="Mr" selected>Mr</option>
@@ -25,26 +26,26 @@
                 </label>
                 <label class="flex sm:flex-row flex-col sm:space-x-4 space-y-2">
                     <input type="text" name="firstname" v-model="participantData.firstname"
-                        class="mt-2 p-4 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-2xl sm:text-sm focus:ring-1"
+                        class="mt-2 py-3 px-3 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-md sm:text-sm focus:ring-1"
                         placeholder="Firstname" required />
                     <input type="text" name="lastname" v-model="participantData.lastname"
-                        class="mt-2 p-4 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-2xl sm:text-sm focus:ring-1"
+                        class="mt-2 py-3 px-3 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-md sm:text-sm focus:ring-1"
                         placeholder="Lastname" required />
                 </label>
                 <label class="flex sm:flex-row flex-col sm:space-x-4 space-y-2">
                     <input type="text" name="phone" v-model="participantData.phone"
-                        class="mt-2 p-4 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-2xl sm:text-sm focus:ring-1"
+                        class="mt-2 py-3 px-3 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-md sm:text-sm focus:ring-1"
                         placeholder="Phone" required />
                     <input type="email" name="email" v-model="participantData.email"
-                        class="mt-2 p-4 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-2xl sm:text-sm focus:ring-1"
+                        class="mt-2 py-3 px-3 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-md sm:text-sm focus:ring-1"
                         placeholder="Email" required />
                 </label>
                 <label class="flex sm:flex-row flex-col sm:space-x-4 space-y-2">
                     <input type="text" name="institution" v-model="participantData.institution"
-                        class="mt-2 p-4 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-2xl sm:text-sm focus:ring-1"
+                        class="mt-2 py-3 px-3 bg-white border shadow-sm border-ghost-600 placeholder-slate-400 focus:outline-none focus:border-athens-gray-500 focus:border-athens-gray-500 block w-full rounded-md sm:text-sm focus:ring-1"
                         placeholder="Institution" required />
                     <select name="country"
-                        class="mt-2 px-3 py-3 bg-white border border-1 shadow-sm border-mid-gray-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-2xl sm:text-sm focus:ring-1"
+                        class="mt-2 px-3 py-3 bg-white border border-1 shadow-sm border-mid-gray-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-md sm:text-sm focus:ring-1"
                         v-model="participantData.country_id">
                         <option value="" disabled selected>--Select country--</option>
                         <option v-for="country in countries" :key="country.id" :value="country.id">
@@ -54,14 +55,14 @@
                 </label>
                 <div class="flex sm:flex-row flex-col sm:space-x-4 space-y-2">
                     <button type="submit"
-                        class="flex-1 px-8 py-4 text-white-50 font-bold rounded-2xl bg-bondi-blue text-stone-100 hover:bg-bondi-blue-600">
+                        class="flex-1 px-4 py-3 text-white-50 rounded-md bg-bondi-blue text-stone-100 hover:bg-bondi-blue-600">
                         Register
                     </button>
                 </div>
                 <div class="flex sm:flex-row flex-col sm:space-x-4 justify-center">
                     <p class="">
                         Already have an account? <router-link :to="{ name: 'Login' }"
-                            class="cursor-poiter text-bondi-blue-500 font-bold cursor-pointer">Sign
+                            class="cursor-poiter text-bondi-blue-500 cursor-pointer">Sign
                             in</router-link>
                     </p>
                     <p>|</p>

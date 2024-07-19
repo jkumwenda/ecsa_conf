@@ -50,7 +50,7 @@
         <div v-for="(participant) in participants" :key="participant.id" class="w-1/2 p-2 h-1/2 page-break">
           <div
             class="flex flex-col space-y-6 py-4 items-center justify-center border-8 bg-white-50 border-bondi-blue-600">
-            <div><img src="@/assets/images/50years.png" class="w-48 pb-2" /></div>
+            <div><img src="@/assets/images/logo.png" class="w-48 pb-2" /></div>
             <div
               class="flex-1 w-full p-3 font-bold text-2xl text-center justify-center text-white-50 flex flex-col items-center"
               :class="getParticipantClass(participant.participant_category)">{{ participant.participant_category }}
@@ -58,7 +58,7 @@
             <div class="text-md px-2 font-semibold text-abbey-800 text-center pb-2">{{ event.event }}</div>
             <div class="px-2 text-4xl font-extrabold justify-center text-center ">{{ participant.title }} {{
               participant.firstname
-            }}
+              }}
               {{
                 participant.lastname }}</div>
             <div class="px-2 text-md text-center">{{ participant.institution }}</div>
