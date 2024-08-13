@@ -3,7 +3,7 @@
         <div class="flex flex-row flex-1 justify-between space-x-2 items-center">
             <div class="flex flex-row items-center font-bold space-x-4">
                 <Bars3CenterLeftIcon class="h-8 w-8 text-bondi-blue-500" />
-                <span class="text-xl text-abbey-600">{{ headerTitle }}</span>
+                <span class="sm:text-xl text-md text-abbey-600">{{ headerTitle }}</span>
             </div>
             <div class="flex items-center space-x-4 justify-end">
                 <div class="flex flex-row items-center">

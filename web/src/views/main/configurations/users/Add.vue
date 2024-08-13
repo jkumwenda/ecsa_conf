@@ -6,7 +6,7 @@
       <div v-if="message" class="p-4 mb-4 rounded-xl py-2 text bg-buttercup-300">
         {{ message }}
       </div>
-      <form class="flex flex-col w-5/12 space-y-4" @submit.prevent="addUser" method="POST">
+      <form class="flex flex-col sm:w-5/12 w-full space-y-4" @submit.prevent="addUser" method="POST">
         <label class="block">
           <span class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
             Firtsname

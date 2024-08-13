@@ -280,6 +280,7 @@ class UserEvent(Base):
     confirm_attendance = Column(Boolean, nullable=False, default=False)
     event_badge = Column(Boolean, nullable=False, default=False)
     event_payment = Column(Boolean, nullable=False, default=False)
+    confirmation_code = Column(String(200), unique=True, index=True, default=False)
     created_at = Column(
         TIMESTAMP(timezone=True),
         nullable=False,

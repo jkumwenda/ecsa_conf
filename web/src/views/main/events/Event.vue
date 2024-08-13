@@ -1,73 +1,84 @@
 <template>
-  <div class="flex flex-col space-y-4 flex-1">
+  <SpinnerComponent v-if="isLoading" />
+  <div v-else class="flex flex-col space-y-4 flex-1">
     <HeaderView :headerTitle="headerTitle" />
-
-    <SpinnerComponent v-if="isLoading" />
-
-    <div v-else class="rounded-2xl bg-catskill-white-100 shadow-sm pt-4">
-      <div
-        class="flex flex-col p-4 space-y-1 text-neon-carrot-50 bg-bondi-blue-500 border border-bondi-blue-500 rounded-2xl">
-        <div class="text-xl">
-          <span class="font-bold">Event :</span><span>{{ event.event }}</span>
+    <div class="bg-catskill-white-100 border-b pb-4 border-mercury-500 pt-4">
+      <div class="flex flex-col space-y-1">
+        <div class="text-3xl font-semibold font-roboto-thin text-bondi-blue-500">
+          <span>{{ event.event }}</span>
         </div>
-        <div class="flex text-sm space-x-1">
+        <div class="flex text-sm items-center space-x-1">
           <div class="rounded-sm flex flex-1 py-1 space-x-1">
-            <UserGroupIcon class="w-5 h-5" /><span class="font-bold">:</span><span>{{ event.organiser
-              }}</span>
+            <span>{{ event.description }}</span>
           </div>
         </div>
-        <div class="flex text-sm space-x-1">
+        <div class="flex text-sm items-center space-x-1">
           <div class="rounded-sm flex flex-1 py-1 space-x-1">
-            <MapPinIcon class="w-5 h-5" /><span class="font-bold">:</span><span>{{ event.location }}</span>
+            <UserGroupIcon class="w-5 h-5 text-bondi-blue-500" />
+            <span class="font-bold">:</span>
+            <span>{{ event.organiser }}</span>
           </div>
         </div>
-        <div class="flex text-sm space-x-1">
+        <div class="flex text-md space-x-1">
           <div class="rounded-sm flex flex-1 py-1 space-x-1">
-            <CalendarDaysIcon class="w-5 h-5" /><span class="font-bold">:</span><span>{{ formatDate(event.start_date) }}
-              - {{ formatDate(event.end_date) }}</span>
+            <MapPinIcon class="w-5 h-5 text-bondi-blue-500" />
+            <span class="font-bold">:</span>
+            <span>{{ event.location }}</span>
+          </div>
+        </div>
+        <div class="flex text-sm items-center space-x-1">
+          <div class="rounded-sm flex flex-row flex-1 items-center py-1 space-x-1">
+            <CalendarDaysIcon class="w-5 h-5 text-bondi-blue-500" />
+            <span class="font-bold">:</span>
+            <span>{{ formatDate(event.start_date) }} - {{ formatDate(event.end_date) }}</span>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="flex flex-row items-baseline text-sm font-semibold text-abbey-500">
+    <div class="flex sm:flex-row flex-col items-baseline text-sm font-semibold text-abbey-500">
       <div>Participants</div>
-      <span class="flex justify-end flex-1 py-1 space-x-2 font-light">
+      <span class="flex sm:flex-row flex-col justify-end flex-1 py-1 sm:space-y-2 space-y-2 font-light">
         <search-component @search="handleSearch"></search-component>
-        <div @click="printA4Section"
-          class="mt-2 flex space-x-2 px-4 py-2 text-white bg-bondi-blue hover:bg-bondi-blue-400 rounded-2xl cursor-pointer">
-          <PrinterIcon class="w-5 h-5" /><span>Download PDF</span>
-        </div>
-        <div @click="exportToExcel"
-          class="mt-2 flex space-x-2 px-4 py-2 text-white bg-bondi-blue hover:bg-bondi-blue-400 rounded-2xl cursor-pointer">
-          <PrinterIcon class="w-5 h-5" /><span>Download CSV</span>
-        </div>
+        <DownloadComponent class="sm:ml-2 ml-0" @participants="handleParticipants()" @paid="handlePaid()"
+          @notPaid="handleNotPaid()">
+        </DownloadComponent>
       </span>
     </div>
-
+    <div v-if="message">{{ message }}</div>
     <div class="rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
-      <div v-if="!isLoading" class="flex flex-wrap print-a4 bg-bondi-blue-600" id="pdf-content">
-        <div v-for="(participant) in participants" :key="participant.id" class="w-1/2 p-2 h-1/2 page-break">
-          <div
-            class="flex flex-col space-y-6 py-4 items-center justify-center border-8 bg-white-50 border-bondi-blue-600">
-            <div><img src="@/assets/images/logo.png" class="w-48 pb-2" /></div>
-            <div
-              class="flex-1 w-full p-3 font-bold text-2xl text-center justify-center text-white-50 flex flex-col items-center"
-              :class="getParticipantClass(participant.participant_category)">{{ participant.participant_category }}
-            </div>
-            <div class="text-md px-2 font-semibold text-abbey-800 text-center pb-2">{{ event.event }}</div>
-            <div class="px-2 text-4xl font-extrabold justify-center text-center ">{{ participant.title }} {{
-              participant.firstname
-              }}
-              {{
-                participant.lastname }}</div>
-            <div class="px-2 text-md text-center">{{ participant.institution }}</div>
-            <div class="px-3 rounded-md p-1 font-semibold m-b-2 text-white-100 bg-bondi-blue-700"
-              :class="getParticipantClass(participant.participant_category)">{{ participant.country
-              }}
-            </div>
-            <qrcode-vue :value="participantUrl(participant.user_id)" :size="120" />
-          </div>
+      <div class="flex flex-row bg-shuttle-gray-300 p-2 text-sm font-bold">
+        <div class="sm:w-5/12">Participant</div>
+        <div class="sm:w-2/12">Institution</div>
+        <div class="sm:w-2/12">Country</div>
+        <div class="sm:w-2/12">Paid</div>
+        <div class="sm:w-1/12">Action</div>
+      </div>
+      <div class="flex sm:flex-row flex-col p-2 text-sm sm:items-center items-start"
+        v-for="(participant) in participants" :key="participant.id" :class="getRowClass(index)">
+        <div class="sm:w-5/12">
+          {{ participant.title }}
+          {{ participant.firstname }}
+          {{ participant.lastname }}
+        </div>
+        <div class="sm:w-2/12">{{ participant.institution }}</div>
+        <div class="sm:w-2/12"> {{ participant.country }}</div>
+        <div class="sm:w-2/12">
+          <span v-if="paidStatus(participant.event_payment)" class="flex space-x-2 items-center font-bold">
+            <CheckCircleIcon class="w-6 h-6 text-mountain-meadow-800"></CheckCircleIcon>
+            <span>Yes</span>
+          </span>
+          <span v-else class="flex space-x-2 items-center font-bold">
+            <XCircleIcon class="w-6 h-6 text-flamingo-700"></XCircleIcon>
+            <span>No</span>
+          </span>
+        </div>
+        <div class="flex space-x-2 sm:w-1/12 items-start">
+          <span v-if="!paidStatus(participant.event_payment)"
+            class="p-1 border border-mountain-meadow-600 bg-flamingo-400  rounded-full">
+            <CurrencyDollarIcon class="w-5 h-5 text-mountain-meadow-800 cursor-pointer"
+              @click="paymentModal(participant.id)">
+            </CurrencyDollarIcon>
+          </span>
         </div>
       </div>
       <pagination-component :currentPage="currentPage" :totalPages="totalPages" @page-change="handlePageChange">
@@ -75,29 +86,33 @@
     </div>
     <participant-modal :show="showParticipantModal" @confirmed="confirmParticipant" @closed="cancelParticipant"
       :event="event" :participant="participant" @file-uploaded="refreshItems" />
+    <payment-modal :show="showPaymentModal" @paid="confirmPayment" @cancel="cancelPaymentModal" :userID="userID"
+      :eventID="eventID">
+    </payment-modal>
   </div>
 </template>
 
 <script>
 import { fetchItem } from "@/services/apiService";
-import { PrinterIcon, MapPinIcon, CalendarDaysIcon, UserGroupIcon } from '@heroicons/vue/24/solid';
+import { MapPinIcon, CalendarDaysIcon, UserGroupIcon, CheckCircleIcon, XCircleIcon, CurrencyDollarIcon } from '@heroicons/vue/24/solid';
 import HeaderView from '@/includes/Header.vue';
 import SpinnerComponent from "@/components/Spinner.vue";
 import { useAuthStore } from "@/store/authStore";
 import PaginationComponent from '@/components/PaginationComponent.vue';
 import SearchComponent from '@/components/SearchComponent';
 import ParticipantModal from '@/components/ParticipantModal.vue';
-import QrcodeVue from 'qrcode.vue';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
+import DownloadComponent from '@/components/DownloadComponent.vue';
+import { exportToExcel } from '@/utils/exportToExcel';
+import PaymentModal from "@/components/PaymentModal";
 
 export default {
   name: "EventView",
   components: {
-    PrinterIcon, MapPinIcon, CalendarDaysIcon, UserGroupIcon,
-    HeaderView, SpinnerComponent, ParticipantModal, QrcodeVue, PaginationComponent, SearchComponent
+    MapPinIcon, CalendarDaysIcon, UserGroupIcon,
+    HeaderView, SpinnerComponent, ParticipantModal,
+    PaginationComponent, SearchComponent, DownloadComponent,
+    CheckCircleIcon, XCircleIcon, CurrencyDollarIcon,
+    PaymentModal
   },
   data() {
     return {
@@ -106,12 +121,16 @@ export default {
       isLoading: true,
       event: {},
       participants: [],
+      allParticipants: [],
       appUrl: process.env.VUE_APP_BASE_URL,
       showParticipantModal: false,
       currentPage: 1,
       totalPages: "",
-      pageSize: 500,
-      searchPhrase: ""
+      pageSize: process.env.VUE_APP_PAGE_SIZE,
+      searchPhrase: "",
+      showPaymentModal: false,
+      userID: "",
+      message: "",
     };
   },
   mounted() {
@@ -123,27 +142,6 @@ export default {
     return { permissions };
   },
   methods: {
-    printA4Section() {
-      const doc = new jsPDF({ orientation: 'portrait', format: 'a4' });
-      const printElement = document.getElementById('pdf-content');
-      const width = printElement.offsetWidth;
-      const height = printElement.offsetHeight;
-      const scaleFactor = 210 / width;
-      const dpi = 300;
-      const scale = dpi / 96;
-
-      html2canvas(printElement, {
-        scale: scale,
-        logging: false,
-        useCORS: true,
-        allowTaint: true
-      })
-        .then(canvas => {
-          const imgData = canvas.toDataURL('image/jpeg', 1.0);
-          doc.addImage(imgData, 'JPEG', 0, 0, 210, height * scaleFactor);
-          doc.save('Participant.pdf');
-        });
-    },
     async getEvent() {
       try {
         const response = await fetchItem("events", this.id, this.currentPage, this.pageSize, this.searchPhrase);
@@ -167,6 +165,9 @@ export default {
     getRowClass(index) {
       return index % 2 === 0 ? 'bg-athens-gray-400' : 'bg-athens-gray-100';
     },
+    paidStatus(status) {
+      return status === true ? true : false;
+    },
     formatDate(dateString) {
       const date = new Date(dateString);
       return date.toLocaleString("en-UK", {
@@ -186,68 +187,33 @@ export default {
     cancelParticipant() {
       this.showParticipantModal = false;
     },
-    getFullImageUrl(picturePath) {
-      return `${this.apiUrl}/${picturePath}`;
+
+    handleParticipants() {
+      this.participants = this.allParticipants
+      exportToExcel(this.participants, 'AllParticipants');
     },
-    getParticipantClass(category) {
-      switch (category) {
-        case 'Presenter':
-          return 'bg-bondi-blue-200';
-        case 'Participant':
-          return 'bg-mountain-meadow-600';
-        case 'Delegate':
-          return 'bg-flamingo-800';
-        case 'Exhibitor':
-          return 'bg-flamingo-600';
-        case 'Secretariat':
-          return 'bg-neon-carrot-600';
-        case 'Student':
-          return 'bg-neon-carrot-900';
-        default:
-          return 'bg-abbey-600';
-      }
+    handlePaid() {
+      const participants = this.participants.filter(participant => participant.event_payment);
+      this.participants = participants
+      exportToExcel(this.participants, 'PaidParticipants');
     },
-    participantUrl(id) {
-      return this.appUrl + "/WebParticipant/" + id;
+    handleNotPaid() {
+      const participants = this.participants.filter(participant => !participant.event_payment);
+      this.participants = participants
+      exportToExcel(this.participants, 'NotPaidParticipants');
     },
-    exportToExcel() {
-      // Extract headers from JSON keys
-      const headers = [
-        "ID", "Title", "First Name", "Last Name", "Email", "Phone",
-        "Institution", "Country", "Picture URL", "Category",
-        "Attendance Confirmed", "Badge Issued", "Payment Confirmed"
-      ];
-
-      // Map JSON data to an array of arrays for worksheet
-      const worksheetData = [headers, ...this.participants.map(participant => [
-        participant.id,
-        participant.title,
-        participant.firstname,
-        participant.lastname,
-        participant.email,
-        participant.phone,
-        participant.institution,
-        participant.country,
-        participant.picture,
-        participant.participant_category,
-        participant.confirm_attendance ? 'Yes' : 'No',
-        participant.event_badge ? 'Yes' : 'No',
-        participant.event_payment ? 'Yes' : 'No'
-      ])];
-
-      // Convert data to worksheet
-      const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-
-      // Create a new workbook and append the worksheet
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Participants');
-
-      // Generate Excel file and trigger download
-      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-      const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-
-      // Use FileSaver to save the file
-      saveAs(blob, 'participants.xlsx');
+    paymentModal(userID) {
+      this.userID = userID;
+      this.eventID = this.id;
+      this.showPaymentModal = true;
+    },
+    confirmPayment() {
+      this.message = "Payment confimartion was successful";
+      this.showPaymentModal = false;
+      this.getEvent()
+    },
+    cancelPaymentModal() {
+      this.showPaymentModal = false;
     }
   },
 };

@@ -41,7 +41,14 @@ async def get_participants(
         db.query(Participant)
         .join(Country, Participant.country_id == Country.id)
         .join(Users, Participant.user_id == Users.id)
-        .filter(or_(Participant.title.ilike(f"%{search}%")))
+        .filter(
+            or_(
+                Participant.title.ilike(f"%{search}%"),
+                Users.firstname.ilike(f"%{search}%"),
+                Users.lastname.ilike(f"%{search}%"),
+                Country.country.ilike(f"%{search}%"),
+            )
+        )
         .options(
             joinedload(Participant.country),
             joinedload(Participant.users),
@@ -52,7 +59,16 @@ async def get_participants(
     )
     total_count = (
         db.query(Participant)
-        .filter(or_(Participant.title.ilike(f"%{search}%")))
+        .join(Country, Participant.country_id == Country.id)
+        .join(Users, Participant.user_id == Users.id)
+        .filter(
+            or_(
+                Participant.title.ilike(f"%{search}%"),
+                Users.firstname.ilike(f"%{search}%"),
+                Users.lastname.ilike(f"%{search}%"),
+                Country.country.ilike(f"%{search}%"),
+            )
+        )
         .count()
     )
     pages = math.ceil(total_count / limit)

@@ -2,13 +2,13 @@
     <div class="flex flex-col space-y-4 flex-1">
         <HeaderView :headerTitle="headerTitle" />
         <div class="flex sm:flex-row flex-col sm:space-x-4 sm:space-y-0 space-y-4 ">
-            <div class="sm:w-4/12 w-12/12 space-y-1 rounded-md border border-white-600 shadow-sm p-4 text-abbey-500">
-                <div class="py-3 px-3 rounded-md text-white-50 text font-roboto-thin bg-daintree-700">My Profile</div>
+            <div class="sm:w-4/12 w-12/12 space-y-1 rounded-xl border border-white-600 shadow-sm p-4 text-abbey-500">
+                <div class="py-3 px-3 rounded-xl text-white-50 text font-roboto-thin bg-daintree-700">My Profile</div>
                 <div class="flex items-center justify-center py-4">
-                    <img v-if="user_profile.picture === ''" src="@/assets/images/profile.png"
-                        class="rounded-md border-4 border-st-tropaz-300 h-48" />
+                    <img v-if="!user_profile.picture" src="@/assets/images/profile.jpg"
+                        class="rounded-xl border-4 border-st-tropaz-300 h-48" />
                     <img v-else :src="getFullImageUrl(user_profile.picture)" alt="Profile Picture"
-                        class="rounded-md border-4 border-st-tropaz-300 h-48" />
+                        class="rounded-xl border-4 border-st-tropaz-300 h-48" />
                 </div>
                 <input type="file" name="profilePicture" @change="uploadProfilePicture">
                 <ProfileDetail label="Name"
@@ -18,16 +18,10 @@
                 <ProfileDetail label="Institution" :value="user_profile.institution" />
                 <ProfileDetail label="Country" :value="user_profile.country" />
             </div>
-            <div class="flex-1 space-y-2 rounded-md border border-white-600 shadow-sm p-4 text-abbey-500">
-                <div class="py-3 px-3 rounded-md text-white-50 text font-roboto-thin bg-daintree-700">Upcoming Events
+            <div class="flex-1 space-y-2 rounded-xl border border-white-600 shadow-sm p-4 text-abbey-500">
+                <div class="py-3 px-3 rounded-xl text-white-50 text font-roboto-thin bg-daintree-700">Upcoming Events
                 </div>
-                <div
-                    class="flex space-x-3 px-3 py-3 text-md text-sm border border-solid border-great-blue-400 bg-great-blue-50 text-great-blue rounded-md font-roboto">
-                    Click on
-                    <CheckBadgeIcon class="text-mountain-meadow-900 mx-1 w-5 h-5" /> to register for open events and
-                    <XCircleIcon class="text-flamingo mx-1 w-5 h-5" /> to cancel registration
-                </div>
-                <div v-if="message" class="my-4 rounded-md text-mountain-meadow-800 py-2 bg-spray-600">
+                <div v-if="message" class="my-4 rounded-xl text-mountain-meadow-800 py-2 bg-spray-600">
                     {{ message }}
                 </div>
                 <SpinnerComponent v-if="isLoading" />
@@ -35,24 +29,29 @@
                     <EventItem v-for="(current_event, index) in current_events" :key="current_event.id"
                         :event="current_event" :index="index" :getRowClass="getRowClass"
                         :getRegistrationStatus="getRegistrationStatus" :getRegisteredStatus="getRegisteredStatus"
-                        @register="registerForEvent" @deregister="showDeleteConfirmation" />
+                        @register="registerForEvent" :getPaidStatus="getPaidStatus" @pay="payForEvent"
+                        @deregister="showDeleteConfirmation" />
                 </div>
             </div>
         </div>
         <DeleteConfirmationModal :show="showDeleteModal" @confirmed="deregisterForEvent(deleteEventId)"
             @canceled="cancelDelete" />
-        <RegisterEventModal :show="showRegisterForEventModal" @confirmed="confirmPassword" @closed="cancelRegisterEvent"
-            :event_id="event_id" @registered="confirmRegisterEvent" />
+        <RegisterEventModal :show="showRegisterForEventModal" @closed="cancelRegisterEvent" :event_id="event_id"
+            @registered="confirmRegisterEvent" />
+        <PayEventModal :show="showPayForEventModal" @cancel="cancelPayEvent" :event_id="event_id"
+            @paid="confirmPaidEvent" />
+
     </div>
 </template>
 
 <script>
 import HeaderView from '@/includes/Header.vue';
 import { fetchData, deleteItem, createItem } from '@/services/apiService';
-import { CheckBadgeIcon, XCircleIcon } from '@heroicons/vue/24/solid';
+// import { CheckBadgeIcon, XCircleIcon } from '@heroicons/vue/24/solid';
 import SpinnerComponent from '@/components/Spinner.vue';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
 import RegisterEventModal from '@/components/RegisterEventModal.vue';
+import PayEventModal from '@/components/PayEventModal.vue';
 import EventItem from '@/components/EventItem.vue';
 import ProfileDetail from '@/components/ProfileDetail.vue';
 
@@ -60,11 +59,10 @@ export default {
     name: 'DashboardView',
     components: {
         HeaderView,
-        XCircleIcon,
-        CheckBadgeIcon,
         SpinnerComponent,
         DeleteConfirmationModal,
         RegisterEventModal,
+        PayEventModal,
         EventItem,
         ProfileDetail,
     },
@@ -84,6 +82,7 @@ export default {
             searchPhrase: '',
             event_id: null,
             showRegisterForEventModal: false,
+            showPayForEventModal: false,
             message: null,
             file: null,
         };
@@ -114,6 +113,9 @@ export default {
         },
         getRegisteredStatus(event_id) {
             return this.user_events.some(event => event.event_id === event_id);
+        },
+        getPaidStatus() {
+            return this.user_events.some(event => event.event_payment === true);
         },
         async deregisterForEvent(event_id) {
             this.isLoading = true;
@@ -146,6 +148,18 @@ export default {
         },
         cancelRegisterEvent() {
             this.showRegisterForEventModal = false;
+        },
+        payForEvent(event_id) {
+            this.event_id = event_id;
+            this.showPayForEventModal = true;
+        },
+        confirmPaidEvent() {
+            this.getDashboardData();
+            this.message = 'Successfully paid for an event';
+            this.showPayForEventModal = false;
+        },
+        cancelPayEvent() {
+            this.showPayForEventModal = false;
         },
         async uploadProfilePicture(e) {
             this.file = e.target.files[0];

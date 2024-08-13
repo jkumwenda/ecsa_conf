@@ -3,7 +3,7 @@
     <HeaderView :headerTitle="headerTitle"></HeaderView>
     <SpinnerComponent v-if="isLoading" />
     <div v-else class="rounded-2xl bg-catskill-white-100 shadow-sm p-4">
-      <form class="flex flex-col w-7/12 space-y-4" @submit.prevent="addParticipant" method="POST">
+      <form class="flex flex-col sm:w-7/12 w-full space-y-4" @submit.prevent="addParticipant" method="POST">
         <label class="block">
           <span class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
             Title

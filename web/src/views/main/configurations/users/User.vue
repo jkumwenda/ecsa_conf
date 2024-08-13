@@ -3,9 +3,9 @@
     <HeaderView :headerTitle="headerTitle"></HeaderView>
     <SpinnerComponent v-if="isLoading" />
     <div v-else class="flex flex-col space-y-4">
-      <div class="flex flex-row space-x-4">
+      <div class="flex sm:flex-row flex-col sm:space-x-4 space-x-0 sm:space-y-0 space-y-4">
         <div
-          class="flex flex-col space-y-4 w-4/12 items-center text-center space-x-4 border border-abbey-100  p-4 px-4 rounded-2xl shadow-sm">
+          class="flex flex-col space-y-4 sm:w-4/12 w-full items-center text-center space-x-4 border border-abbey-100  p-4 px-4 rounded-2xl shadow-sm">
           <div class="flex">
             <img alt="Vue logo" class="object-cover rounded-full" src="@/assets/images/profile.jpg" />
           </div>
@@ -23,7 +23,7 @@
             </a>
             <div>
               <button @click="resetPassword()"
-                class="bg-bondi-blue-300 hover:bg-bondi-blue-500 text-bondi-blue-800 rounded-xl px-4 py-2">
+                class="bg-abbey-500 text-abbey-50 hover:bg-abbey-800 rounded-xl px-4 py-2">
                 Reset Password
               </button>
             </div>
@@ -33,14 +33,14 @@
             </div>
           </div>
         </div>
-        <div class="flex space-x-4 w-8/12">
+        <div class="flex space-x-4 sm:w-8/12 w-full">
           <div class="flex flex-col space-y-4 flex-1 p-4 px-4 border border-abbey-100 rounded-2xl shadow-sm">
             <h1 class="text-xl font-bold">Roles</h1>
             <div class="flex flex-1 space-y-4 flex-col">
               <div class="space-y-2">
                 <div class="border-b border-b-abbey-100">Active roles (click to remove)</div>
                 <div class="flex flex-1 flex-wrap">
-                  <button class="p-4 py-1 text-sm m-1 bg-bondi-blue-300 text-bondi-blue-800 rounded-xl"
+                  <button class="p-4 py-1 text-sm m-1 bg-abbey-400 text-abbey-50 hover:bg-abbey-800 rounded-xl"
                     v-for="role in assignedRoles" :key="role.id" @click="removeRole(role.id)">{{
                       role.role
                     }}
@@ -51,7 +51,7 @@
               <div class="space-y-2">
                 <div class="border-b border-b-abbey-100">Available roles (click to add)</div>
                 <div class="flex flex-1 flex-wrap">
-                  <button class="p-4 py-1 text-sm m-1 bg-bondi-blue-300 text-bondi-blue-800 rounded-xl"
+                  <button class="p-4 py-1 text-sm m-1 bg-abbey-600 text-abbey-50 hover:bg-abbey-800 rounded-xl"
                     v-for="role in filteredRoles" :key="role.id" @click="assignRole(role.id)">{{
                       role.role
                     }}

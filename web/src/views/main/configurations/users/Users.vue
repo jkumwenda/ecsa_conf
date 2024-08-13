@@ -2,7 +2,7 @@
     <div class="flex flex-col space-y-4 flex-1">
         <HeaderView :headerTitle="headerTitle"></HeaderView>
         <div class="flex flex-col space-y-4">
-            <div class="flex justify-between items-center">
+            <div class="flex sm:flex-row flex-col sm:justify-between sm:items-center items-start">
                 <search-component @search="handleSearch"></search-component>
                 <router-link :to="{ name: 'AddUser' }" v-if="permissions.includes('ADD_USER')"
                     class="mt-2 px-4 py-2 text-white-200 bg-bondi-blue-500 hover:bg-bondi-blue-400 rounded-2xl">
@@ -10,20 +10,20 @@
             </div>
             <SpinnerComponent v-if="isLoading" />
             <div v-else class="rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
-                <div class="flex flex-row bg-shuttle-gray-300 p-2 text-sm font-bold">
-                    <div class="sm:w-2/12">Firstname</div>
-                    <div class="sm:w-3/12">Lastname</div>
-                    <div class="sm:w-2/12">Phone</div>
-                    <div class="sm:w-3/12">Email</div>
-                    <div class="sm:w-2/12">Action</div>
+                <div class="flex sm:flex-row flex-col bg-shuttle-gray-300 p-2 text-sm font-bold">
+                    <div class="sm:w-2/12 w-full">Firstname</div>
+                    <div class="sm:w-3/12 w-full">Lastname</div>
+                    <div class="sm:w-2/12 w-full">Phone</div>
+                    <div class="sm:w-3/12 w-full">Email</div>
+                    <div class="sm:w-1/12 w-full">Action</div>
                 </div>
-                <div class="flex flex-row p-2 text-sm items-center" v-for="(user, index) in users" :key="user.id"
-                    :class="getRowClass(index)">
-                    <div class="sm:w-2/12">{{ user.firstname }}</div>
-                    <div class="sm:w-3/12">{{ user.lastname }}</div>
-                    <div class="sm:w-2/12">{{ user.phone }}</div>
-                    <div class="sm:w-3/12">{{ user.email }}</div>
-                    <div class="flex space-x-2 sm:w-1/12">
+                <div class="flex sm:flex-row flex-col p-2 text-sm items-center" v-for="(user, index) in users"
+                    :key="user.id" :class="getRowClass(index)">
+                    <div class="sm:w-2/12 w-full">{{ user.firstname }}</div>
+                    <div class="sm:w-3/12 w-full">{{ user.lastname }}</div>
+                    <div class="sm:w-2/12 w-full">{{ user.phone }}</div>
+                    <div class="sm:w-3/12 w-full">{{ user.email }}</div>
+                    <div class="flex space-x-2 sm:w-1/12 w-full">
                         <router-link v-if="permissions.includes('VIEW_USER')"
                             class="p-1 border border-st-tropaz-600 bg-st-tropaz-200 rounded-full"
                             :to="{ name: 'User', params: { id: user.id } }">

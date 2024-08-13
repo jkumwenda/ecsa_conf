@@ -1,10 +1,7 @@
 <template>
     <div class="sm:flex sm:flex-row flex flex-col flex-1 justify-center items-center">
-        <div class="sm:w-7/12 w-11/12  flex flex-col sm:space-y-4 space-y-2 rounded-md p-8 bg-ghost-300 drop-shadow-md">
-            <div class="Unafanya kazi wapi sasa?? text-ghost-900 text-3xl">Reset Password</div>
-            <div
-                class="py-3 px-3 text-md border border-solid border-great-blue-400 bg-great-blue-50 text-great-blue rounded-md font-roboto">
-                Use your registration email reset password</div>
+        <div class="sm:w-7/12 w-11/12  flex flex-col sm:space-y-4 space-y-2 rounded-md p-8 bg-ghost-300">
+            <div class="sm:font-roboto-thin font-roboto text-ghost-900 sm:text-4xl text-xl">Reset Password</div>
             <div v-if="message" class="text-bondi-blue-500">{{ message }}</div> <!-- Display error message -->
             <div v-if="error" class="text-flamingo-500">{{ error }}</div> <!-- Display error message -->
             <SpinnerComponent v-if="isLoading" />
@@ -16,16 +13,17 @@
                 </label>
                 <div class="flex sm:flex-row flex-col sm:space-x-4 space-y-2">
                     <button type="submit"
-                        class="flex-1 px-4 py-3 text-white-50 font-bold rounded-md bg-bondi-blue text-stone-100 hover:bg-bondi-blue-600">
+                        class="flex-1 px-4 py-3 text-white-50 rounded-md bg-bondi-blue text-stone-100 hover:bg-bondi-blue-600">
                         Reset password
                     </button>
                 </div>
-                <div class="flex flex-row sm:space-x-4 justify-center">
-                    <router-link :to="{ name: 'Login' }" class="cursor-poiter text-bondi-blue-500 cursor-pointer">
-                        Your remember your password? Login
+                <div class="flex flex-row space-x-1 justify-center items-center">
+                    <span>Do you remember your password?</span><router-link :to="{ name: 'Login' }"
+                        class="cursor-poiter text-bondi-blue-500 cursor-pointer">
+                        Login
                     </router-link>
                 </div>
-                <div class="flex sm:flex-row flex-col sm:space-x-4 space-y-2 justify-center">
+                <div class="flex sm:flex-row flex-col sm:space-x-4 space-y-2 justify-center items-center">
                     <p class="">
                         New to this website <router-link :to="{ name: 'Register' }"
                             class="cursor-poiter text-bondi-blue-500 cursor-pointer">Register</router-link>

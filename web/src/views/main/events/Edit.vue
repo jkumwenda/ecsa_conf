@@ -30,7 +30,7 @@
             <span class="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-medium text-slate-700">
               Organiser
             </span>
-            <select name="event_type"
+            <select name="organiser"
               class="mt-2 px-3 py-3 bg-white border border-1 shadow-sm border-abbey-400 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-2xl sm:text-sm focus:ring-1"
               v-model="eventData.organiser_id">
               <option value="" disabled selected>--Select organisers--</option>
@@ -197,8 +197,7 @@ export default {
     },
     async getEvent() {
       try {
-        const response = await fetchItem("events", this.id);
-        console.log(response)
+        const response = await fetchItem("events", this.id, this.currentPage, this.pageSize, this.searchPhrase);
         this.eventData.event = response.event.event;
         this.eventData.event_type_id = response.event.event_type_id;
         this.eventData.country_id = response.event.country_id;

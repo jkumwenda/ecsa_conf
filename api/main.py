@@ -35,7 +35,7 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 origins = [
     # settings.CLIENT_ORIGIN,
-    "http://localhost:8080",
+    "https://events.ecsaconm.org",
 ]
 
 app.add_middleware(

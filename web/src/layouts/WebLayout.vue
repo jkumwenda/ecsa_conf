@@ -1,9 +1,9 @@
 <template>
     <div class="flex sm:flex-col flex-col flex-1">
-        <div class="sm:w-12/12 w-12/12 space-y-6 drop-shadow-xl z-20">
+        <div class="sm:w-12/12 w-12/12 space-y-6 drop-shadow-xl">
             <WebHeader></WebHeader>
         </div>
-        <div class="sm:py-8 p-4 flex-1 z-50"><router-view></router-view></div>
+        <div class="sm:py-8 p-4 flex-1"><router-view></router-view></div>
         <!-- <div class="flex flex-col sm:visible invisible items-center bg-ghost-300 sm:px-16 py-8 flex-1 space-y-6">
             <h1 class="sm:font-archivo font-roboto text-bondi-blue-700 text-2xl">ECSA-HC Member States</h1>
             <div class="flex sm:flex-row flex-col space-x-6">

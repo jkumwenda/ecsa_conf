@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col space-y-4 flex-1">
     <HeaderView :headerTitle="headerTitle"></HeaderView>
-    <div class="flex flex-row space-x-4">
-      <div class="sm:w-4/12 w-12/12 space-y-1 rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
-        <div class="px-3 p-2 rounded-xl text-white-50 text font-roboto-thin bg-st-tropaz-700">Participant Profile
+    <div class="flex sm:flex-row flex-col sm:space-x-4 space-x-0 sm:space-y-0 space-y-4">
+      <div class="sm:w-4/12 w-full space-y-1 rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
+        <div class="px-3 p-2 rounded-xl text-white-50 text font-roboto-thin bg-daintree-600">Participant Profile
         </div>
         <div class="flex items-center justify-center py-4"><img src="@/assets/images/profile.png"
             class="rounded-xl border-4 border-st-tropaz-300 h-48"></div>
@@ -43,7 +43,7 @@
         </div>
       </div>
       <div class="flex-1 space-y-2 rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
-        <div class="px-3 p-2 rounded-xl text-white-50 text font-roboto-thin te bg-st-tropaz-700">Participant Event List
+        <div class="px-3 p-2 rounded-xl text-white-50 text font-roboto-thin te bg-daintree-600">Participant Event List
         </div>
 
         <div v-if="events > 0">

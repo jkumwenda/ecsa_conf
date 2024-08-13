@@ -2,75 +2,37 @@
     <div class="flex flex-col space-y-4 flex-1">
         <HeaderView :headerTitle="headerTitle"></HeaderView>
         <div class="flex flex-col space-y-4">
-            <div class="flex justify-between items-center">
+            <div class="flex sm:flex-row flex-col sm:justify-between sm:items-center items-start">
                 <search-component @search="handleSearch"></search-component>
                 <router-link :to="{ name: 'AddEvent' }" v-if="permissions.includes('ADD_EVENT')"
                     class="mt-2 px-4 py-2 text-white-200 bg-daintree-600 hover:bg-daintree-400 rounded-md">
                     Add Event</router-link>
             </div>
             <SpinnerComponent v-if="isLoading" />
-            <div v-else class="rounded-md border border-white-600 shadow-sm text-abbey-500">
+            <div v-else class="rounded-md border-2 border-white-600 shadow-sm text-abbey-500">
                 <div class="">
-                    <div class="flex bg-mercury-500 p-3 pt-2 pb-2 rounded-t-md uppercase text-xs font-bold">
-                        <div class="w-6/12 p-1">Event</div>
+                    <div class="flex bg-mercury-500 p-3 pt-2 pb-2 rounded-t-sm uppercase text-xs font-bold">
+                        <div class="w-6/12 p-1">Event Title</div>
                         <div class="w-2/12 p-1">Date</div>
                         <div class="w-2/12 p-1">Status</div>
-                        <div class="w-1/12 p-1">Action</div>
+                        <div class="w-2/12 p-1 text-end">Action</div>
                     </div>
-                    <div class="flex p-3 pt-2 pb-2 text-xs" v-for="(event) in events" :key="event.id">
-                        <div class="w-6/12 p-1">{{ event.event }}</div>
-                        <div class="w-2/12 p-1">{{ event.start_date }}</div>
-                        <div class="w-2/12 p-1">Status</div>
-                        <div class="w-1/12 p-1">
-                            <div>View</div>
+                    <div class="flex sm:flex-row flex-col p-3 pt-2 pb-2 text-sm items-center border-t-2 border-mercury-500"
+                        v-for="(event) in events" :key="event.id">
+                        <div class="sm:w-6/12 w-full p-1 sm:font-light font-bold">{{ event.event }}</div>
+                        <div class="sm:w-2/12 w-full p-1">{{ formatDate(event.start_date) }}</div>
+                        <div class="sm:w-2/12 w-full p-1">{{ formartStatus(event.start_date) }}</div>
+                        <div class="flex sm:w-2/12 w-full p-1 sm:justify-end justify-start">
+                            <DropdownComponent @view="handleView(event.id)" @edit="handleEdit(event.id)"
+                                @delete="handleDelete(event.id)" />
                         </div>
                     </div>
                 </div>
-                <div class="flex">
-                    <div class="sm:w-4/12" v-for="(event) in events" :key="event.id">
-                        <div class="flex flex-col flex-1 m-4 text-sm rounded-md border-2 border-bondi-blue-500">
-                            <router-link :to="{ name: 'Event', params: { id: event.id } }" class="p-3" title="Event">
-                                <div>{{ event.event }}</div>
-                            </router-link>
-                            <div class="bg-mercury-500 rounded-b-sm">
-                                <div
-                                    class="flex flex-col space-y-2 text-abbey-800 font-roboto border-b border-bondi-blue-400 p-3">
-                                    <div class="flex flex-row items-center space-x-3" title="Event date">
-                                        <CalendarDaysIcon class="w-5 h-5 text-bondi-blue-50"></CalendarDaysIcon>
-                                        <span>{{ event.start_date }}</span>
-                                    </div>
-                                    <div class="flex flex-row items-center space-x-3" title="Location">
-                                        <MapPinIcon class="w-5 h-5 text-bondi-blue-50"></MapPinIcon><span>{{
-                                            event.location
-                                        }}</span>
-                                    </div>
-                                    <div class="flex flex-row items-center space-x-3" title="Organiser">
-                                        <UserIcon class="w-5 h-5 text-bondi-blue-50"></UserIcon><span>{{
-                                            event.organiser.organiser
-                                        }}</span>
-                                    </div>
-                                </div>
-
-                                <div class="flex space-x-2 px-4 p-1 font-semibold font-roboto sm:w-2/12">
-                                    <router-link title="Edit" v-if="permissions.includes('UPDATE_EVENT')"
-                                        class="p-1 px-3 text-mountain-meadow-900 bg-mountain-meadow-300 border border-mountain-meadow-800  rounded-md"
-                                        :to="{ name: 'EditEvent', params: { id: event.id } }">Edit
-                                    </router-link>
-                                    <div title="Delete" v-if="permissions.includes('DELETE_EVENT')"
-                                        @click="showDeleteConfirmation(event.id)"
-                                        class="p-1 px-3 border text-flamingo-900 border-flamingo-700 bg-flamingo-400 rounded-md cursor-pointer">
-                                        Delete
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="px-4">
-                    <pagination-component :currentPage="currentPage" :totalPages="totalPages"
-                        @page-change="handlePageChange">
-                    </pagination-component>
-                </div>
+            </div>
+            <div class="">
+                <pagination-component :currentPage="currentPage" :totalPages="totalPages"
+                    @page-change="handlePageChange">
+                </pagination-component>
             </div>
         </div>
         <delete-confirmation-modal :show="showDeleteModal" @confirmed="deleteEvent(deleteEventId)"
@@ -80,19 +42,18 @@
 
 <script>
 import HeaderView from '@/includes/Header.vue'
-import { MapPinIcon, CalendarDaysIcon, UserIcon } from '@heroicons/vue/24/solid'
 import PaginationComponent from '@/components/PaginationComponent.vue'
 import SearchComponent from '@/components/SearchComponent.vue'
-
 import { fetchData, deleteItem } from "@/services/apiService";
 import SpinnerComponent from "@/components/Spinner.vue";
 import DeleteConfirmationModal from "@/components/DeleteConfirmationModal.vue";
+import DropdownComponent from "@/components/ActionComponent.vue";
 import { useAuthStore } from "@/store/authStore";
 
 export default {
     name: 'EventsView',
     components: {
-        MapPinIcon, CalendarDaysIcon, UserIcon, PaginationComponent, SearchComponent, HeaderView, SpinnerComponent, DeleteConfirmationModal
+        PaginationComponent, SearchComponent, HeaderView, SpinnerComponent, DeleteConfirmationModal, DropdownComponent
     },
     data() {
         return {
@@ -160,6 +121,35 @@ export default {
         },
         getRowClass(index) {
             return index % 2 === 0 ? 'bg-st-tropaz-100' : 'bg-shuttle-gray-50';
+        },
+
+        handleView(id) {
+            this.$router.push({ name: 'Event', params: { id: id } });
+        },
+        handleEdit(id) {
+            this.$router.push({ name: 'EditEvent', params: { id: id } });
+        },
+        handleDelete(id) {
+            this.deleteEventId = id;
+            this.showDeleteModal = true;
+        },
+        formatDate(dateString) {
+            const date = new Date(dateString);
+            const formattedDate = date.toLocaleString("en-UK", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+            });
+            return formattedDate;
+        },
+        formartStatus(dateString) {
+            const renewalDate = new Date(dateString);
+            const today = new Date();
+            if (renewalDate.getTime() > today.getTime()) {
+                return "Active";
+            } else {
+                return "Expired";
+            }
         },
     }
 }

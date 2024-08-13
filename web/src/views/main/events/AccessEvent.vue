@@ -1,44 +1,47 @@
 <template>
   <div class="flex flex-col space-y-4 flex-1">
     <HeaderView :headerTitle="headerTitle" />
-
     <SpinnerComponent v-if="isLoading" />
-
-    <div v-else class="rounded-2xl bg-catskill-white-100 shadow-sm pt-4">
-      <div
-        class="flex flex-col p-4 space-y-1 text-neon-carrot-50 bg-bondi-blue-500 border border-bondi-blue-500 rounded-2xl">
-        <div class="text-xl">
-          <span class="font-bold">Event :</span><span>{{ event.event }}</span>
+    <div v-else class="rounded-2xl border border-mercury-500 p-3">
+      <div class="flex flex-col space-y-1">
+        <div class="text-3xl font-semibold font-roboto-thin text-bondi-blue-500">
+          <span>{{ event.event }}</span>
         </div>
-        <div class="flex text-sm space-x-1">
+        <div class="flex text-sm items-center space-x-1">
           <div class="rounded-sm flex flex-1 py-1 space-x-1">
-            <UserGroupIcon class="w-5 h-5" /><span class="font-bold">:</span><span>{{ event.organiser }}</span>
+            <span>{{ event.description }}</span>
           </div>
         </div>
-        <div class="flex text-sm space-x-1">
+        <div class="flex text-sm items-center space-x-1">
           <div class="rounded-sm flex flex-1 py-1 space-x-1">
-            <MapPinIcon class="w-5 h-5" /><span class="font-bold">:</span><span>{{ event.location }}</span>
+            <UserGroupIcon class="w-5 h-5 text-bondi-blue-500" />
+            <span class="font-bold">:</span>
+            <span>{{ event.organiser }}</span>
           </div>
         </div>
-        <div class="flex text-sm space-x-1">
+        <div class="flex text-md space-x-1">
           <div class="rounded-sm flex flex-1 py-1 space-x-1">
-            <CalendarDaysIcon class="w-5 h-5" /><span class="font-bold">:</span><span>{{ formatDate(event.start_date) }}
-              - {{ formatDate(event.end_date) }}</span>
+            <MapPinIcon class="w-5 h-5 text-bondi-blue-500" />
+            <span class="font-bold">:</span>
+            <span>{{ event.location }}</span>
+          </div>
+        </div>
+        <div class="flex text-sm items-center space-x-1">
+          <div class="rounded-sm flex flex-row flex-1 items-center py-1 space-x-1">
+            <CalendarDaysIcon class="w-5 h-5 text-bondi-blue-500" />
+            <span class="font-bold">:</span>
+            <span>{{ formatDate(event.start_date) }} - {{ formatDate(event.end_date) }}</span>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="flex flex-row items-baseline text-sm font-semibold text-abbey-500">
-      <div>Event documents</div>
-      <span class="flex justify-end flex-1 py-1 space-x-2 font-light">
-        <p>Program</p>
-        <p>Download event program</p>
-      </span>
+    <div class="flex flex-row items-baseline text-2xl font-roboto-light font-semibold text-abbey-500">
+      Event resources
     </div>
 
     <div class="rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
-
+      <span class="italic">No resources uploaded yet, check again later</span>
     </div>
 
   </div>

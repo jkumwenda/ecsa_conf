@@ -15,14 +15,14 @@
             </p>
             <p class="text-normal" v-for="position in assignedPositions" :key="position.id">{{
               position.position
-            }}
+              }}
             </p>
             <a :href="'mailto:' + user.email" class="text-blue-500 hover:underline text-bondi-blue-500">
               {{ user.email }}
             </a>
             <div>
               <button @click="showPassword()"
-                class="bg-bondi-blue-300 hover:bg-bondi-blue-500 text-bondi-blue-800 rounded-xl px-4 py-2">
+                class="bg-abbey-500 text-abbey-50 hover:bg-abbey-800 rounded-xl px-4 py-2">
                 Reset Password
               </button>
             </div>
@@ -39,7 +39,7 @@
               <div class="space-y-2">
                 <div class="border-b border-1 border-b-abbey-300">Active roles (click to remove)</div>
                 <div class="flex flex-1 flex-wrap">
-                  <button class="p-4 py-1 text-sm m-1 bg-bondi-blue-300 text-bondi-blue-800 rounded-xl"
+                  <button class="p-4 py-1 text-sm m-1 bg-abbey-500 text-abbey-50  rounded-xl"
                     v-for="role in assignedRoles" :key="role.id">{{
                       role.role
                     }}
@@ -50,7 +50,7 @@
               <div class="space-y-2">
                 <div class="border-b border-1 border-b-abbey-300">Available roles (click to add)</div>
                 <div class="flex flex-1 flex-wrap">
-                  <button class="p-4 py-1 text-sm m-1 bg-bondi-blue-300 text-bondi-blue-800 rounded-xl"
+                  <button class="p-4 py-1 text-sm m-1 bg-abbey-600 text-abbey-50 rounded-xl"
                     v-for="role in filteredRoles" :key="role.id">{{
                       role.role
                     }}
@@ -62,8 +62,7 @@
         </div>
       </div>
     </div>
-    <password-modal :show="showPasswordModal" @confirmed="confirmPassword" @closed="cancelPassword" :user_id="user.id"
-      @file-uploaded="refreshItems">
+    <password-modal :show="showPasswordModal" @confirmed="confirmPassword" @closed="cancelPassword" :user_id="user.id">
     </password-modal>
   </div>
 </template>

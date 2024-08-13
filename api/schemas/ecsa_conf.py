@@ -85,3 +85,19 @@ class ParticipantSchema(BaseModel):
     phone: str
     email: str
     institution: str
+
+
+class PaymentSchema(BaseModel):
+    event_id: int
+    user_id: int
+    transaction_code: str
+
+
+class OnlinePaymentSchema(BaseModel):
+    event_id: int
+    card_number: int
+    csv: str
+    email: str
+    card_holder: str
+    year: int
+    month: int

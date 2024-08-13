@@ -2,7 +2,6 @@
   <div class="flex flex-col space-y-4 flex-1">
     <HeaderView :headerTitle="headerTitle"></HeaderView>
     <SpinnerComponent v-if="isLoading" />
-
     <div v-else class="flex flex-col space-y-4">
       <div class="flex flex-col flex-1 space-y-4 bg-catskill-white-100 p-4 px-4 rounded-2xl shadow-sm">
         <div class="flex">

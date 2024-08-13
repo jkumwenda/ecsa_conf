@@ -1,11 +1,7 @@
 <template>
-    <div class="sm:flex sm:flex-row flex flex-col flex-1 justify-center items-center z-50">
-        <div
-            class="sm:w-7/12 w-11/12 flex flex-col sm:space-y-4 space-y-2 rounded-md p-8 bg-ghost-300 drop-shadow-md z-50">
-            <div class="sm:font-roboto-thin font-roboto text-ghost-900 text-3xl">Sign up</div>
-            <div
-                class="py-3 px-3 text-md border border-solid border-great-blue-400 bg-great-blue-50 text-great-blue rounded-md font-roboto">
-                You don't have account? Sign up to register for an event</div>
+    <div class="sm:flex sm:flex-row flex flex-col flex-1 justify-center items-center">
+        <div class="sm:w-7/12 w-11/12 flex flex-col sm:space-y-4 space-y-2 rounded-md p-8 bg-ghost-300">
+            <div class="sm:font-roboto-thin font-roboto text-ghost-900 sm:text-4xl text-xl">Sign up</div>
             <div v-if="message" class="text-great-blue-400">{{ message }}</div> <!-- Display error message -->
             <div v-if="error" class="text-flamingo-800">{{ error }}</div> <!-- Display error message -->
             <SpinnerComponent v-if="isLoading" />
@@ -59,14 +55,11 @@
                         Register
                     </button>
                 </div>
-                <div class="flex sm:flex-row flex-col sm:space-x-4 justify-center">
+                <div class="flex sm:flex-row flex-col sm:space-x-4 justify-center items-center">
                     <p class="">
                         Already have an account? <router-link :to="{ name: 'Login' }"
                             class="cursor-poiter text-bondi-blue-500 cursor-pointer">Sign
                             in</router-link>
-                    </p>
-                    <p>|</p>
-                    <p class="">Need help?
                     </p>
                 </div>
             </form>

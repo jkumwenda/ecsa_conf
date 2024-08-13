@@ -2,7 +2,7 @@
     <div class="flex flex-col space-y-4 flex-1">
         <HeaderView :headerTitle="headerTitle"></HeaderView>
         <div class="flex flex-col space-y-4">
-            <div class="flex justify-between items-center">
+            <div class="flex sm:flex-row flex-col sm:justify-between sm:items-center items-start">
                 <search-component @search="handleSearch"></search-component>
                 <router-link :to="{ name: 'AddOrganiser' }" v-if="permissions.includes('ADD_ROLE')"
                     class="mt-2 px-4 py-2 text-white-200 bg-bondi-blue-500 hover:bg-bondi-blue-400 rounded-2xl">
@@ -10,16 +10,16 @@
             </div>
             <SpinnerComponent v-if="isLoading" />
             <div v-else class="rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
-                <div class="flex flex-row bg-shuttle-gray-300 p-2 text-sm font-bold">
-                    <div class="sm:w-4/12">Organiser</div>
-                    <div class="sm:w-7/12">Description</div>
-                    <div class="sm:w-1/12">Action</div>
+                <div class="flex sm:flex-row flex-col bg-shuttle-gray-300 p-2 text-sm font-bold">
+                    <div class="sm:w-4/12 w-full">Organiser</div>
+                    <div class="sm:w-7/12 w-full">Description</div>
+                    <div class="sm:w-1/12 w-full">Action</div>
                 </div>
-                <div class="flex flex-row p-2 text-sm items-center" v-for="(organiser, index) in organisers"
+                <div class="flex sm:flex-row flex-col p-2 text-sm items-center" v-for="(organiser, index) in organisers"
                     :key="organiser.id" :class="getRowClass(index)">
-                    <div class="sm:w-4/12">{{ organiser.organiser }}</div>
-                    <div class="sm:w-7/12">{{ organiser.description }}</div>
-                    <div class="flex space-x-2 sm:w-1/12">
+                    <div class="sm:w-4/12 w-full">{{ organiser.organiser }}</div>
+                    <div class="sm:w-7/12 w-full">{{ organiser.description }}</div>
+                    <div class="flex space-x-2 sm:w-1/12 w-full">
                         <router-link v-if="permissions.includes('UPDATE_ROLE')"
                             class="p-1 bg-mountain-meadow-300 border border-mountain-meadow-700 rounded-full"
                             :to="{ name: 'EditOrganiser', params: { id: organiser.id } }">

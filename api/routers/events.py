@@ -1,7 +1,12 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from starlette import status
 from models import Event, Country, EventType, Organiser, UserEvent, Participant, Users
-from schemas.ecsa_conf import EventSchema, EventRegistrationSchema
+from schemas.ecsa_conf import (
+    EventSchema,
+    EventRegistrationSchema,
+    PaymentSchema,
+    OnlinePaymentSchema,
+)
 from sqlalchemy.orm import Session, joinedload
 from database import get_db
 from .auth import get_current_user
@@ -13,12 +18,9 @@ from datetime import datetime
 from fastapi.responses import FileResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-import os
 
 router = APIRouter()
-
 security = Security()
-
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
 
@@ -50,14 +52,11 @@ def create_pdf(file_path: str, cards: list):
 
 @router.get("/")
 async def get_events(
-    user: user_dependency,
     db: Session = Depends(get_db),
     skip: int = Query(default=1, ge=1),
     limit: int = 10,
     search: str = "",
 ):
-    security.secureAccess("VIEW_EVENT", user["id"], db)
-
     offset = (skip - 1) * limit
     query = (
         db.query(Event)
@@ -109,15 +108,18 @@ async def get_event(
     event_id: int,
     db: Session = Depends(get_db),
     skip: int = Query(default=1, ge=1),
-    limit: int = 10,
+    limit: int = "",
     search: str = "",
 ):
     event_data = (
         db.query(
             Event.id,
             EventType.event_type,
+            Event.event_type_id,
             Country.country,
+            Event.country_id,
             Organiser.organiser,
+            Event.organiser_id,
             Event.event,
             Event.location,
             Event.description,
@@ -127,14 +129,20 @@ async def get_event(
             Event.registration_start_date,
             Event.registration_end_date,
         )
+        .join(EventType, Event.event_type_id == EventType.id)
+        .join(Country, Event.country_id == Country.id)  # Join with Country table
+        .join(Organiser, Event.organiser_id == Organiser.id)
         .filter(Event.id == event_id)
         .first()
     )
     event = {
         "id": event_data.id,
         "event_type": event_data.event_type,
+        "event_type_id": event_data.event_type_id,
         "country": event_data.country,
+        "country_id": event_data.country_id,
         "organiser": event_data.organiser,
+        "organiser_id": event_data.organiser_id,
         "event": event_data.event,
         "location": event_data.location,
         "description": event_data.description,
@@ -186,14 +194,8 @@ async def get_event(
     # Total count for pagination
     total_count = (
         db.query(Users)
-        .filter(
-            UserEvent.event_id == event_id,
-            or_(
-                Users.firstname.ilike(f"%{search}%"),
-                Users.lastname.ilike(f"%{search}%"),
-                Users.email.ilike(f"%{search}%"),
-            ),
-        )
+        .join(UserEvent, UserEvent.user_id == Users.id)
+        .filter(UserEvent.event_id == event_id)
         .count()
     )
     pages = math.ceil(total_count / limit)
@@ -335,3 +337,48 @@ async def deregister(
     raise HTTPException(
         status_code=status.HTTP_200_OK, detail="User event successfully deleted"
     )
+
+
+@router.post("/add_event_payment/")
+async def add_event_payment(
+    payment_schema: PaymentSchema,
+    user: user_dependency,
+    db: Session = Depends(get_db),
+):
+    security.secureAccess("ADD_EVENT", user["id"], db)
+
+    data = (
+        db.query(UserEvent)
+        .filter(
+            UserEvent.event_id == payment_schema.event_id,
+            UserEvent.user_id == payment_schema.user_id,
+        )
+        .first()
+    )
+    if data is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Event ID {payment_schema.event_id} and User ID {payment_schema.user_id} : Does not exist",
+        )
+
+    user_event_model = data
+    user_event_model.confirm_attendance = True
+    user_event_model.event_payment = True
+    user_event_model.confirmation_code = payment_schema.transaction_code
+    db.commit()
+    db.refresh(user_event_model)
+    return payment_schema
+
+
+@router.post("/online_payment/")
+async def online_payment(
+    online_payment_schema: OnlinePaymentSchema,
+    user: user_dependency,
+    db: Session = Depends(get_db),
+):
+
+    if user["id"] is None:
+        raise HTTPException(
+            status_code=404, detail="You need to login to pay for an event"
+        )
+    return online_payment_schema

@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col space-y-8 flex-1 items-center">
-        <div class="flex sm:flex-row flex-col justify-center items-center sm:space-x-10 space-y-4 sm:w-10/12">
+        <div class="flex sm:flex-row flex-col justify-center items-center sm:space-x-10 space-y-4 sm:w-11/12">
             <div
                 class="flex flex-col sm:items-normal items-center sm:w-8/12 w-full sm:space-y-4 space-x-2 sm:apercu font-roboto text-abbey-600">
                 <div class="w-full items-center sm:text-start text-center sm:font-roboto-thin sm:text-6xl text-2xl">
@@ -25,39 +25,39 @@
                 <img src="@/assets/images/ecsacon.jpeg">
             </div>
         </div>
-        <div class="sm:w-12/12 w-12/12 sm:apercu font-roboto text-abbey-600 sm:text-4xl text-2xl">
+        <div class="sm:w-11/12 w-full sm:text-left text-center font-roboto text-abbey-600 sm:text-4xl text-2xl">
             Upcoming Events
         </div>
         <SpinnerComponent v-if="isLoading" />
-        <div class="flex flex-col w-10/12 justify-center items-center space-y-4" v-else>
+        <div class="flex flex-col w-11/12 justify-center items-center space-y-4" v-else>
             <div class="flex flex-col space-y-4 w-full">
                 <div v-for="(event) in events" :key="event.id" class="flex flex-col w-full items-center">
-                    <div class="flex flex-col w-full rounded-md pb-1 drop-shadow">
+                    <div
+                        class="flex flex-col sm:items-start items-center sm:text-start text-center space-y-2 w-full rounded-md pb-1 drop-shadow">
                         <router-link :to="{ name: 'WebEvent', params: { id: event.id } }"
-                            class="font-roboto-light sm:text-4xl text-xl text-bondi-blue-600 capitalize">{{
+                            class="font-roboto-light sm:text-3xl text-xl text-bondi-blue-600 normal-case">{{
                                 event.event }}
                         </router-link>
-
                         <div class="flex pt-2">
                             <span>
                                 {{ event.description }}
                             </span>
                         </div>
-                        <div class="flex pl-2">
+                        <div class="flex">
                             <span>
                                 <CalendarDaysIcon class="w-5 h-5 text-abbey-700"></CalendarDaysIcon>
                             </span>
                             <span>: {{ formatDate(event.start_date) }} - {{ formatDate(event.start_date) }}</span>
                         </div>
-                        <div class="flex pl-2">
+                        <div class="flex">
                             <span>
                                 <MapPinIcon class="w-5 h-5 text-abbey-700"></MapPinIcon>
                             </span>
                             <span>: {{ event.location }}</span>
                         </div>
-                        <router-link :to="{ name: 'WebEvent', params: { id: event.id } }"
-                            class="sm:px-8 px-2 sm:py-2 py-1 rounded-full border border-bondi-blue-500 text-stone-100 hover:bg-bondi-blue-600">
-                            Register for event
+                        <router-link :to="{ name: 'Login' }"
+                            class="sm:px-4 px-2 sm:py-2 py-1 rounded-md border  border-bondi-blue-500 text-bondi-blue-600 hover:text-bondi-blue-100  hover:bg-bondi-blue-600">
+                            Login or Sign Up to register for this event
                         </router-link>
                     </div>
                 </div>

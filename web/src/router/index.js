@@ -84,12 +84,12 @@ const routes = [
         component: routeComponents.ResetPasswordView,
       },
       {
-        path: "/events",
+        path: "/web-events",
         name: "WebEvents",
         component: routeComponents.WebEventsView,
       },
       {
-        path: "/event/:id",
+        path: "/web-event/:id",
         name: "WebEvent",
         component: routeComponents.WebEventView,
       },

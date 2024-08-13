@@ -1,40 +1,60 @@
 <template>
     <div class="flex flex-col space-y-6 flex-1 items-center">
-        <div>
-            <router-link :to="{ name: 'Login' }" class="font-bold">Login</router-link> or create and account to
-            <router-link :to="{ name: 'Register' }" class="font-bold">Register</router-link> for this event
+        <div class="w-11/12 sm:text-left text-center">
+            Already have an accout? <router-link :to="{ name: 'Login' }"
+                class="font-bold text-bondi-blue-500">login</router-link>, or <router-link :to="{ name: 'Register' }"
+                class="font-bold text-bondi-blue-500">create</router-link> an
+            account to register
+            for this event
         </div>
         <SpinnerComponent v-if="isLoading" />
-        <div v-else
-            class="flex flex-col flex-1 space-y-2 text-white-400 justify-between w-11/12 p-4 rounded-3xl bg-great-blue-400 drop-shadow">
-            <div class="flex flex-col space-y-0">
-                <h1 class="text-xl font-roboto">{{ event.event }}</h1>
-            </div>
-            <div class="flex text-sm space-x-4">
-                <div class="w-2/12 font-bold">Venue </div>
-                <div>: {{ event.location }}</div>
-            </div>
-            <div class="flex text-sm space-x-4">
-                <div class="w-2/12 font-bold">Organiser </div>
-                <div>: {{ event.organiser }}</div>
-            </div>
-            <div class="flex text-sm space-x-4">
-                <div class="w-2/12 font-bold">Location </div>
-                <div>: {{ event.country }}</div>
-            </div>
-            <div class="flex text-sm space-x-4">
-                <div class="w-2/12 font-bold">Event date </div>
-                <div>: {{ formatDate(event.start_date) }} - {{ formatDate(event.end_date) }}</div>
-            </div>
-            <div class="flex text-sm space-x-4">
-                <div class="w-2/12 font-bold">Registration date </div>
-                <div>: {{ formatDate(event.registration_start_date) }} - {{ formatDate(event.registration_start_date) }}
+        <div v-else class="flex flex-col w-11/12 justify-center items-center space-y-4">
+            <div class="flex flex-col space-y-4 w-full">
+
+                <div
+                    class="flex flex-col sm:items-start items-center sm:text-start text-center space-y-1 w-full rounded-md p-4 border border-mercury-500">
+                    <div class="flex flex-col space-y-0">
+                        <div class="sm:text-3xl text-xl font-roboto-light">{{ event.event }}</div>
+                    </div>
+                    <div class="flex flex-col space-y-0">
+                        <div class="text-md font-roboto">{{ event.description }}</div>
+                    </div>
+                    <div class="flex sm:flex-row flex-col sm:items-start items-center w-full text-sm space-x-4">
+                        <div class="sm:w-2/12 w-full font-bold">Venue </div>
+                        <div class="sm:w-10/12 w-full sm:text-left text-center">: {{ event.location }}</div>
+                    </div>
+                    <div class="flex sm:flex-row flex-col sm:items-start items-center w-full text-sm space-x-4">
+                        <div class="sm:w-2/12 w-full font-bold">Organiser </div>
+                        <div class="sm:w-10/12 w-full">: {{ event.organiser }}</div>
+                    </div>
+                    <div class="flex sm:flex-row flex-col sm:items-start items-center w-full text-sm space-x-4">
+                        <div class="sm:w-2/12 w-full font-bold">Country </div>
+                        <div class="sm:w-10/12 w-full">: {{ event.country }}</div>
+                    </div>
+                    <div class="flex sm:flex-row flex-col sm:items-start items-center w-full text-sm space-x-4">
+                        <div class="sm:w-2/12 w-full font-bold">Event date </div>
+                        <div class="sm:w-10/12 w-full">: {{ formatDate(event.start_date) }} - {{
+                            formatDate(event.end_date) }}
+                        </div>
+                    </div>
+                    <div class="flex sm:flex-row flex-col sm:items-start items-center w-full text-sm space-x-4">
+                        <div class="sm:w-2/12 w-full font-bold">Registration date </div>
+                        <div class="sm:w-10/12 w-full">: {{ formatDate(event.registration_start_date) }} - {{
+                            formatDate(event.registration_start_date) }}
+                        </div>
+                    </div>
+                    <router-link :to="{ name: 'Login' }"
+                        class="sm:px-4 px-2 sm:py-2 py-1 rounded-md border-2  border-bondi-blue-500 text-stone-100 hover:bg-bondi-blue-600">
+                        Login or Sign Up to register for this event
+                    </router-link>
                 </div>
+
             </div>
         </div>
-        <h class="font-bold text-xl text-bondi-blue-600 w-11/12">Event program</h>
+
+        <h class="font-bold text-3xl font-roboto-thin text-abbey-500 w-11/12">Event program</h>
         <div
-            class="flex flex-row justify-between items-center w-11/12 rounded-3xl p-4 border border-solid border-great-blue-400 bg-great-blue-50 drop-shadow">
+            class="flex flex-row justify-between items-center w-11/12 rounded-md p-4 border border-solid border-great-blue-400 bg-great-blue-50 drop-shadow">
             <p class="italic">Program currently not available, please check again later</p>
         </div>
     </div>

@@ -1,11 +1,7 @@
 <template>
-    <div class="sm:flex sm:flex-row flex flex-col flex-1 justify-center items-center z-50">
-        <div
-            class="sm:w-7/12 w-11/12  flex flex-col sm:space-y-4 space-y-2 rounded-md p-8 bg-ghost-300 drop-shadow-md z-10">
-            <div class="sm:font-roboto-thin font-roboto text-ghost-900 text-4xl">Sign in</div>
-            <div
-                class="px-4 py-3 text-md border border-solid border-great-blue-400 bg-great-blue-50 text-great-blue rounded-md font-roboto">
-                Sign in to Confirm Attendance or Register for Event Participation</div>
+    <div class="sm:flex sm:flex-row flex flex-col flex-1 justify-center items-center">
+        <div class="sm:w-7/12 w-11/12  flex flex-col sm:space-y-4 space-y-2 rounded-md p-8 bg-ghost-300">
+            <div class="sm:font-roboto-thin font-roboto text-ghost-900 sm:text-4xl text-xl">Sign in</div>
             <div v-if="message" class="text-flamingo-500">{{ message }}</div> <!-- Display error message -->
             <SpinnerComponent v-if="isLoading" />
             <form v-else class="flex flex-col space-y-4" @submit.prevent="submitLoginForm" method="POST">
@@ -25,16 +21,13 @@
                         Sign in
                     </button>
                 </div>
-                <div class="flex flex-row sm:space-x-4 justify-center">
+                <div class="flex flex-row sm:space-x-4 justify-center items-center">
                     <router-link :to="{ name: 'ResetPassword' }"
                         class="cursor-poiter text-bondi-blue-500 cursor-pointer">
                         Forgot your password?
                     </router-link>
-                    <span>|</span>
-                    <span class="">Need help?
-                    </span>
                 </div>
-                <div class="flex sm:flex-row flex-col sm:space-x-4 space-y-2 justify-center">
+                <div class="flex sm:flex-row flex-col sm:space-x-4 space-y-2 justify-center items-center">
                     <p class="">
                         New to this website <router-link :to="{ name: 'Register' }"
                             class="cursor-poiter text-bondi-blue-500 cursor-pointer">Register</router-link>

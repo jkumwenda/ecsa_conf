@@ -7,30 +7,30 @@
       <div
         class="flex flex-col flex-1 space-y-4 border border-white-600 text-abbey-600  p-4 px-4 rounded-2xl shadow-sm">
         <div class="flex">
-          <p class="text-2xl">
-            <span class="font-semibold text-bondi-blue-500">Role Name:: </span>{{ role.role }}
+          <p class="sm:text-4xl text-xl">
+            <span class="text-bondi-blue-500">Role Name:: </span>{{ role.role }}
           </p>
         </div>
         <div class="flex flex-col">
           <div
-            class="flex flex-row space-x-2 text-sm uppercase text-bondi-blue-800 py-2 border-b border-1 border-bondi-blue-500">
+            class="flex flex-row space-x-2 sm:text-2xl text-md font-semibold font-roboto-thin py-2 border-b border-1 border-bondi-blue-500">
             <p>Permissions</p>
             <p class="capitalize font-semibold">(click to remove)</p>
           </div>
           <div class="flex flex-row flex-wrap my-4">
-            <button class="bg-bondi-blue-50 text-bondi-blue-700 rounded-xl px-4 py-1 m-1"
+            <button class="bg-abbey-400 text-abbey-50 hover:bg-abbey-700 text-sm rounded-xl px-4 py-1 m-1"
               v-for="assigned_permission in assigned_permissions" :key="assigned_permission.id"
               @click="deleteRolePermission(assigned_permission.id)">
               {{ assigned_permission.permission }}
             </button>
           </div>
           <div
-            class="flex flex-row space-x-2 text-sm uppercase text-bondi-blue-800 py-2 border-b border-1 border-bondi-blue-500">
+            class="flex flex-row space-x-2 sm:text-2xl text-md font-semibold font-roboto-thin py-2 border-b border-1 border-bondi-blue-500">
             <p>Permissions</p>
-            <p class="capitalize font-semibold">(click to assign)</p>
+            <p class="">(click to assign)</p>
           </div>
           <div class="flex flex-row flex-wrap my-4">
-            <button class="bg-bondi-blue-300 text-bondi-blue-600 rounded-xl px-4 py-1 m-1"
+            <button class="bg-abbey-500 text-abbey-50 hover:bg-abbey-800 text-sm rounded-xl px-4 py-1 m-1"
               v-for="permission in filteredPermissions" :key="permission.id" @click="addRolePermission(permission.id)">
               {{ permission.permission }}
             </button>
