@@ -266,6 +266,8 @@ class Event(Base):
     event_type = relationship("EventType", back_populates="event")
     organiser = relationship("Organiser", back_populates="event")
     user_event = relationship("UserEvent", back_populates="event")
+    event_resource_file = relationship("EventResourceFile", back_populates="event")
+    event_link = relationship("EventLink", back_populates="event")
 
     def __repr__(self):
         return f"<Event {self.id}>"
@@ -323,3 +325,52 @@ class Participant(Base):
 
     def __repr__(self):
         return f"<Participant {self.id}>"
+
+
+class EventResourceFile(Base):
+    __tablename__ = "event_resource_file"
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(Integer, ForeignKey("event.id"), nullable=False)
+    filename = Column(String(100), unique=False, index=True)
+    filepath = Column(String(250), unique=False, index=True)
+    file_name = Column(String(250), unique=False, index=True)
+    access_level = Column(String(50), unique=False, index=True)
+    created_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("current_timestamp()"),
+    )
+    updated_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("current_timestamp()"),
+        onupdate=datetime.now,
+    )
+    event = relationship("Event", back_populates="event_resource_file")
+
+    def __repr__(self):
+        return f"<EventResourceFile {self.id}>"
+
+
+class EventLink(Base):
+    __tablename__ = "event_link"
+    id = Column(Integer, primary_key=True, index=True)
+    event_id = Column(Integer, ForeignKey("event.id"), nullable=False)
+    link_name = Column(String(250), unique=False, index=True)
+    link = Column(String(250), unique=False, index=True)
+    access_level = Column(String(50), unique=False, index=True)
+    created_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("current_timestamp()"),
+    )
+    updated_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("current_timestamp()"),
+        onupdate=datetime.now,
+    )
+    event = relationship("Event", back_populates="event_link")
+
+    def __repr__(self):
+        return f"<EventLink {self.id}>"

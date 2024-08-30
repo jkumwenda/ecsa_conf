@@ -101,3 +101,15 @@ class OnlinePaymentSchema(BaseModel):
     card_holder: str
     year: int
     month: int
+
+
+class UserEventSchema(BaseModel):
+    user_id: int
+    event_id: int
+
+
+class EventLinkSchema(BaseModel):
+    event_id: int
+    link_name: str
+    link: str
+    access_level: str

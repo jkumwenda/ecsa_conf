@@ -1,11 +1,24 @@
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, HTTPException, Depends, Query, File, Form, UploadFile
 from starlette import status
-from models import Event, Country, EventType, Organiser, UserEvent, Participant, Users
+from models import (
+    Event,
+    Country,
+    EventType,
+    Organiser,
+    UserEvent,
+    Participant,
+    Users,
+    UserRole,
+    EventResourceFile,
+    EventLink,
+)
 from schemas.ecsa_conf import (
     EventSchema,
     EventRegistrationSchema,
     PaymentSchema,
     OnlinePaymentSchema,
+    UserEventSchema,
+    EventLinkSchema,
 )
 from sqlalchemy.orm import Session, joinedload
 from database import get_db
@@ -15,13 +28,25 @@ from sqlalchemy import or_
 import math
 from dependencies import Security
 from datetime import datetime
-from fastapi.responses import FileResponse
+from fastapi.responses import JSONResponse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+import pandas as pd
+from io import BytesIO, StringIO
+import math
+import utils
+from passlib.hash import bcrypt
+from typing import Dict, Any
+import os
 
 router = APIRouter()
 security = Security()
 user_dependency = Annotated[dict, Depends(get_current_user)]
+
+
+UPLOAD_DIR = "uploads/files"
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
 
 
 def get_object(id, db, model):
@@ -29,25 +54,6 @@ def get_object(id, db, model):
     if data is None:
         raise HTTPException(status_code=404, detail=f"ID {id} : Does not exist")
     return data
-
-
-def create_pdf(file_path: str, cards: list):
-    c = canvas.Canvas(file_path, pagesize=letter)
-    width, height = letter
-
-    cards_per_page = 4
-    card_height = height / cards_per_page
-
-    for i, card in enumerate(cards):
-        if i % cards_per_page == 0 and i != 0:
-            c.showPage()
-
-        y_position = height - (i % cards_per_page) * card_height - 50
-
-        c.drawString(100, y_position, f"Card {i+1}: {card['title']}")
-        c.drawString(100, y_position - 20, f"Content: {card['content']}")
-
-    c.save()
 
 
 @router.get("/")
@@ -108,7 +114,7 @@ async def get_event(
     event_id: int,
     db: Session = Depends(get_db),
     skip: int = Query(default=1, ge=1),
-    limit: int = "",
+    limit: int = 10,
     search: str = "",
 ):
     event_data = (
@@ -130,7 +136,7 @@ async def get_event(
             Event.registration_end_date,
         )
         .join(EventType, Event.event_type_id == EventType.id)
-        .join(Country, Event.country_id == Country.id)  # Join with Country table
+        .join(Country, Event.country_id == Country.id)
         .join(Organiser, Event.organiser_id == Organiser.id)
         .filter(Event.id == event_id)
         .first()
@@ -190,7 +196,20 @@ async def get_event(
         .limit(limit)
         .all()
     )
-
+    resource_files = (
+        db.query(EventResourceFile)
+        .filter(
+            EventResourceFile.event_id == event_id,
+        )
+        .all()
+    )
+    links = (
+        db.query(EventLink)
+        .filter(
+            EventLink.event_id == event_id,
+        )
+        .all()
+    )
     # Total count for pagination
     total_count = (
         db.query(Users)
@@ -217,7 +236,13 @@ async def get_event(
         }
         for user in query
     ]
-    return {"pages": pages, "data": formatted_data, "event": event}
+    return {
+        "pages": pages,
+        "data": formatted_data,
+        "event": event,
+        "resource_files": resource_files,
+        "links": links,
+    }
 
 
 @router.put("/{event_id}")
@@ -339,6 +364,28 @@ async def deregister(
     )
 
 
+@router.post("/cancel_registration/")
+async def cancel_registration(
+    user_event_schema: UserEventSchema,
+    user: user_dependency,
+    db: Session = Depends(get_db),
+):
+    user_event = (
+        db.query(UserEvent)
+        .filter(
+            UserEvent.user_id == user_event_schema.user_id,
+            UserEvent.event_id == user_event_schema.event_id,
+        )
+        .first()
+    )
+
+    db.query(UserEvent).filter(UserEvent.id == user_event.id).delete()
+    db.commit()
+    raise HTTPException(
+        status_code=status.HTTP_200_OK, detail="User successfully deregistered"
+    )
+
+
 @router.post("/add_event_payment/")
 async def add_event_payment(
     payment_schema: PaymentSchema,
@@ -382,3 +429,264 @@ async def online_payment(
             status_code=404, detail="You need to login to pay for an event"
         )
     return online_payment_schema
+
+
+@router.post("/upload_participants/")
+async def upload_participants(
+    user: user_dependency,
+    file: UploadFile = File(...),
+    eventID: int = Form(...),
+    db: Session = Depends(get_db),
+):
+    try:
+        contents = await file.read()
+        df = parse_file(contents, file.content_type)
+        if df is None:
+            return unsupported_file_response()
+
+        if not validate_columns(df):
+            return missing_columns_response()
+
+        data = df.to_dict(orient="records")
+        updated, added = process_records(data, eventID, db)
+
+        return JSONResponse(
+            content={
+                "new": added,
+                "updated": updated,
+                "total_records": len(data),
+                "data": data,
+            }
+        )
+    except Exception as e:
+        return JSONResponse(
+            content={"status": "error", "message": str(e)}, status_code=500
+        )
+
+
+def parse_file(contents: bytes, content_type: str):
+    if content_type in [
+        "application/vnd.ms-excel",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ]:
+        return pd.read_excel(BytesIO(contents))
+    elif content_type == "text/csv":
+        return pd.read_csv(StringIO(contents.decode("utf-8")))
+    else:
+        return None
+
+
+def unsupported_file_response():
+    return JSONResponse(
+        content={
+            "status": "error",
+            "message": "Unsupported file type. Please upload a CSV or Excel file.",
+        },
+        status_code=400,
+    )
+
+
+def validate_columns(df: pd.DataFrame) -> bool:
+    expected_columns = {
+        "EMAIL",
+        "FIRSTNAME",
+        "LASTNAME",
+        "PHONE",
+        "TITLE",
+        "INSTITUTION",
+        "COUNTRY",
+        "PARTICIPANT_CATEGORY",
+        "CONFIRM_ATTENDANCE",
+        "EVENT_PAYMENT",
+        "PAYMENT_CONFIRMATION_CODE",
+    }
+    return expected_columns.issubset(df.columns)
+
+
+def missing_columns_response():
+    return JSONResponse(
+        content={
+            "status": "error",
+            "message": "File is missing one or more required columns.",
+        },
+        status_code=400,
+    )
+
+
+def process_records(data: list, eventID: int, db: Session):
+    updated = 0
+    added = 0
+
+    for item in data:
+        user_record = db.query(Users).filter(Users.email == item["EMAIL"]).first()
+        country = db.query(Country).filter(Country.country == item["COUNTRY"]).first()
+
+        if not country:
+            return country_not_found_response(item["COUNTRY"])
+
+        if user_record:
+            updated += update_existing_user(user_record, item, country, eventID, db)
+        else:
+            added += add_new_user(item, country, eventID, db)
+
+    return updated, added
+
+
+def country_not_found_response(country: str):
+    return JSONResponse(
+        content={
+            "status": "error",
+            "message": f"Country '{country}' not found.",
+        },
+        status_code=400,
+    )
+
+
+def update_existing_user(user_record, item, country, eventID, db):
+    user_record.email = item["EMAIL"]
+    user_record.firstname = item["FIRSTNAME"]
+    user_record.lastname = item["LASTNAME"]
+    user_record.phone = item["PHONE"]
+    db.commit()
+    db.refresh(user_record)
+
+    participant_model = (
+        db.query(Participant).filter(Participant.user_id == user_record.id).first()
+    )
+    user_event_model = (
+        db.query(UserEvent)
+        .filter(UserEvent.user_id == user_record.id, UserEvent.event_id == eventID)
+        .first()
+    )
+
+    if not participant_model:
+        participant_model = Participant(
+            user_id=user_record.id,
+            country_id=country.id,
+            title=item["TITLE"],
+            institution=item["INSTITUTION"],
+        )
+        db.add(participant_model)
+        db.commit()
+    else:
+        participant_model.title = item["TITLE"]
+        participant_model.institution = item["INSTITUTION"]
+        participant_model.country_id = country.id
+        db.commit()
+        db.refresh(participant_model)
+
+    if not user_event_model:
+        user_event_model = UserEvent(
+            user_id=user_record.id,
+            event_id=eventID,
+            participant_category=item["PARTICIPANT_CATEGORY"],
+            confirm_attendance=item["CONFIRM_ATTENDANCE"],
+            event_payment=item["EVENT_PAYMENT"],
+            confirmation_code=item["PAYMENT_CONFIRMATION_CODE"],
+        )
+        db.add(user_event_model)
+    else:
+        user_event_model.participant_category = item["PARTICIPANT_CATEGORY"]
+        user_event_model.confirm_attendance = int(item["CONFIRM_ATTENDANCE"])
+        user_event_model.event_payment = int(item["EVENT_PAYMENT"])
+        user_event_model.confirmation_code = item["PAYMENT_CONFIRMATION_CODE"]
+
+    db.commit()
+    db.refresh(user_event_model)
+    return 1
+
+
+def add_new_user(item, country, eventID, db):
+    password = utils.generate_random_password()
+    create_user_model = Users(
+        firstname=item["FIRSTNAME"],
+        lastname=item["LASTNAME"],
+        phone=item["PHONE"],
+        email=item["EMAIL"],
+        hashed_password=bcrypt.hash(password),
+        verified=1,
+    )
+    db.add(create_user_model)
+    db.commit()
+
+    create_user_role_model = UserRole(
+        user_id=create_user_model.id,
+        role_id=2,
+    )
+    db.add(create_user_role_model)
+
+    create_participant_model = Participant(
+        user_id=create_user_model.id,
+        country_id=country.id,
+        title=item["TITLE"],
+        institution=item["INSTITUTION"],
+    )
+    db.add(create_participant_model)
+
+    create_user_event_model = UserEvent(
+        user_id=create_user_model.id,
+        event_id=eventID,
+        participant_category=item["PARTICIPANT_CATEGORY"],
+        confirm_attendance=int(item["CONFIRM_ATTENDANCE"]),
+        event_payment=int(item["EVENT_PAYMENT"]),
+        confirmation_code=item["PAYMENT_CONFIRMATION_CODE"],
+    )
+    db.add(create_user_event_model)
+
+    db.commit()
+    utils.new_account_email(item["EMAIL"], item["FIRSTNAME"], password)
+    return 1
+
+
+@router.post("/upload_file/")
+async def upload_file(
+    user: user_dependency,
+    file: UploadFile = File(...),
+    resource_title: str = Form(...),
+    access_level: str = Form(...),
+    event_id: int = Form(...),
+    db: Session = Depends(get_db),
+):
+    try:
+        file_location = os.path.join(UPLOAD_DIR, file.filename)
+        with open(file_location, "wb+") as file_object:
+            file_object.write(await file.read())
+            event_resource_file_model = EventResourceFile(
+                event_id=event_id,
+                filename=file.filename,
+                filepath=file_location,
+                file_name=resource_title,
+                access_level=access_level,
+            )
+        db.add(event_resource_file_model)
+        db.commit()
+        db.refresh(event_resource_file_model)
+        return JSONResponse(
+            content={
+                "status": "success",
+                "message": f"File '{file.filename}' uploaded with access level '{access_level}'",
+            },
+            status_code=200,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+
+@router.post("/add_event_link/")
+async def add_event_link(
+    event_link_schema: EventLinkSchema,
+    user: user_dependency,
+    db: Session = Depends(get_db),
+):
+    security.secureAccess("ADD_EVENT", user["id"], db)
+    event_link_model = EventLink(
+        event_id=event_link_schema.event_id,
+        link_name=event_link_schema.link_name,
+        link=event_link_schema.link,
+        access_level=event_link_schema.access_level,
+    )
+
+    db.add(event_link_model)
+    db.commit()
+    db.refresh(event_link_model)
+    return event_link_model
