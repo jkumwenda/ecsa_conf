@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col space-y-4 flex-1">
+  <div class="flex flex-col space-y-3 flex-1">
     <HeaderView :headerTitle="headerTitle" />
     <SpinnerComponent v-if="isLoading" />
     <div v-else class="rounded-2xl border border-mercury-500 p-3">
@@ -37,13 +37,43 @@
     </div>
 
     <div class="flex flex-row items-baseline text-2xl font-roboto-light font-semibold text-abbey-500">
-      Event resources
+      Event resources and links
     </div>
-
-    <div class="rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
-      <span class="italic">No resources uploaded yet, check again later</span>
+    <div class="flex space-x-2">
+      <button @click="openResourceUploadModal"
+        class="mt-2 px-4 py-2 text-white-200 bg-daintree-600 hover:bg-daintree-400 rounded-md cursor-pointer">
+        Add Resource</button>
+      <button @click="openLinkModal"
+        class="mt-2 px-4 py-2 text-white-200 bg-daintree-600 hover:bg-daintree-400 rounded-md cursor-pointer">
+        Add Link</button>
     </div>
-
+    <div class="rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500 flex flex-col space-y-2">
+      <span class="text-xl font-semibold font-roboto-thin text-bondi-blue-500">Files (Click the link to download
+        file)</span>
+      <div v-if="resources.length > 0">
+        <span v-for="(resource) in resources" :key="resource.id">
+          <a class="text-dodger-blue-600 hover:text-dodger-blue-400" :href="getFullImageUrl(resource.filepath)"
+            :download="file_name">{{
+              resource.file_name }}</a>
+        </span>
+      </div>
+      <div v-else>
+        <span class="italic">No files uploaded yet, check again later</span>
+      </div>
+      <span class="text-xl font-semibold font-roboto-thin text-bondi-blue-500">Links (Click on a link to access)</span>
+      <div v-if="links.length > 0">
+        <span class="flex flex.row" v-for="(link) in links" :key="link.id">
+          <a class="text-dodger-blue-600 hover:text-dodger-blue-400" :href="link.link">{{ link.link_name }}</a>
+        </span>
+      </div>
+      <div v-else>
+        <span class="italic">No links have been added yet, check again later</span>
+      </div>
+    </div>
+    <event-resource-modal :show="showResourceModal" @close="closeResourceUploadModal" :event_id="event_id">
+    </event-resource-modal>
+    <event-link-modal :show="showLinkModal" @close="closeLinkModal" :event_id="event_id">
+    </event-link-modal>
   </div>
 </template>
 
@@ -53,11 +83,13 @@ import { MapPinIcon, CalendarDaysIcon, UserGroupIcon } from '@heroicons/vue/24/s
 import HeaderView from '@/includes/Header.vue';
 import SpinnerComponent from "@/components/Spinner.vue";
 import { useAuthStore } from "@/store/authStore";
+import EventResourceModal from "@/components/EventResourceModal.vue";
+import EventLinkModal from "@/components/EventLinkModal.vue";
 
 export default {
   name: "EventView",
   components: {
-    HeaderView, SpinnerComponent, MapPinIcon, CalendarDaysIcon, UserGroupIcon
+    HeaderView, SpinnerComponent, MapPinIcon, CalendarDaysIcon, UserGroupIcon, EventResourceModal, EventLinkModal
   },
   data() {
     return {
@@ -65,13 +97,18 @@ export default {
       id: this.$route.params.id,
       isLoading: true,
       event: {},
+      resources: {},
+      links: {},
       participants: [],
       appUrl: process.env.VUE_APP_BASE_URL,
       showParticipantModal: false,
       currentPage: 1,
       totalPages: "",
       pageSize: process.env.VUE_APP_PAGE_SIZE,
-      searchPhrase: ""
+      apiUrl: process.env.VUE_APP_API_URL,
+      searchPhrase: "",
+      showResourceModal: false,
+      showLinkModal: false
     };
   },
   mounted() {
@@ -89,22 +126,14 @@ export default {
         this.event = response.event;
         this.participants = response.data;
         this.totalPages = response.pages;
+        this.resources = response.resource_files;
+        this.links = response.links;
+        console.log(response);
         this.isLoading = false;
       } catch (error) {
         console.error("Error fetching event:", error);
         this.isLoading = false;
       }
-    },
-    async handleSearch(searchQuery) {
-      this.searchPhrase = searchQuery
-      this.getEvent();
-    },
-    async handlePageChange(newPage) {
-      this.currentPage = newPage;
-      this.getEvent();
-    },
-    getRowClass(index) {
-      return index % 2 === 0 ? 'bg-athens-gray-400' : 'bg-athens-gray-100';
     },
     formatDate(dateString) {
       const date = new Date(dateString);
@@ -114,6 +143,23 @@ export default {
         year: "numeric",
       });
     },
+    openResourceUploadModal() {
+      this.event_id = this.id
+      this.showResourceModal = true
+    },
+    closeResourceUploadModal() {
+      this.showResourceModal = false
+    },
+    openLinkModal() {
+      this.event_id = this.id
+      this.showLinkModal = true
+    },
+    closeLinkModal() {
+      this.showLinkModal = false
+    },
+    getFullImageUrl(filePath) {
+      return `${this.apiUrl}/${filePath}`;
+    }
   },
 };
 </script>

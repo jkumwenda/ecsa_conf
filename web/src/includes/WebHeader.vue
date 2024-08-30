@@ -6,8 +6,7 @@
                 <img src="@/assets/images/logo.png" class="sm:h-20 h-12">
             </router-link>
             <router-link :to="{ name: 'Home' }"
-                class="font-roboto font-bold sm:text-3xl text-sm uppercase text-abbey">Biennial
-                Scientific Conference
+                class="font-roboto font-bold sm:text-3xl text-sm uppercase text-abbey">Events Portal
             </router-link>
         </div>
         <div class="hidden sm:flex flex-row items-center justify-between space-x-4">

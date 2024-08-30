@@ -40,7 +40,7 @@
                     <div class="flex sm:flex-row flex-col sm:items-start items-center w-full text-sm space-x-4">
                         <div class="sm:w-2/12 w-full font-bold">Registration date </div>
                         <div class="sm:w-10/12 w-full">: {{ formatDate(event.registration_start_date) }} - {{
-                            formatDate(event.registration_start_date) }}
+                            formatDate(event.registration_end_date) }}
                         </div>
                     </div>
                     <router-link :to="{ name: 'Login' }"
@@ -52,10 +52,33 @@
             </div>
         </div>
 
-        <h class="font-bold text-3xl font-roboto-thin text-abbey-500 w-11/12">Event program</h>
+        <h class="font-bold text-3xl font-roboto-thin text-abbey-500 w-11/12">Event resources</h>
         <div
-            class="flex flex-row justify-between items-center w-11/12 rounded-md p-4 border border-solid border-great-blue-400 bg-great-blue-50 drop-shadow">
-            <p class="italic">Program currently not available, please check again later</p>
+            class="flex flex-col justify-between w-11/12 rounded-md p-4 border border-solid border-great-blue-300 bg-white-50 drop-shadow">
+            <span class="text-md font-bold font-roboto">Files (Click the link to download
+                file)</span>
+            <div class="pb-4 px-2" v-if="resources.length > 0">
+                <span v-for="(resource) in resources" :key="resource.id">
+                    <a v-if="resource.access_level == 'public'" class="text-dodger-blue-600 hover:text-dodger-blue-400"
+                        :href="getFullImageUrl(resource.filepath)" :download="file_name">{{
+                            resource.file_name }}</a>
+                </span>
+            </div>
+            <div v-else>
+                <span class="italic">No files uploaded yet, check again later</span>
+            </div>
+            <span class="text-md font-bold font-roboto">Links (Click on a link to
+                access)</span>
+            <div class="pb-4 px-2" v-if="links.length > 0">
+                <span class="flex flex.row" v-for="(link) in links" :key="link.id">
+                    <a v-if="link.access_level == 'public'" class="text-dodger-blue-600 hover:text-dodger-blue-400"
+                        :href="link.link">{{ link.link_name
+                        }}</a>
+                </span>
+            </div>
+            <div v-else>
+                <span class="italic">No links have been added yet, check again later</span>
+            </div>
         </div>
     </div>
 
@@ -78,11 +101,14 @@ export default {
             isLoading: true,
             event: {},
             participants: [],
+            resources: {},
+            links: {},
             appUrl: process.env.VUE_APP_BASE_URL,
             showParticipantModal: false,
             currentPage: 1,
             totalPages: "",
             pageSize: process.env.VUE_APP_PAGE_SIZE,
+            apiUrl: process.env.VUE_APP_API_URL,
             searchPhrase: ""
         };
     },
@@ -100,6 +126,8 @@ export default {
                 const response = await fetchItem("events", this.id, this.currentPage, this.pageSize, this.searchPhrase);
                 this.event = response.event;
                 this.participants = response.data;
+                this.resources = response.resource_files;
+                this.links = response.links;
                 this.totalPages = response.pages;
                 this.isLoading = false;
             } catch (error) {
@@ -126,6 +154,9 @@ export default {
                 year: "numeric",
             });
         },
+        getFullImageUrl(filePath) {
+            return `${this.apiUrl}/${filePath}`;
+        }
     },
 };
 </script>

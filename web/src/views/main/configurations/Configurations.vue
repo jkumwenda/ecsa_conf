@@ -2,7 +2,7 @@
     <div class="flex flex-col space-y-4 flex-1">
         <HeaderView :headerTitle="headerTitle"></HeaderView>
         <SpinnerComponent v-if="isLoading" />
-        <div v-else class="flex sm:flex-wrap flex-col rounded-2xl bg-catskill-white-100 shadow-sm p-4">
+        <div v-else class="flex flex-col sm:flex-row flex-wrap rounded-2xl bg-catskill-white-100 shadow-sm p-4">
             <router-link v-if="permissions.includes('VIEW_USER')" :to="{ name: 'Users' }"
                 class="p-1 sm:w-3/12 w-full justify-center items-center text-center">
                 <div

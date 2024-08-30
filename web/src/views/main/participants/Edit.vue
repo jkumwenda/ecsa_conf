@@ -81,7 +81,7 @@
         </label>
         <div class="flex flex-row space-x-4">
           <button type="submit" class="mt-2 px-4 py-2 text-white-100 bg-bondi-blue hover:bg-bondi-blue-400 rounded-2xl">
-            Add participant
+            Edit participant
           </button>
           <router-link :to="{ name: 'Participants' }"
             class="mt-2 px-4 py-2 boder border-2 border-abbey-400 hover:border-abbey-200 rounded-2xl">Cancel</router-link>

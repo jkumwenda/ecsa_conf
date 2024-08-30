@@ -47,7 +47,6 @@
 <script>
 import HeaderView from '@/includes/Header.vue';
 import { fetchData, deleteItem, createItem } from '@/services/apiService';
-// import { CheckBadgeIcon, XCircleIcon } from '@heroicons/vue/24/solid';
 import SpinnerComponent from '@/components/Spinner.vue';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
 import RegisterEventModal from '@/components/RegisterEventModal.vue';

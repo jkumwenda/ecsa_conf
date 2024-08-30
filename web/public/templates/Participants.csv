@@ -1,0 +1,4 @@
+﻿TITLE,FIRSTNAME,LASTNAME,EMAIL,PHONE,INSTITUTION,COUNTRY,PARTICIPANT_CATEGORY,CONFIRM_ATTENDANCE,EVENT_PAYMENT,PAYMENT_CONFIRMATION_CODE
+Prof.,Joel,Kumwenda,jkumwenda@gmail.com,2.65999E+11,ECSA-HC,Malawi,Participant,0,0,xx123456
+Dr.,Rosemary,Okova,rosemary_okova@yahoo.co.uk,254711518395,ECSACONM,Rwanda,Participant,1,1,1234567
+Dr.,Mduduzi Colani,Shongwe,mduyaye@gmail.com,26876180806,ECSACONM,Eswatini,Participant,0,1,2345678

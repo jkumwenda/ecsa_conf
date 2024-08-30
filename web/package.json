@@ -15,7 +15,9 @@
     "core-js": "^3.8.3",
     "file-saver": "^2.0.5",
     "html2canvas": "^1.4.1",
+    "html2pdf.js": "^0.10.2",
     "jspdf": "^2.5.1",
+    "pdfmake": "^0.2.12",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "postcss": "^8.4.38",
@@ -36,7 +38,8 @@
     "@vue/cli-plugin-eslint": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
     "eslint": "^7.32.0",
-    "eslint-plugin-vue": "^8.0.3"
+    "eslint-plugin-vue": "^8.0.3",
+    "file-loader": "^6.2.0"
   },
   "eslintConfig": {
     "root": true,

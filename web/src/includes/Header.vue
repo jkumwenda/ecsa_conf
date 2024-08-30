@@ -6,12 +6,12 @@
                 <span class="sm:text-xl text-md text-abbey-600">{{ headerTitle }}</span>
             </div>
             <div class="flex items-center space-x-4 justify-end">
-                <div class="flex flex-row items-center">
+                <!-- <div class="flex flex-row items-center">
                     <BellIcon class="w-6 h-6 text-bondi-blue-500"></BellIcon>
-                </div>
-                <div class="flex flex-row items-center">
+                </div> -->
+                <router-link :to="{ name: 'Contacts' }" class="flex flex-row items-center">
                     <EnvelopeIcon class="w-6 h-6 text-bondi-blue-500"></EnvelopeIcon>
-                </div>
+                </router-link>
                 <ProfileComponent :label="`${firstname} ${lastname}`"></ProfileComponent>
             </div>
         </div>
@@ -19,12 +19,12 @@
 </template>
 
 <script>
-import { Bars3CenterLeftIcon, EnvelopeIcon, BellIcon } from '@heroicons/vue/24/solid'
+import { Bars3CenterLeftIcon, EnvelopeIcon } from '@heroicons/vue/24/solid'
 import ProfileComponent from "@/components/ProfileComponent";
 export default {
     name: "HeaderView",
     components: {
-        Bars3CenterLeftIcon, BellIcon, EnvelopeIcon, ProfileComponent
+        Bars3CenterLeftIcon, EnvelopeIcon, ProfileComponent
     },
     props: {
         headerTitle: String,

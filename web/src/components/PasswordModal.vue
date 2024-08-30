@@ -1,9 +1,15 @@
 <template>
-  <div v-if="show" class="fixed inset-0 flex items-center justify-center z-50">
-    <div class="flex flex-col border-2 border-bondi-blue-600 border-t-8 bg-white-100 rounded-xl shadow-lg w-5/12 z-50">
-      <div class="font-bold text-lg text-abbey-500 border-b-2 p-4 px-6 space-y-4 border-bondi-blue-600">
-        New password
+  <div v-if="show" class="fixed inset-0 flex items-center justify-center z-50 overflow-auto">
+    <div
+      class="flex flex-col border-2 border-bondi-blue-500 border-t-8 bg-white-100 rounded-xl shadow-lg sm:w-5/12 w-11/12 max-h-[90vh] overflow-y-auto z-50">
+      <div
+        class="flex flex-row items-center justify-between font-bold text-lg text-abbey-500 border-b-2 p-4 px-6 border-bondi-blue-500">
+        <div>New Password</div>
+        <span title="Cancel Registration" class="p-1 border border-abbey-600 rounded-full cursor-pointer">
+          <XCircleIcon class="w-5 h-5 text-abbey-800" @click="close" />
+        </span>
       </div>
+
       <div v-if="message" class="p-4 m-6 m-y-4 rounded-xl text-mountain-meadow-800 py-2 text bg-spray-600">
         {{ message }}
       </div>
@@ -21,8 +27,6 @@
           <button type="submit" class="mt-2 px-4 py-2 text-white-100 bg-bondi-blue hover:bg-bondi-blue-400 rounded-2xl">
             Save
           </button>
-          <button @click="close"
-            class="mt-2 px-4 py-2 boder border-2 border-abbey-400 hover:border-abbey-200 rounded-2xl">Close</button>
         </div>
       </form>
     </div>
@@ -32,10 +36,11 @@
 <script>
 import { updateItem } from "@/services/apiService";
 import SpinnerComponent from "@/components/Spinner.vue";
+import { XCircleIcon } from '@heroicons/vue/24/solid';
 
 export default {
   components: {
-    SpinnerComponent
+    SpinnerComponent, XCircleIcon
   },
   data() {
     return {
@@ -46,7 +51,6 @@ export default {
       message: "",
     };
   },
-
 
   props: {
     show: {
@@ -76,6 +80,15 @@ export default {
     },
     close() {
       this.$emit("closed");
+    },
+    watch: {
+      show(val) {
+        if (val) {
+          document.body.style.overflow = 'hidden';
+        } else {
+          document.body.style.overflow = '';
+        }
+      }
     },
   },
 };

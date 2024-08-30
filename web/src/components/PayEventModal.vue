@@ -7,7 +7,15 @@
       <div v-if="message" class="p-4 m-6 m-y-4 rounded-xl text-mountain-meadow-800 py-2 text bg-spray-600">
         {{ message }}
       </div>
-      <img class="w-48 pt-4" src="@/assets/images/visa.png">
+
+
+      <div class="flex flex-col space-y-4 p-4 px-6">
+        <a class="sm:px-4 px-2 sm:py-2 py-1 m-8 rounded-md border  border-bondi-blue-500 text-bondi-blue-600 hover:text-bondi-blue-100  hover:bg-bondi-blue-600 text-center"
+          href="https://ecsaconm.org/online-payment/" target="_blank">Click to open payment page</a>
+      </div>
+
+
+      <!-- <img class="w-48 pt-4" src="@/assets/images/visa.png">
       <form class="flex flex-col space-y-4 p-4 px-6" @submit.prevent="payForEvent" method="POST">
         <SpinnerComponent v-if="isLoading" />
 
@@ -49,18 +57,26 @@
             class="mt-2 px-4 py-1 boder border-2 border-abbey-400 hover:border-abbey-200 rounded-2xl cursor-pointer">
             Close</div>
         </div>
-      </form>
+      </form> -->
+      <div class="flex flex-col space-y-4 px-8 px-6 text-center">
+        Remember to send your payment confirmation to <span class="font-bold">info@ecsacon.org</span> for event receipt.
+      </div>
+      <div class="flex flex-row space-y-4 p-4 px-6">
+        <div @click="cancel"
+          class="mt-2 px-4 py-1 mx-8 boder border-2 border-abbey-400 hover:border-abbey-200 rounded-2xl cursor-pointer">
+          Close</div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { createItem } from "@/services/apiService";
-import SpinnerComponent from "@/components/Spinner.vue";
+// import SpinnerComponent from "@/components/Spinner.vue";
 
 export default {
   components: {
-    SpinnerComponent
+    // SpinnerComponent
   },
   data() {
     return {

@@ -27,6 +27,7 @@ const routeComponents = {
 
   ConfigurationsView: () =>
     import("@/views/main/configurations/Configurations.vue"),
+  ContactsView: () => import("@/views/main/configurations/Contacts.vue"),
 
   UsersView: () => import("@/views/main/configurations/users/Users.vue"),
   AddUserView: () => import("@/views/main/configurations/users/Add.vue"),
@@ -54,6 +55,8 @@ const routeComponents = {
 
   MyProfileView: () =>
     import("@/views/main/configurations/users/MyProfile.vue"),
+  EditProfileView: () =>
+    import("@/views/main/configurations/users/EditProfile.vue"),
 };
 
 // Define your route configurations
@@ -185,6 +188,12 @@ const routes = [
       },
 
       {
+        path: "/edit-profile/:id",
+        name: "EditProfile",
+        component: routeComponents.EditProfileView,
+      },
+
+      {
         path: "/edit-user/:id",
         name: "EditUser",
         component: routeComponents.EditUserView,
@@ -218,6 +227,12 @@ const routes = [
         path: "/configurations",
         name: "Configurations",
         component: routeComponents.ConfigurationsView,
+      },
+
+      {
+        path: "/contacts",
+        name: "Contacts",
+        component: routeComponents.ContactsView,
       },
 
       {

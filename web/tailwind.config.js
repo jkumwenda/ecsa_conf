@@ -2,7 +2,7 @@
 module.exports = {
   purge: [],
   purge: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
-  darkMode: false, // or 'media' or 'class'
+  darkMode: true, // or 'media' or 'class'
   theme: {
     fontFamily: {
       roboto: ["Roboto"],
@@ -195,6 +195,20 @@ module.exports = {
         800: "#929292",
         900: "#767676",
         950: "#686868",
+      },
+      "dodger-blue": {
+        DEFAULT: "#3B82F6",
+        50: "#EBF2FE",
+        100: "#D7E6FD",
+        200: "#B0CDFB",
+        300: "#89B4FA",
+        400: "#629BF8",
+        500: "#3B82F6",
+        600: "#0B61EE",
+        700: "#084BB8",
+        800: "#063583",
+        900: "#041F4D",
+        950: "#021532",
       },
     },
   },
