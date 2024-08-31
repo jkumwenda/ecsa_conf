@@ -2,9 +2,8 @@
   <SpinnerComponent v-if="isLoading" />
   <div v-else class="flex flex-col space-y-4 flex-1">
     <HeaderView :headerTitle="headerTitle" />
-
-    <div class="bg-catskill-white-100 border-b pb-4 border-mercury-500 pt-4">
-      <div class="flex flex-col space-y-1">
+    <div class="flex flex-row bg-catskill-white-100 border-b pb-4 border-abbey-400 pt-4 space-x-2">
+      <div class="flex flex-col space-y-1 sm:w-10/12 w-12/12">
         <div class="text-3xl font-semibold font-roboto-thin text-bondi-blue-500">
           <span>{{ event.event }}</span>
         </div>
@@ -34,6 +33,13 @@
             <span>{{ formatDate(event.start_date) }} - {{ formatDate(event.end_date) }}</span>
           </div>
         </div>
+      </div>
+      <div class="flex flex-col rounded-md items-center justify-center text-center space-y-2">
+        <h2 class="text-roboto-thin font-bold">Attendance QR</h2>
+        <span>
+          <QRCodeVue :value="appUrl + '/#/attendance/' + id + '/'" :size="140" :color-dark="'#000000'"
+            :color-light="'#ffffff'" />
+        </span>
       </div>
     </div>
 
@@ -99,8 +105,9 @@
       :event="event" :participant="participant" @file-uploaded="refreshItems" />
     <payment-modal :show="showPaymentModal" @paid="confirmPayment" @cancel="cancelPaymentModal" :userID="userID"
       :eventID="eventID" />
-    <badge-modal :show="showBadgeModal" @close="closeBadgeModal" :participant="participant" />
-    <print-badges-modal :show="showPrintBadgesModal" @close="closePrintBadgesModal" :participants="participants" />
+    <badge-modal :show="showBadgeModal" @close="closeBadgeModal" :participant="participant" :event_id="id" />
+    <print-badges-modal :show="showPrintBadgesModal" @close="closePrintBadgesModal" :participants="participants"
+      :event_id="id" />
     <bulk-upload-participants-modal :show="showBulkUploadParticipantsModal" @close="closeBulkUploadParticipantsModal"
       :eventID="eventID" />
   </div>
@@ -124,6 +131,7 @@ import PaymentModal from "@/components/PaymentModal";
 import BadgeModal from "@/components/BadgeModal";
 import PrintBadgesModal from "@/components/PrintBadgesModal";
 import BulkUploadParticipantsModal from "@/components/BulkUploadParticipantsModal";
+import QRCodeVue from 'qrcode.vue';
 
 export default {
   name: "EventView",
@@ -132,7 +140,7 @@ export default {
     HeaderView, SpinnerComponent, ParticipantModal,
     PaginationComponent, SearchComponent, DownloadComponent,
     CheckCircleIcon, XCircleIcon, CurrencyDollarIcon,
-    PaymentModal, IdentificationIcon, BadgeModal, PrintBadgesModal, BulkUploadParticipantsModal
+    PaymentModal, IdentificationIcon, BadgeModal, PrintBadgesModal, BulkUploadParticipantsModal, QRCodeVue
   },
   data() {
     return {

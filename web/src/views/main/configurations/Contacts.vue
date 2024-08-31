@@ -6,19 +6,21 @@
             <h1 class="font-bold text-bondi-blue-500 text-md">Contact Address</h1>
             <div class="flex flex-col">
                 <span>
-                    <p>ECSACONM Main Office Location</p>
-                    <p>Plot No.157, Oloirien Njiro Road</p>
-                    <p>P.O. Box 1009</p>
-                    <p>Arusha,Tanzania</p>
+                    <p>East Central and Southern Africa College of Nursing and Midwifery - ECSACONM</p>
+                    <p>Plot No.157, Oloirien Njiro Road, P.O. Box 1009 Arusha,Tanzania</p>
                 </span>
             </div>
-            <h1 class="font-bold text-bondi-blue-500 text-md">Whatsapp</h1>
+            <h1 class="font-bold text-bondi-blue-500 text-md">Tel</h1>
             <span>
-                <p>+255 757 618 084</p>
+                <p>+255-27-254 9362; 254 9365/6</p>
+            </span>
+            <h1 class="font-bold text-bondi-blue-500 text-md">Fax</h1>
+            <span>
+                <p>+255-27-254 9392</p>
             </span>
             <h1 class="font-bold text-bondi-blue-500 text-md">Email</h1>
             <span>
-                <p><a class="text-dodger-blue" href="mailto:ecsaconmsouth@info.com ">ecsaconmsouth@info.com </a></p>
+                <p><a class="text-dodger-blue" href="mailto:info@ecsaconm.org">info@ecsaconm.org</a></p>
             </span>
         </div>
     </div>

@@ -12,12 +12,12 @@
             class="mt-2 px-3 py-3 bg-white border border-1 shadow-sm border-mid-gray-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-xl sm:text-sm focus:ring-1"
             v-model="participantData.title">
             <option value="" disabled selected>--Select title--</option>
-            <option value="Mr" selected>Mr</option>
-            <option value="Mrs" selected>Mrs</option>
-            <option value="Ms" selected>Ms</option>
-            <option value="Miss" selected>Miss</option>
-            <option value="Dr" selected>Dr</option>
-            <option value="Prof" selected>Prof</option>
+            <option value="Mr." selected>Mr.</option>
+            <option value="Mrs." selected>Mrs.</option>
+            <option value="Ms." selected>Ms.</option>
+            <option value="Miss." selected>Miss.</option>
+            <option value="Dr." selected>Dr.</option>
+            <option value="Prof." selected>Prof.</option>
           </select>
         </label>
         <label class="flex space-x-2">

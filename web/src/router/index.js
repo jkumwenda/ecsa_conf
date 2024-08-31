@@ -13,6 +13,8 @@ const routeComponents = {
   DashboardView: () => import("@/views/main/dashboard/Dashboard.vue"),
   WebEventsView: () => import("@/views/web/WebEvents.vue"),
   WebEventView: () => import("@/views/web/WebEvent.vue"),
+  UserEventStatusView: () => import("@/views/web/UserEventStatus.vue"),
+  AttendanceView: () => import("@/views/web/Attendance.vue"),
 
   EventsView: () => import("@/views/main/events/Events.vue"),
   AddEventView: () => import("@/views/main/events/Add.vue"),
@@ -95,6 +97,16 @@ const routes = [
         path: "/web-event/:id",
         name: "WebEvent",
         component: routeComponents.WebEventView,
+      },
+      {
+        path: "/user-event-status/:eventId/:userId",
+        name: "UserEventStatus",
+        component: routeComponents.UserEventStatusView,
+      },
+      {
+        path: "/attendance/:eventId/",
+        name: "Attendance",
+        component: routeComponents.AttendanceView,
       },
     ],
   },

@@ -43,6 +43,7 @@ class Users(Base):
     user_role = relationship("UserRole", back_populates="users")
     participant = relationship("Participant", back_populates="users")
     user_event = relationship("UserEvent", back_populates="users")
+    user_event_attendance = relationship("UserEventAttendance", back_populates="users")
 
     def __repr__(self):
         return f"<Users {self.id}>"
@@ -268,6 +269,7 @@ class Event(Base):
     user_event = relationship("UserEvent", back_populates="event")
     event_resource_file = relationship("EventResourceFile", back_populates="event")
     event_link = relationship("EventLink", back_populates="event")
+    user_event_attendance = relationship("UserEventAttendance", back_populates="event")
 
     def __repr__(self):
         return f"<Event {self.id}>"
@@ -282,7 +284,7 @@ class UserEvent(Base):
     confirm_attendance = Column(Boolean, nullable=False, default=False)
     event_badge = Column(Boolean, nullable=False, default=False)
     event_payment = Column(Boolean, nullable=False, default=False)
-    confirmation_code = Column(String(200), unique=True, index=True, default=False)
+    confirmation_code = Column(String(200), unique=False, index=True, default=False)
     created_at = Column(
         TIMESTAMP(timezone=True),
         nullable=False,
@@ -374,3 +376,30 @@ class EventLink(Base):
 
     def __repr__(self):
         return f"<EventLink {self.id}>"
+
+
+class UserEventAttendance(Base):
+    __tablename__ = "user_event_attendance"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    event_id = Column(Integer, ForeignKey("event.id"), nullable=False)
+    date = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+    )
+    created_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("current_timestamp()"),
+    )
+    updated_at = Column(
+        TIMESTAMP(timezone=True),
+        nullable=False,
+        server_default=text("current_timestamp()"),
+        onupdate=datetime.now,
+    )
+    event = relationship("Event", back_populates="user_event_attendance")
+    users = relationship("Users", back_populates="user_event_attendance")
+
+    def __repr__(self):
+        return f"<UserEventAttendance {self.id}>"

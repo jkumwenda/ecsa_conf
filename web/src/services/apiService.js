@@ -84,6 +84,19 @@ export const fetchItem = async (
   return response.data;
 };
 
+export const fetchItemMultiple = async (
+  url,
+  urlPartOne,
+  urlPartTwo,
+  itemIdOne,
+  itemIdTwo
+) => {
+  const response = await instance.get(
+    `/${url}/${urlPartOne}/${itemIdOne}/${urlPartTwo}/${itemIdTwo}`
+  );
+  return response.data;
+};
+
 export const createItem = async (url, itemData) => {
   const response = await instance.post(`/${url}`, itemData);
   return response.data;

@@ -83,7 +83,7 @@
           <button type="submit" class="mt-2 px-4 py-2 text-white-100 bg-bondi-blue hover:bg-bondi-blue-400 rounded-2xl">
             Edit Profile
           </button>
-          <router-link :to="{ name: 'Participants' }"
+          <router-link :to="{ name: 'MyProfile', params: { id: id } }"
             class="mt-2 px-4 py-2 boder border-2 border-abbey-400 hover:border-abbey-200 rounded-2xl">Cancel</router-link>
         </div>
       </form>
@@ -103,7 +103,7 @@ export default {
   },
   data() {
     return {
-      headerTitle: "Edit participant",
+      headerTitle: "Edit profile details",
       id: this.$route.params.id,
       participantData: {
         title: "",
@@ -156,7 +156,7 @@ export default {
         this.participantData.phone = response.participant.phone;
         this.isLoading = false;
       } catch (error) {
-        console.error("Error fetching participant:", error);
+        console.error("Error fetching profile:", error);
         this.isLoading = false;
       }
     },

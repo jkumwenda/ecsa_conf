@@ -11,6 +11,7 @@ from models import (
     UserRole,
     EventResourceFile,
     EventLink,
+    UserEventAttendance,
 )
 from schemas.ecsa_conf import (
     EventSchema,
@@ -19,25 +20,28 @@ from schemas.ecsa_conf import (
     OnlinePaymentSchema,
     UserEventSchema,
     EventLinkSchema,
+    EventPaymentSchema,
+    EventAttendanceSchema,
 )
 from sqlalchemy.orm import Session, joinedload
 from database import get_db
 from .auth import get_current_user
 from typing import Annotated
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 import math
 from dependencies import Security
 from datetime import datetime
 from fastapi.responses import JSONResponse
-from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 import pandas as pd
 from io import BytesIO, StringIO
 import math
 import utils
 from passlib.hash import bcrypt
-from typing import Dict, Any
 import os
+import random
+import string
+from datetime import datetime
 
 router = APIRouter()
 security = Security()
@@ -690,3 +694,142 @@ async def add_event_link(
     db.commit()
     db.refresh(event_link_model)
     return event_link_model
+
+
+@router.get("/user/{user_id}/event/{event_id}")
+async def user_event(
+    event_id: int,
+    user_id: int,
+    db: Session = Depends(get_db),
+):
+    user_event = (
+        db.query(UserEvent)
+        .filter(UserEvent.user_id == user_id, UserEvent.event_id == event_id)
+        .first()
+    )
+    if user_event is None:
+        raise HTTPException(
+            status_code=404,
+            detail=f"User event with event id {event_id} and User id {user_id} does not exist",
+        )
+    else:
+        participant = (
+            db.query(Participant).filter(Participant.user_id == user_id).first()
+        )
+        return {
+            "user_event": {
+                "event_id": user_event.event.id,
+                "event": user_event.event.event,
+                "event_type": user_event.event.event_type.event_type,
+                "event_country": user_event.event.country.country,
+                "event_organiser": user_event.event.organiser.organiser,
+                "location": user_event.event.location,
+                "capacity": user_event.event.capacity,
+                "description": user_event.event.description,
+                "start_date": user_event.event.start_date,
+                "end_date": user_event.event.end_date,
+                "registration_start_date": user_event.event.registration_start_date,
+                "registration_end_date": user_event.event.registration_end_date,
+                "user_id": user_event.user_id,
+                "title": participant.title,
+                "firstname": user_event.users.firstname,
+                "lastname": user_event.users.lastname,
+                "phone": user_event.users.phone,
+                "email": user_event.users.email,
+                "institution": participant.institution,
+                "participant_country": participant.country.country,
+                "participant_category": user_event.participant_category,
+                "confirm_attendance": user_event.confirm_attendance,
+                "event_badge": user_event.event_badge,
+                "event_payment": user_event.event_payment,
+                "confirmation_code": user_event.confirmation_code,
+            },
+            "attendance": [
+                {"date": attendance.date}
+                for attendance in user_event.event.user_event_attendance
+            ],
+        }
+
+
+@router.post("/confirm_event_payment/")
+async def confirm_event_payment(
+    event_payment_schema: EventPaymentSchema,
+    db: Session = Depends(get_db),
+):
+    user_event_model = (
+        db.query(UserEvent)
+        .filter(
+            UserEvent.user_id == event_payment_schema.user_id,
+            UserEvent.event_id == event_payment_schema.event_id,
+        )
+        .first()
+    )
+
+    user_event_model.confirm_attendance = 1
+    user_event_model.event_payment = 1
+    user_event_model.confirmation_code = random.choice(string.ascii_letters)
+
+    db.commit()
+    db.refresh(user_event_model)
+    return user_event_model
+
+
+@router.get("/event/{event_id}")
+async def get_event(
+    event_id: int,
+    db: Session = Depends(get_db),
+):
+    event = get_object(event_id, db, Event)
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    return {
+        "event": {
+            "id": event.id,
+            "event": event.event,
+            "event_type": event.event_type.event_type,
+            "description": event.description,
+            "country": event.country.country,
+            "organiser": event.organiser.organiser,
+            "location": event.location,
+            "capacity": event.capacity,
+            "start_date": event.start_date,
+            "end_date": event.end_date,
+            "registration_start_date": event.registration_start_date,
+            "registration_end_date": event.registration_end_date,
+        }
+    }
+
+
+@router.post("/confirm_event_attendance/")
+async def confirm_event_attendance(
+    event_attendance_schema: EventAttendanceSchema,
+    db: Session = Depends(get_db),
+):
+    attendance_status = (
+        db.query(UserEventAttendance)
+        .filter(
+            UserEventAttendance.user_id == event_attendance_schema.user_id,
+            UserEventAttendance.event_id == event_attendance_schema.event_id,
+            func.date(UserEventAttendance.date) == datetime.now().date(),
+        )
+        .first()
+    )
+    if attendance_status:
+        raise HTTPException(
+            status_code=409, detail="Already registered attendance for today"
+        )
+
+    user_event_attendance_model = UserEventAttendance(
+        user_id=event_attendance_schema.user_id,
+        event_id=event_attendance_schema.event_id,
+        date=datetime.now(),
+    )
+    db.add(user_event_attendance_model)
+    try:
+        db.commit()
+        db.refresh(user_event_attendance_model)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+    return user_event_attendance_model

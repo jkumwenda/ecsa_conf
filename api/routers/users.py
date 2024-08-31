@@ -17,7 +17,6 @@ from sqlalchemy import or_
 import math
 from passlib.hash import bcrypt
 from dependencies import Security
-import uuid
 import utils
 
 router = APIRouter()

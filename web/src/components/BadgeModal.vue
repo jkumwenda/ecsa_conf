@@ -15,24 +15,20 @@
                     <div><img src="@/assets/images/lesotho.png" class="sm:h-20 h-12" /></div>
                     <div><img src="@/assets/images/ecsalogo.png" class="sm:h-20 h-12" /></div>
                 </div>
-                <div>
-                    <p>16th BIEANNUAL</p>
-                    <p>SCIENTIFIC</p>
-                    <p>CONFERENCE</p>
+                <div class="text-2xl">
+                    <p>{{ participant.title }} <span class="uppercase">{{ participant.firstname }}</span> {{
+                        participant.lastname }}</p>
                 </div>
-                <div class="bg-bondi-blue-500 p-2 font-bold text-white flex flex-row justify-center space-x-1">
-                    <span class="">{{ participant.title }}</span>
-                    <span class="">{{ participant.firstname }}</span>
-                    <span class="uppercase">{{ participant.lastname }}</span>
+                <div class="bg-bondi-blue-500 p-2 font-bold text-white flex flex-row justify-center text-xl space-x-1">
+                    <span class="">{{ participant.institution }}</span>
                 </div>
-                <div>{{ participant.institution }}</div>
-                <div>{{ participant.country }}</div>
+                <div class="text-xl">{{ participant.country }}</div>
                 <div class="flex flex-col items-center">
-                    <div class="bg-bondi-blue-500 p-2 font-bold text-white rounded-xl">DELEGATE</div>
+                    <div class="bg-bondi-blue-500 px-4 py-1 font-bold text-white rounded-md text-md">DELEGATE</div>
                 </div>
                 <div class="flex justify-center">
-                    <QRCodeVue :value="qrValue + participant.id" :size="120" :color-dark="'#000000'"
-                        :color-light="'#ffffff'" />
+                    <QRCodeVue :value="appUrl + '/#/user-event-status/' + participant.id + '/' + event_id + '/'"
+                        :size="110" :color-dark="'#000000'" :color-light="'#ffffff'" />
                 </div>
                 <div class="flex flex-col items-end"><img src="@/assets/images/bg.png" class="sm:h-12 h-6" /></div>
             </div>
@@ -51,7 +47,7 @@ export default {
     },
     data() {
         return {
-            qrValue: 'https://events.ecsaconm.org/#/participant_status/'
+            appUrl: process.env.VUE_APP_BASE_URL
         };
     },
     props: {
@@ -62,6 +58,9 @@ export default {
         participant: {
             type: Object,
             required: true
+        },
+        event_id: {
+            type: Number,
         }
     },
     methods: {
@@ -71,6 +70,7 @@ export default {
     },
     watch: {
         show(val) {
+            console.log(this.participant)
             if (val) {
                 document.body.style.overflow = 'hidden';
             } else {
@@ -85,7 +85,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-/* Add styles here if needed */
-</style>

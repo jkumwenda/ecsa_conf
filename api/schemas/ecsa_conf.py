@@ -113,3 +113,14 @@ class EventLinkSchema(BaseModel):
     link_name: str
     link: str
     access_level: str
+
+
+class EventPaymentSchema(BaseModel):
+    event_id: int
+    user_id: int
+    private_key: str
+
+
+class EventAttendanceSchema(BaseModel):
+    event_id: int
+    user_id: int
