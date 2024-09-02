@@ -1,4 +1,13 @@
-from fastapi import APIRouter, HTTPException, Depends, Query, File, Form, UploadFile
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    Depends,
+    Query,
+    File,
+    Form,
+    UploadFile,
+    Response,
+)
 from starlette import status
 from models import (
     Event,
@@ -42,6 +51,7 @@ import os
 import random
 import string
 from datetime import datetime
+
 
 router = APIRouter()
 security = Security()
@@ -698,8 +708,8 @@ async def add_event_link(
 
 @router.get("/user/{user_id}/event/{event_id}")
 async def user_event(
-    event_id: int,
     user_id: int,
+    event_id: int,
     db: Session = Depends(get_db),
 ):
     user_event = (
@@ -715,6 +725,14 @@ async def user_event(
     else:
         participant = (
             db.query(Participant).filter(Participant.user_id == user_id).first()
+        )
+        attendance = (
+            db.query(UserEventAttendance)
+            .filter(
+                UserEventAttendance.user_id == user_id,
+                UserEventAttendance.event_id == event_id,
+            )
+            .all()
         )
         return {
             "user_event": {
@@ -744,10 +762,7 @@ async def user_event(
                 "event_payment": user_event.event_payment,
                 "confirmation_code": user_event.confirmation_code,
             },
-            "attendance": [
-                {"date": attendance.date}
-                for attendance in user_event.event.user_event_attendance
-            ],
+            "attendance": [{"date": attendance.date} for attendance in attendance],
         }
 
 
@@ -806,6 +821,20 @@ async def confirm_event_attendance(
     event_attendance_schema: EventAttendanceSchema,
     db: Session = Depends(get_db),
 ):
+    user_event = (
+        db.query(UserEvent)
+        .filter(
+            UserEvent.user_id == event_attendance_schema.user_id,
+            UserEvent.event_id == event_attendance_schema.event_id,
+        )
+        .first()
+    )
+    if user_event is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Incorrect ID number used, use the identification # on your badge",
+        )
+
     attendance_status = (
         db.query(UserEventAttendance)
         .filter(

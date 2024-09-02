@@ -15,7 +15,11 @@
                     <div class="flex flex-col">
                         <div class="flex flex-col px-4 items-center justify-center">
                             <div class="p-1 px-4 rounded-md text-sm bg-bondi-blue-200 border border-bondi-blue-400 text-bondi-blue-800"
-                                v-if="message">{{ message
+                                v-if="errorMsg">{{ errorMsg
+                                }}</div>
+                            <div class="p-1 px-4 rounded-md text-sm bg-mountain-meadow-100 border border-mountain-meadow-400 text-mountain-meadow-800"
+                                v-if="successMsg">
+                                {{ successMsg
                                 }}</div>
                             <form @submit.prevent="confirmAttendance" method="POST"
                                 class="sm:w-12/12 bg-ghost-300 p-2 px-6 rounded-xl my-4">
@@ -60,7 +64,8 @@ export default {
                 event_id: "",
                 user_id: "",
             },
-            message: null
+            errorMsg: null,
+            successMsg: null
         };
     },
     computed: {
@@ -94,9 +99,12 @@ export default {
                 const response = await createItem("events/confirm_event_attendance/", this.attendanceConfirmData);
                 this.events = response.data;
                 this.isLoading = false;
-                this.getUserEvent();
+                this.errorMsg = null;
+                this.successMsg = "Succefully confirmed attendance for today"
+                this.getEventAttendance();
             } catch (error) {
-                this.message = error.response.data.detail
+                this.successMsg = null
+                this.errorMsg = error.response.data.detail
                 this.isLoading = false;
             }
         },

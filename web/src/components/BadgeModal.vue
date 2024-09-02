@@ -30,6 +30,8 @@
                     <QRCodeVue :value="appUrl + '/#/user-event-status/' + participant.id + '/' + event_id + '/'"
                         :size="110" :color-dark="'#000000'" :color-light="'#ffffff'" />
                 </div>
+                <div class="font-3xl">ID #:{{ participant.id }}</div>
+                <div class="text-sm font-normal">www.ecsaconm.org</div>
                 <div class="flex flex-col items-end"><img src="@/assets/images/bg.png" class="sm:h-12 h-6" /></div>
             </div>
         </div>

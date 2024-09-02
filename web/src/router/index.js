@@ -99,7 +99,7 @@ const routes = [
         component: routeComponents.WebEventView,
       },
       {
-        path: "/user-event-status/:eventId/:userId",
+        path: "/user-event-status/:userId/:eventId",
         name: "UserEventStatus",
         component: routeComponents.UserEventStatusView,
       },

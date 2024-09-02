@@ -84,7 +84,7 @@
           </span>
         </div>
         <div class="flex space-x-2 sm:w-1/12 items-start">
-          <div title="Preview Identification" class="p-1 border border-st-tropaz-600 bg-st-tropaz-200 rounded-full"
+          <div title="Preview Badge" class="p-1 border border-st-tropaz-600 bg-st-tropaz-200 rounded-full"
             @click="previewBadge(participant)">
             <IdentificationIcon class="w-5 h-5 text-st-tropaz-600" />
           </div>
@@ -110,6 +110,8 @@
       :event_id="id" />
     <bulk-upload-participants-modal :show="showBulkUploadParticipantsModal" @close="closeBulkUploadParticipantsModal"
       :eventID="eventID" />
+    <!-- <test-badge-modal :show="showTestBadgeModal" :participants="participants" :event_id="id"
+      @close="closeTestBadgeModal" /> -->
   </div>
 </template>
 
@@ -131,6 +133,7 @@ import PaymentModal from "@/components/PaymentModal";
 import BadgeModal from "@/components/BadgeModal";
 import PrintBadgesModal from "@/components/PrintBadgesModal";
 import BulkUploadParticipantsModal from "@/components/BulkUploadParticipantsModal";
+// import TestBadgeModal from "@/components/TestBadgeModal";
 import QRCodeVue from 'qrcode.vue';
 
 export default {
@@ -166,7 +169,8 @@ export default {
       },
       showBadgeModal: false,
       showPrintBadgesModal: false,
-      showBulkUploadParticipantsModal: false
+      showBulkUploadParticipantsModal: false,
+      showTestBadgeModal: false
     };
   },
   mounted() {
@@ -286,7 +290,8 @@ export default {
     closeBulkUploadParticipantsModal() {
       this.getEvent()
       this.showBulkUploadParticipantsModal = false;
-    }
+    },
+
   }
 };
 </script>
