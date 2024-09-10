@@ -9,7 +9,9 @@
                     <XCircleIcon class="w-5 h-5 text-abbey-800" @click="close" />
                 </span>
             </div>
-            <div class="m-10 space-y-4 border border-abbey-600 text-center font-bold">
+            <div class="m-10 space-y-4 border border-abbey-300 text-center font-bold">
+                <div class="flex flex-col items-end bg-ecsa-blue p-2">
+                </div>
                 <div class="flex flex-row p-4 items-center justify-center space-x-4">
                     <div><img src="@/assets/images/logo.png" class="sm:h-20 h-12" /></div>
                     <div><img src="@/assets/images/lesotho.png" class="sm:h-20 h-12" /></div>
@@ -24,7 +26,8 @@
                 </div>
                 <div class="text-xl">{{ participant.country }}</div>
                 <div class="flex flex-col items-center">
-                    <div class="bg-bondi-blue-500 px-4 py-1 font-bold text-white rounded-md text-md">DELEGATE</div>
+                    <div class="bg-bondi-blue-500 px-4 py-1 font-bold text-white rounded-md text-md uppercase">{{
+                        participant.participant_category }}</div>
                 </div>
                 <div class="flex justify-center">
                     <QRCodeVue :value="appUrl + '/#/user-event-status/' + participant.id + '/' + event_id + '/'"
@@ -32,7 +35,8 @@
                 </div>
                 <div class="font-3xl">ID #:{{ participant.id }}</div>
                 <div class="text-sm font-normal">www.ecsaconm.org</div>
-                <div class="flex flex-col items-end"><img src="@/assets/images/bg.png" class="sm:h-12 h-6" /></div>
+                <div class="flex flex-col items-end mt-4 bg-ecsa-blue p-2">
+                </div>
             </div>
         </div>
     </div>

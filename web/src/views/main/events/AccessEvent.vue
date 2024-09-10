@@ -40,16 +40,16 @@
       Event resources and links
     </div>
     <div class="flex space-x-2">
-      <button @click="openResourceUploadModal"
+      <button @click="openResourceUploadModal" v-if="permissions.includes('ADD_EVENT')"
         class="mt-2 px-4 py-2 text-white-200 bg-daintree-600 hover:bg-daintree-400 rounded-md cursor-pointer">
         Add Resource</button>
-      <button @click="openLinkModal"
+      <button @click="openLinkModal" v-if="permissions.includes('ADD_EVENT')"
         class="mt-2 px-4 py-2 text-white-200 bg-daintree-600 hover:bg-daintree-400 rounded-md cursor-pointer">
         Add Link</button>
     </div>
     <div class="rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500 flex flex-col space-y-2">
-      <span class="text-xl font-semibold font-roboto-thin text-bondi-blue-500">Files (Click the link to download
-        file)</span>
+      <!-- <span class="text-xl font-semibold font-roboto-thin text-bondi-blue-500">Files (Click the link to download
+        file)</span> -->
       <div v-if="resources.length > 0">
         <span v-for="(resource) in resources" :key="resource.id">
           <a class="text-dodger-blue-600 hover:text-dodger-blue-400" :href="getFullImageUrl(resource.filepath)"
@@ -57,18 +57,18 @@
               resource.file_name }}</a>
         </span>
       </div>
-      <div v-else>
+      <!-- <div v-else>
         <span class="italic">No files uploaded yet, check again later</span>
-      </div>
-      <span class="text-xl font-semibold font-roboto-thin text-bondi-blue-500">Links (Click on a link to access)</span>
-      <div v-if="links.length > 0">
-        <span class="flex flex.row" v-for="(link) in links" :key="link.id">
+      </div> -->
+      <!-- <span class="text-xl font-semibold font-roboto-thin text-bondi-blue-500">Links (Click on a link to access)</span> -->
+      <ul v-if="links.length > 0" class="list-outside hover:list-inside list-decimal">
+        <li class="flex flex.row" v-for="(link) in links" :key="link.id">
           <a class="text-dodger-blue-600 hover:text-dodger-blue-400" :href="link.link">{{ link.link_name }}</a>
-        </span>
-      </div>
-      <div v-else>
+        </li>
+      </ul>
+      <!-- <div v-else>
         <span class="italic">No links have been added yet, check again later</span>
-      </div>
+      </div> -->
     </div>
     <event-resource-modal :show="showResourceModal" @close="closeResourceUploadModal" :event_id="event_id">
     </event-resource-modal>

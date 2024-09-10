@@ -69,7 +69,7 @@
       <div v-for="(participant, index) in participants" :key="participant.id" :class="getRowClass(index)"
         class="flex sm:flex-row flex-col p-2 text-sm sm:items-center items-start">
         <div class="sm:w-5/12">
-          {{ participant.title }} {{ participant.firstname }} {{ participant.lastname }}
+          {{ participant.title }}<span class="uppercase">{{ participant.firstname }}</span> {{ participant.lastname }}
         </div>
         <div class="sm:w-2/12">{{ participant.institution }}</div>
         <div class="sm:w-2/12">{{ participant.country }}</div>
@@ -133,7 +133,6 @@ import PaymentModal from "@/components/PaymentModal";
 import BadgeModal from "@/components/BadgeModal";
 import PrintBadgesModal from "@/components/PrintBadgesModal";
 import BulkUploadParticipantsModal from "@/components/BulkUploadParticipantsModal";
-// import TestBadgeModal from "@/components/TestBadgeModal";
 import QRCodeVue from 'qrcode.vue';
 
 export default {

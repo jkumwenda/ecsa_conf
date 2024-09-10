@@ -22,10 +22,12 @@
             class="mt-2 px-3 py-3 bg-white border border-1 shadow-sm border-abbey-400 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-sky-500 block w-full rounded-2xl sm:text-sm focus:ring-1"
             v-model="eventData.participant_category" required>
             <option value="" disabled selected>--Select your role--</option>
-            <option value="Participant">Participant</option>
+            <option value="Delegate">Delegate</option>
             <option value="Presenter">Presenter</option>
-            <option value="ECSA Secretariat">ECSA Secretariat</option>
             <option value="Exhibitor">Exhibitor</option>
+            <option value="Presenter">Usher</option>
+            <option value="Secretariat">Secretariat</option>
+
           </select>
         </label>
         <div class="flex flex-row space-x-4">

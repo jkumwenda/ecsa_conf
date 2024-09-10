@@ -10,7 +10,9 @@
         <div class="flex flex-row p-3 py-1 rounded-md text-sm bg-st-tropaz-100">
           <div class="w-3/12 text-st-tropaz-900 font-bold">Name</div>
           <div class="flex-1">:
-            {{ participant.title }} {{ participant.firstname }} {{
+            {{ participant.title }}
+            <span class="uppercase">{{ participant.firstname }}</span>
+            {{
               participant.lastname
             }}
           </div>

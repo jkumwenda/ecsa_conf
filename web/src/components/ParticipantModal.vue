@@ -75,8 +75,6 @@ export default {
   methods: {
     async updatePassword() {
       this.isLoading = true;
-      console.log('WE ARE HERE', this.participant)
-      console.log('WE ARE HERE', this.event)
     },
     close() {
       this.$emit("closed");

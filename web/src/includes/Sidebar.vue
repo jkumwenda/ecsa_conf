@@ -13,7 +13,7 @@
                 <CalendarDaysIcon class="h-5 w-5" /><span>Events</span>
             </router-link>
 
-            <router-link v-if="permissions.includes('VIEW_PARTICIPANT')" :to="{ name: 'Participants' }"
+            <router-link v-if="permissions.includes('VIEW_USER')" :to="{ name: 'Participants' }"
                 :class="{ 'text-bondi-blue-600 bg-white': $route.name === 'Participants' }"
                 class="flex flex-row space-x-2 p-2 px-4 ml-4 rounded-l-xl items-center">
                 <UserGroupIcon class="h-5 w-5" /><span>Participants</span>

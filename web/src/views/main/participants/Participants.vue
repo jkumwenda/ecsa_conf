@@ -19,8 +19,11 @@
                 </div>
                 <div class="flex sm:flex-row flex-col p-2 text-sm items-center"
                     v-for="(participant, index) in participants" :key="participant.id" :class="getRowClass(index)">
-                    <div class="sm:w-4/12 w-full">{{ participant.title }} {{ participant.users.firstname }} {{
-                        participant.users.lastname }}</div>
+                    <div class="sm:w-4/12 w-full">{{ participant.title }}
+                        <span class="uppercase">{{
+                            participant.users.firstname }}</span> {{
+                                participant.users.lastname }}
+                    </div>
                     <div class="sm:w-2/12 w-full">{{ participant.country.country }}</div>
                     <div class="sm:w-2/12 w-full">{{ participant.users.phone }}</div>
                     <div class="sm:w-3/12 w-full">{{ participant.users.email }}</div>

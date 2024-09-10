@@ -10,6 +10,13 @@
                 </span>
             </div>
             <SpinnerComponent v-if="isLoading" />
+            <div class="p-1 m-4 px-4 rounded-md text-sm bg-bondi-blue-200 border border-bondi-blue-400 text-bondi-blue-800"
+                v-if="errorMsg">{{ errorMsg
+                }}</div>
+            <div class="p-1 m-4 px-4 rounded-md text-sm bg-mountain-meadow-100 border border-mountain-meadow-400 text-mountain-meadow-800"
+                v-if="successMsg">
+                {{ successMsg
+                }}</div>
             <div class="flex flex-col p-6 space-y-4">
                 <p>
                     [<a :href="excelFilePath" download="Participants.csv" class=" text-dodger-blue-600 italic">
@@ -63,9 +70,11 @@ export default {
                 this.profile = response;
                 this.isLoading = false;
                 console.log("Data received", response);
-                this.$emit('close');
+                this.errorMsg = null;
+                this.successMsg = "Succefully uploaded/amended event participants details"
             } catch (error) {
-                console.error("Error uploading participants:", error);
+                this.successMsg = null
+                this.errorMsg = error.response.data.detail
                 this.isLoading = false;
             }
         },

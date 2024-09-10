@@ -55,8 +55,8 @@
         <h class="font-bold text-3xl font-roboto-thin text-abbey-500 w-11/12">Event resources</h>
         <div
             class="flex flex-col justify-between w-11/12 rounded-md p-4 border border-solid border-great-blue-300 bg-white-50 drop-shadow">
-            <span class="text-md font-bold font-roboto">Files (Click the link to download
-                file)</span>
+            <!-- <span class="text-md font-bold font-roboto">Files (Click the link to download
+                file)</span> -->
             <div class="pb-4 px-2" v-if="resources.length > 0">
                 <span v-for="(resource) in resources" :key="resource.id">
                     <a v-if="resource.access_level == 'public'" class="text-dodger-blue-600 hover:text-dodger-blue-400"
@@ -64,11 +64,11 @@
                             resource.file_name }}</a>
                 </span>
             </div>
-            <div v-else>
+            <!-- <div v-else>
                 <span class="italic">No files uploaded yet, check again later</span>
-            </div>
-            <span class="text-md font-bold font-roboto">Links (Click on a link to
-                access)</span>
+            </div> -->
+            <!-- <span class="text-md font-bold font-roboto">Links (Click on a link to
+                access)</span> -->
             <div class="pb-4 px-2" v-if="links.length > 0">
                 <span class="flex flex.row" v-for="(link) in links" :key="link.id">
                     <a v-if="link.access_level == 'public'" class="text-dodger-blue-600 hover:text-dodger-blue-400"
@@ -76,9 +76,9 @@
                         }}</a>
                 </span>
             </div>
-            <div v-else>
+            <!-- <div v-else>
                 <span class="italic">No links have been added yet, check again later</span>
-            </div>
+            </div> -->
         </div>
     </div>
 

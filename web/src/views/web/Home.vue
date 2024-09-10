@@ -25,7 +25,7 @@
                                     <span>
                                         <CalendarDaysIcon class="w-5 h-5 text-abbey-700"></CalendarDaysIcon>
                                     </span>
-                                    <span>: {{ formatDate(event.start_date) }} - {{ formatDate(event.start_date)
+                                    <span>: {{ formatDate(event.start_date) }} - {{ formatDate(event.end_date)
                                         }}</span>
                                 </div>
                                 <div class="flex">
