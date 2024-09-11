@@ -142,7 +142,10 @@ async def get_participant(
 ):
     security.secureAccess("VIEW_PARTICIPANT", user["id"], db)
 
-    participant = get_object(participant_id, db, Participant)
+    # participant = get_object(participant_id, db, Participant)
+    participant = (
+        db.query(Participant).filter(Participant.user_id == participant_id).first()
+    )
 
     user = db.query(Users).filter(Users.id == participant.user_id).first()
 
@@ -201,7 +204,9 @@ async def update_participant(
 ):
     security.secureAccess("UPDATE_PARTICIPANT", user["id"], db)
 
-    participant_model = get_object(participant_id, db, Participant)
+    participant_model = (
+        db.query(Participant).filter(Participant.user_id == participant_id).first()
+    )
     user_id = participant_model.user_id
     user_model = get_object(user_id, db, Users)
 

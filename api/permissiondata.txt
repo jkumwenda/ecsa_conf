@@ -42,4 +42,13 @@ INSERT INTO permission (permission, permission_code, system_code)
 VALUES ('View Event', 'VIEW_EVENT', 'ECSA_CONF'),
        ('Add Event', 'ADD_EVENT', 'ECSA_CONF'),
        ('Update Event', 'UPDATE_EVENT', 'ECSA_CONF'),
-       ('Delete Event', 'DELETE_EVENT', 'ECSA_CONF');                   
+       ('Delete Event', 'DELETE_EVENT', 'ECSA_CONF'); 
+
+
+INSERT INTO permission (permission, permission_code, system_code)
+VALUES ('Cancel Event Registration', 'CANCEL_EVENT_REGISTRATION', 'ECSA_CONF'),
+       ('Confirm Event Payment', 'CONFIRM_EVENT_PAYMENT', 'ECSA_CONF'),
+       ('Preview Badge', 'PREVIEW_BADGE', 'ECSA_CONF'),
+       ('Bulk Upload', 'BULK_UPLOAD', 'ECSA_CONF'),                           
+       ('Print Badge', 'PRINT_BADGE', 'ECSA_CONF'),                            
+       ('Download Participants List', 'DOWNLOAD_PARTICIPANT_LIST', 'ECSA_CONF');                            

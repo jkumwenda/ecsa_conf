@@ -15,7 +15,7 @@
                     :value="`${user_profile.title} ${user_profile.firstname} ${user_profile.lastname}`" />
                 <ProfileDetail label="Phone" :value="user_profile.phone" />
                 <ProfileDetail label="Email" :value="user_profile.email" />
-                <ProfileDetail label="Institution" :value="user_profile.institution" />
+                <ProfileDetail label="Designation" :value="user_profile.institution" />
                 <ProfileDetail label="Country" :value="user_profile.country" />
             </div>
             <div class="flex-1 space-y-2 rounded-xl border border-white-600 shadow-sm p-4 text-abbey-500">

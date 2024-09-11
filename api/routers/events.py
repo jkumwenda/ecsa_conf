@@ -224,6 +224,39 @@ async def get_event(
         )
         .all()
     )
+    attendance_query = (
+        db.query(
+            Users.id,
+            Participant.title,
+            Users.firstname,
+            Users.lastname,
+            Users.email,
+            Event.event,
+            Event.start_date,
+            Event.end_date,
+            UserEventAttendance.date,
+        )
+        .join(Users, UserEventAttendance.user_id == Users.id)
+        .join(Event, UserEventAttendance.event_id == Event.id)
+        .join(Participant, Participant.user_id == Users.id)
+        .filter(UserEventAttendance.event_id == event_id)
+        .all()
+    )
+    attendance = [
+        {
+            "id": row[0],
+            "title": row[1],
+            "firstname": row[2],
+            "lastname": row[3],
+            "email": row[4],
+            "event": row[5],
+            "event_start_date": row[6].date(),
+            "event_end_date": row[7].date(),
+            "attendance_date": row[8].date(),
+        }
+        for row in attendance_query
+    ]
+
     # Total count for pagination
     total_count = (
         db.query(Users)
@@ -253,6 +286,7 @@ async def get_event(
     return {
         "pages": pages,
         "data": formatted_data,
+        "attendance": attendance,
         "event": event,
         "resource_files": resource_files,
         "links": links,

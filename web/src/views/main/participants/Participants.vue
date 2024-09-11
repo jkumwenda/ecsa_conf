@@ -30,12 +30,12 @@
                     <div class="flex space-x-2 sm:w-2/12 w-full">
                         <router-link v-if="permissions.includes('VIEW_PARTICIPANT')"
                             class="p-1 border border-st-tropaz-600 bg-st-tropaz-200 rounded-full"
-                            :to="{ name: 'Participant', params: { id: participant.id } }">
+                            :to="{ name: 'Participant', params: { id: participant.user_id } }">
                             <EyeIcon class="w-5 h-5 text-st-tropaz-600"></EyeIcon>
                         </router-link>
                         <router-link v-if="permissions.includes('UPDATE_PARTICIPANT')"
                             class="p-1 bg-mountain-meadow-300 border border-mountain-meadow-700 rounded-full"
-                            :to="{ name: 'EditParticipant', params: { id: participant.id } }">
+                            :to="{ name: 'EditParticipant', params: { id: participant.user_id } }">
                             <PencilSquareIcon class=" w-5 h-5 text-mountain-meadow-900">
                             </PencilSquareIcon>
                         </router-link>

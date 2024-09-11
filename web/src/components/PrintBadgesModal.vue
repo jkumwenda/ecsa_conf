@@ -60,6 +60,7 @@
 import html2pdf from "html2pdf.js";
 import QRCodeVue from 'qrcode.vue';
 import { XCircleIcon, DocumentIcon } from '@heroicons/vue/24/solid';
+import Swal from "sweetalert2";
 
 export default {
     components: {
@@ -103,7 +104,12 @@ export default {
         },
         async generateNextPDF() {
             if (this.startIndex >= this.participants.length) {
-                alert("No more participants to print.");
+                Swal.fire({
+                    icon: "error",
+                    title: "No Data",
+                    text: "No more participants to print.",
+                    confirmButtonText: "OK",
+                });
                 return;
             }
 
@@ -118,8 +124,6 @@ export default {
             };
 
             await html2pdf().from(element).set(opt).save();
-
-            // Update startIndex after printing
             this.startIndex += this.badgesPerPDF;
         }
     },

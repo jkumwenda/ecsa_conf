@@ -43,10 +43,6 @@
                             formatDate(event.registration_end_date) }}
                         </div>
                     </div>
-                    <router-link :to="{ name: 'Login' }"
-                        class="sm:px-4 px-2 sm:py-2 py-1 rounded-md border-2  border-bondi-blue-500 text-stone-100 hover:bg-bondi-blue-600">
-                        Login or Sign Up to register for this event
-                    </router-link>
                 </div>
 
             </div>

@@ -47,24 +47,32 @@
       <div>Participants</div>
       <span class="flex sm:flex-row flex-col justify-end flex-1 py-1 sm:space-y-2 space-y-2 sm:space-x-2 font-light">
         <search-component @search="handleSearch"></search-component>
-        <DownloadComponent class="sm:ml-2 ml-0" @participants="handleParticipants" @paid="handlePaid"
-          @notPaid="handleNotPaid" />
-        <span @click="openPrintBadgesModal"
+        <DownloadComponent v-if="permissions.includes('DOWNLOAD_PARTICIPANT_LIST')" class="sm:ml-2 ml-0"
+          @participants="handleParticipants" @paid="handlePaid" @notPaid="handleNotPaid"
+          @attendance="handleAttendance" />
+        <span v-if="permissions.includes('PRINT_BADGE')" @click="openPrintBadgesModal"
           class="inline-flex cursor-pointer justify-center rounded-2xl border border-bondi-blue-600 bg-bondi-blue-500 hover:bg-bondi-blue-400 text-white-200 hover:text-white-500 shadow-sm px-4 py-2 text-sm">
           Print Badge</span>
-        <span @click="openBulkUploadParticipantsModal"
+        <span v-if="permissions.includes('BULK_UPLOAD')" @click="openBulkUploadParticipantsModal"
           class="inline-flex cursor-pointer justify-center rounded-2xl border border-bondi-blue-600 bg-bondi-blue-500 hover:bg-bondi-blue-400 text-white-200 hover:text-white-500 shadow-sm px-4 py-2 text-sm">
           Bulk Upload</span>
       </span>
     </div>
+    <div class="p-3 px-4 rounded-2xl text-sm bg-bondi-blue-200 border border-bondi-blue-400 text-bondi-blue-800"
+      v-if="errorMsg">{{ errorMsg
+      }}</div>
+    <div class="p-3 px-4 rounded-2xl text-sm bg-st-tropaz-200 border border-st-tropaz-600 text-st-tropaz-600"
+      v-if="successMsg">
+      {{ successMsg
+      }}</div>
     <div v-if="message">{{ message }}</div>
     <div class="rounded-2xl border border-white-600 shadow-sm p-4 text-abbey-500">
       <div class="flex flex-row bg-shuttle-gray-300 p-2 text-sm font-bold">
         <div class="sm:w-5/12">Participant</div>
         <div class="sm:w-2/12">Institution</div>
         <div class="sm:w-2/12">Country</div>
-        <div class="sm:w-2/12">Paid</div>
-        <div class="sm:w-1/12">Action</div>
+        <div class="sm:w-1/12">Paid</div>
+        <div class="sm:w-2/12 text-right">Action</div>
       </div>
       <div v-for="(participant, index) in participants" :key="participant.id" :class="getRowClass(index)"
         class="flex sm:flex-row flex-col p-2 text-sm sm:items-center items-start">
@@ -73,7 +81,7 @@
         </div>
         <div class="sm:w-2/12">{{ participant.institution }}</div>
         <div class="sm:w-2/12">{{ participant.country }}</div>
-        <div class="sm:w-2/12">
+        <div class="sm:w-1/12">
           <span v-if="paidStatus(participant.event_payment)" class="flex space-x-2 items-center font-bold">
             <CheckCircleIcon class="w-6 h-6 text-mountain-meadow-800" />
             <span>Yes</span>
@@ -83,19 +91,26 @@
             <span>No</span>
           </span>
         </div>
-        <div class="flex space-x-2 sm:w-1/12 items-start">
-          <div title="Preview Badge" class="p-1 border border-st-tropaz-600 bg-st-tropaz-200 rounded-full"
-            @click="previewBadge(participant)">
-            <IdentificationIcon class="w-5 h-5 text-st-tropaz-600" />
-          </div>
-          <span v-if="!paidStatus(participant.event_payment)" title="Confirm Payment"
-            class="p-1 border border-mountain-meadow-600 bg-flamingo-400 rounded-full">
-            <CurrencyDollarIcon class="w-5 h-5 text-mountain-meadow-800 cursor-pointer"
-              @click="paymentModal(participant.id)" />
+        <div class="flex space-x-2 sm:w-2/12 justify-end">
+          <span v-if="permissions.includes('PREVIEW_BADGE')">
+            <div title="Preview Badge" class="p-1 border border-st-tropaz-600 bg-st-tropaz-200 rounded-full"
+              @click="previewBadge(participant)">
+              <IdentificationIcon class="w-5 h-5 text-st-tropaz-600" />
+            </div>
           </span>
-          <span v-if="registrationStatus(participant.confirm_attendance)" title="Cancel Registration"
-            class="p-1 border border-flamingo-600 bg-flamingo-400 rounded-full">
-            <XCircleIcon class="w-5 h-5 text-flamingo-800 cursor-pointer" @click="cancelRegistration(participant.id)" />
+          <span v-if="permissions.includes('CONFIRM_EVENT_PAYMENT')">
+            <div v-if="!paidStatus(participant.event_payment)" title="Confirm Payment"
+              class="p-1 border border-mountain-meadow-600 bg-flamingo-400 rounded-full">
+              <CurrencyDollarIcon class="w-5 h-5 text-mountain-meadow-800 cursor-pointer"
+                @click="paymentModal(participant.id)" />
+            </div>
+          </span>
+          <span v-if="permissions.includes('CANCEL_EVENT_REGISTRATION')">
+            <div v-if="registrationStatus(participant.confirm_attendance)" title="Cancel Registration"
+              class="p-1 border border-flamingo-600 bg-flamingo-400 rounded-full">
+              <XCircleIcon class="w-5 h-5 text-flamingo-800 cursor-pointer"
+                @click="cancelRegistration(participant.id)" />
+            </div>
           </span>
         </div>
       </div>
@@ -110,8 +125,6 @@
       :event_id="id" />
     <bulk-upload-participants-modal :show="showBulkUploadParticipantsModal" @close="closeBulkUploadParticipantsModal"
       :eventID="eventID" />
-    <!-- <test-badge-modal :show="showTestBadgeModal" :participants="participants" :event_id="id"
-      @close="closeTestBadgeModal" /> -->
   </div>
 </template>
 
@@ -152,6 +165,7 @@ export default {
       event: {},
       participants: [],
       participant: {},
+      attendance: [],
       allParticipants: [],
       appUrl: process.env.VUE_APP_BASE_URL,
       showParticipantModal: false,
@@ -169,7 +183,9 @@ export default {
       showBadgeModal: false,
       showPrintBadgesModal: false,
       showBulkUploadParticipantsModal: false,
-      showTestBadgeModal: false
+      showTestBadgeModal: false,
+      successMsg: "",
+      errorMsg: "",
     };
   },
   mounted() {
@@ -186,6 +202,7 @@ export default {
         const response = await fetchItem("events", this.id, this.currentPage, this.pageSize, this.searchPhrase);
         this.event = response.event;
         this.participants = response.data;
+        this.attendance = response.attendance;
         this.totalPages = response.pages;
         this.isLoading = false;
       } catch (error) {
@@ -231,8 +248,8 @@ export default {
     },
     handleParticipants() {
       this.getEvent()
-      this.participants = this.allParticipants;
-      exportToExcel(this.participants, 'AllParticipants');
+      this.allParticipants = this.participants;
+      exportToExcel(this.allParticipants, 'AllParticipants');
     },
     handlePaid() {
       this.getEvent()
@@ -243,6 +260,11 @@ export default {
       this.getEvent()
       this.participants = this.participants.filter(participant => !participant.event_payment);
       exportToExcel(this.participants, 'NotPaidParticipants');
+    },
+    handleAttendance() {
+      this.getEvent()
+      this.allAttendance = this.attendance;
+      exportToExcel(this.allAttendance, 'Attendance Register');
     },
     paymentModal(userID) {
       this.userID = userID;
@@ -263,8 +285,11 @@ export default {
       try {
         await createItem("events/cancel_registration/", this.UserEventData);
         this.getEvent();
+        this.errorMsg = null;
+        this.successMsg = "Successfully canceled registrations for user ID # " + user_id;
       } catch (error) {
-        console.error("Error cancelling registration:", error);
+        this.successMsg = null
+        this.errorMsg = error.response.data.detail
       } finally {
         this.isLoading = false;
       }

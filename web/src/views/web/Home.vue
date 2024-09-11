@@ -35,7 +35,7 @@
                                     <span>: {{ event.location }}</span>
                                 </div>
                                 <router-link :to="{ name: 'Login' }"
-                                    class="sm:px-4 px-2 sm:py-2 py-1 rounded-md border  border-bondi-blue-500 text-bondi-blue-600 hover:text-bondi-blue-100  hover:bg-bondi-blue-600">
+                                    class="sm:px-4 text-sm px-2 sm:py-2 py-1 rounded-3xl border-2  border-bondi-blue-500 text-bondi-blue-600 hover:text-bondi-blue-100  hover:bg-bondi-blue-600">
                                     Login or Sign Up to register for this event
                                 </router-link>
                             </div>

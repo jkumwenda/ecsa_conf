@@ -18,8 +18,10 @@
                     tabindex="-1" id="menu-item-1">Participants</button>
                 <button @click="paid" class="block px-4 py-2 text-sm text-gray-700 border-b border-shuttle-gray-200"
                     role="menuitem" tabindex="-1" id="menu-item-1">Paid</button>
-                <button @click="notPaid" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
-                    id="menu-item-0">Not paid</button>
+                <button @click="notPaid" class="block px-4 py-2 text-sm text-gray-700 border-b border-shuttle-gray-200"
+                    role="menuitem" tabindex="-1" id="menu-item-1">Not paid</button>
+                <button @click="attendance" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
+                    id="menu-item-0">Attendance</button>
             </div>
         </div>
     </div>
@@ -46,6 +48,10 @@ export default {
         },
         notPaid() {
             this.$emit('notPaid');
+            this.isOpen = false;
+        },
+        attendance() {
+            this.$emit('attendance');
             this.isOpen = false;
         },
     }
