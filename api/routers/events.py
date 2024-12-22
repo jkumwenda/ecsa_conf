@@ -816,8 +816,9 @@ async def confirm_event_payment(
 
     user_event_model.confirm_attendance = 1
     user_event_model.event_payment = 1
-    user_event_model.confirmation_code = random.choice(string.ascii_letters)
-
+    user_event_model.confirmation_code = "".join(
+        random.choices(string.ascii_letters, k=30)
+    )
     db.commit()
     db.refresh(user_event_model)
     return user_event_model

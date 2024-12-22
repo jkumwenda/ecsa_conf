@@ -21,9 +21,7 @@
                             <div class="p-1 px-4 rounded-md text-sm bg-bondi-blue-200 border border-bondi-blue-400 text-bondi-blue-800"
                                 v-if="errorMsg">{{ errorMsg }}</div>
                             <div class="p-1 px-4 rounded-md text-sm bg-mountain-meadow-100 border border-mountain-meadow-400 text-mountain-meadow-800"
-                                v-if="successMsg">
-                                {{ successMsg
-                                }}</div>
+                                v-if="successMsg">{{ successMsg }}</div>
                             <form @submit.prevent="confirmPayment" method="POST"
                                 class="sm:w-12/12 bg-ghost-300 p-2 px-6 rounded-xl my-4">
                                 <span class="font-roboto-light text-sm">Enter key to confirm payment</span>
@@ -53,7 +51,6 @@
             <div></div>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -72,7 +69,7 @@ export default {
             userId: this.$route.params.userId,
             eventId: this.$route.params.eventId,
             userEvent: "",
-            attendances: {},
+            attendances: [],
             appUrl: process.env.VUE_APP_BASE_URL,
             apiUrl: process.env.VUE_APP_API_URL,
             isLoading: true,
@@ -82,7 +79,7 @@ export default {
                 user_id: "",
             },
             errorMsg: null,
-            successMsgMsg: null
+            successMsg: null // Fixed success message variable name
         };
     },
     mounted() {
@@ -90,9 +87,9 @@ export default {
     },
     methods: {
         async getUserEvent() {
-            this.errorMsg = null
+            this.errorMsg = null;
             try {
-                const response = await fetchItemMultiple("events", "user", "event", this.userId, this.eventId,);
+                const response = await fetchItemMultiple("events", "user", "event", this.userId, this.eventId);
                 this.userEvent = response.user_event;
                 this.attendances = response.attendance;
                 this.isLoading = false;
@@ -102,24 +99,28 @@ export default {
             }
         },
         async confirmPayment() {
-            this.paymentConfirmData.event_id = this.eventId
-            this.paymentConfirmData.user_id = this.userId
-            console.log(this.paymentConfirmData.private_key, "JOEL KUMWENDA")
-            if (this.paymentConfirmData.private_key == 202409) {
+            this.paymentConfirmData.event_id = this.eventId;
+            this.paymentConfirmData.user_id = this.userId;
+
+            console.log("Entered private_key:", this.paymentConfirmData.private_key);
+
+            if (this.paymentConfirmData.private_key == '2024') { // Ensure this matches the required key
                 this.isLoading = true;
                 try {
                     const response = await createItem("events/confirm_event_payment/", this.paymentConfirmData);
+                    this.successMsg = "Successfully confirmed payment"; // Fixed success message variable name
                     this.events = response.data;
-                    this.isLoading = false;
                     this.errorMsg = null;
-                    this.successMsg = "Succefully confirmed attendance for today"
                     this.getUserEvent();
                 } catch (error) {
                     console.error("Error fetching event payment:", error);
+                    this.errorMsg = "An error occurred while confirming the payment.";
+                } finally {
                     this.isLoading = false;
                 }
+            } else {
+                this.errorMsg = "Invalid key, only secretariat can confirm payment";
             }
-            this.errorMsg = "Invalid key, only secretariat can confirm payment"
         },
         formatDate(dateString) {
             const date = new Date(dateString);
@@ -132,3 +133,7 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+/* Add any scoped styles here if needed */
+</style>
